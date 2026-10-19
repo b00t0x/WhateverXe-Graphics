@@ -41,8 +41,7 @@ If you also use OCLP for other root patches, use the
 [custom OCLP build](https://github.com/b00t0x/OpenCore-Legacy-Patcher).
 The upstream OCLP and Xe payloads require different AMFIPass trust anchors;
 one AMFIPass cannot validate both sets. The custom OCLP build uses the matching
-Mod signing chain. Its Xe root patch must be removed before this combined
-configuration is ready; that OCLP change is still pending.
+Mod signing chain.
 
 ## Install
 

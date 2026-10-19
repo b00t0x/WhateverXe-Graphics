@@ -3,8 +3,7 @@
 This repository builds an installer from final, signed payload trees. It does
 not reproduce the full Apple extraction, binary patching and signing pipeline.
 Original installers, signing keys and development captures are not build inputs
-for this repository. The packaging scripts are derived from the Xe Data
-installer maintained alongside WhateverXe.
+for this repository.
 
 ## AppleIntelTGLCompat
 
@@ -22,9 +21,7 @@ and binding guards remain in the shared source.
 revision, build configuration, source file hash and final signed executable hash.
 The build strips debug maps before signing. These source references do not promise
 byte-identical rebuilding with a different compiler or signing invocation.
-The provider source and its shared headers belong to the same WEX revision;
-do not combine historical per-OS source revisions in one package. If future ABI
-requirements need multiple outputs, build them from that same source revision.
+The provider source and its shared headers belong to the same WEX revision.
 
 ## Graphics and compiler payloads
 
@@ -53,8 +50,8 @@ The ZIP is maintained in the repository independently of graphics pkg releases
 and is configured in EFI separately. Download it from
 [`extras/`](../extras/AMFIPass-v1.4.1-Mod-RELEASE.zip); it is not attached to every release.
 OCLP itself is only needed when using other OCLP root patches. That combination
-requires the custom OCLP build with the same Mod signing chain; removal of its
-Xe root patch is a pending prerequisite, as described in the README.
+requires the custom OCLP build with the same Mod signing chain, as described
+in the README.
 
 CI pins [apple-codesign 0.29.0](https://github.com/indygreg/apple-platform-rs/releases/tag/apple-codesign%2F0.29.0)
 for CMS/signature checks, alongside Apple's `codesign`. The Mod chain need not

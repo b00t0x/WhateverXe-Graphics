@@ -6,7 +6,10 @@ macOS pkg. WEX and AppleIntelTGLCompat source remain in WhateverXe.
 Keep README.md and README_ja.md synchronized. General GPU/OS compatibility and
 known issues belong in WhateverXe; this repository documents package use/builds.
 Keep public project knowledge here, with source provenance in docs/SOURCES.md.
-Private development notes, host details and test captures belong outside this repo.
+Public documentation describes usage, requirements, builds and source provenance.
+Keep unpublished implementation plans, release-preparation status, internal
+validation progress, host details and test captures outside this repository,
+including while the repository is private.
 
 Build: python3 tools/build.py
 Test: python3 tools/test.py dist/WhateverXe-Graphics-0.1.0.pkg

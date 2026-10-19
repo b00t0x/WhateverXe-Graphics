@@ -39,7 +39,6 @@ macOS更新前にWEXの説明とリリースノートを確認してください
 [独自ビルド版OCLP](https://github.com/b00t0x/OpenCore-Legacy-Patcher)を使用してください。
 通常版OCLPとXeの資材ではAMFIPassのtrust anchorが異なり、1つのAMFIPassで
 両方の署名に対応できません。独自版OCLPは本資材と同じMod署名チェーンを使用します。
-併用の準備として独自版OCLPからXe root patchを除去する必要があり、この変更は後続で行います。
 
 ## インストール
 
