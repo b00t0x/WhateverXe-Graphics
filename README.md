@@ -18,22 +18,31 @@ is shared by all supported macOS versions through the Common payload.
 
 - Intel macOS, with the WEX/OpenCore configuration described in the WEX README.
 - WhateverXe **0.3.0 or newer**, with Lilu.
-- [AMFIPass 1.4.1 Mod](https://github.com/b00t0x/WhateverXe-Graphics/releases/latest/download/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
+- [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
 - SIP configuration `csr-active-config=03080000` (value `0x803`). Full SIP is not supported by this package.
 
-| macOS | Installer accepts |
+| macOS | Required version |
 | --- | --- |
-| Big Sur | 11.7.11 to before 12 |
-| Monterey | 12.7.6 to before 13 |
-| Ventura | 13.7.8 to before 14 |
-| Sonoma | 14.8.9 to before 15 |
+| Big Sur | 11.7.11 |
+| Monterey | 12.7.6 |
+| Ventura | 13.7.8 |
+| Sonoma | 14.8.9 |
 | Sequoia | 15.8.x |
-| Tahoe | 26.7 to before 27 |
+| Tahoe | 26.7 or newer |
 
 Installer version ranges are not a guarantee of compatibility with future OS
 updates. The current payloads target builds 20G1443, 21H1320, 22H730, 23J631,
 24H32 and 25G241. Check the WEX documentation and release notes before updating
 macOS. `amfi=0x80` and `ipc_control_port_options=0` are not required.
+
+## Using other OCLP root patches
+
+If you also use OCLP for other root patches, use the
+[custom OCLP build](https://github.com/b00t0x/OpenCore-Legacy-Patcher).
+The upstream OCLP and Xe payloads require different AMFIPass trust anchors;
+one AMFIPass cannot validate both sets. The custom OCLP build uses the matching
+Mod signing chain. Its Xe root patch must be removed before this combined
+configuration is ready; that OCLP change is still pending.
 
 ## Install
 
@@ -50,16 +59,20 @@ error, resolve it and reinstall before restarting.
 
 ## Uninstall
 
-Download `uninstall.sh` from the same release, then run:
+Download the current [`uninstall.sh`](uninstall.sh) from this repository, then run:
 
 ```sh
 sudo bash uninstall.sh
 ```
 
-Restart after successful removal. The script removes the added Xe graphics
-files, removes the scaling override, rebuilds AuxKC and forgets this package's
-receipts. It leaves other CoreMedia settings intact. It does not remove WEX,
+Restart after successful removal. The script cleans up current and historical Xe
+Data-volume additions, removes the scaling override, rebuilds AuxKC and forgets
+the graphics package receipts. Use the current script regardless of which pkg
+version was installed. It leaves other CoreMedia settings intact. It does not remove WEX,
 Lilu or AMFIPass from EFI, or restore an older graphics stack.
+
+AMFIPass and this cleanup script are maintained in the repository independently
+of the graphics pkg. Releases contain the pkg and its checksum.
 
 ## Build
 

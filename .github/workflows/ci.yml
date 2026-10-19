@@ -48,8 +48,6 @@ jobs:
           name: Packages
           path: |
             dist/*.pkg
-            dist/uninstall.sh
-            dist/AMFIPass-*.zip
             dist/SHA256SUMS
           if-no-files-found: error
 
@@ -83,4 +81,4 @@ jobs:
             gh release create "$RELEASE_TAG" --verify-tag --draft \
               --title "$RELEASE_TAG" --notes-file ../.github/release-notes.md
           fi
-          gh release upload "$RELEASE_TAG" ./*.pkg uninstall.sh AMFIPass-*.zip SHA256SUMS --clobber
+          gh release upload "$RELEASE_TAG" ./*.pkg SHA256SUMS --clobber

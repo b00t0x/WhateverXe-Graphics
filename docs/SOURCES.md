@@ -49,10 +49,27 @@ The separate `extras/AMFIPass-v1.4.1-Mod-RELEASE.zip` is copied unchanged from
 [the existing Mod distribution](https://github.com/b00t0x/OpenCore-Legacy-Patcher/blob/b78fdeb8ffaa78168db076dc4bcbb3c3f67c07c4/payloads/Kexts/Acidanthera/AMFIPass-v1.4.1-Mod-RELEASE.zip).
 Its SHA-256 is
 `71f41de42e355d2a83e6f093ef34a5b24d0a9c9a9085830b2317f1b874f56250`.
-This is provenance, not an OCLP installation dependency. The ZIP is included in
-this repository's release assets and is configured in EFI separately.
+The ZIP is maintained in the repository independently of graphics pkg releases
+and is configured in EFI separately. Download it from
+[`extras/`](../extras/AMFIPass-v1.4.1-Mod-RELEASE.zip); it is not attached to every release.
+OCLP itself is only needed when using other OCLP root patches. That combination
+requires the custom OCLP build with the same Mod signing chain; removal of its
+Xe root patch is a pending prerequisite, as described in the README.
 
 CI pins [apple-codesign 0.29.0](https://github.com/indygreg/apple-platform-rs/releases/tag/apple-codesign%2F0.29.0)
 for CMS/signature checks, alongside Apple's `codesign`. The Mod chain need not
 be trusted by the build host. Signing happens before an asset is imported here;
 there are no signing secrets in Actions.
+
+## Repository utilities and package releases
+
+The committed [`uninstall.sh`](../uninstall.sh) runs on its own and is maintained
+across pkg versions. It removes current and historical Xe additions under
+`/Library`, rebuilds AuxKC and forgets the graphics receipts. It also cleans up
+old revision-named adapters, earlier OpenCL/Metal directory layouts and the early
+installer's support directory. It does not restore System-volume patches; use
+the original patcher's restoration procedure for those.
+
+Only the pkg and its checksum are release assets. AMFIPass and the uninstaller
+have independent update schedules. The build does not generate an uninstaller
+or copy either utility into its output.

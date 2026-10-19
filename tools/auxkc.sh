@@ -5,7 +5,7 @@ update_auxkc() {
     major=${major%%.*}
     /bin/mkdir -p /Library/KernelCollections
     work=$(/usr/bin/mktemp -d /Library/KernelCollections/.WhateverXe.XXXXXX)
-    trap '/bin/rm -rf "$work"' EXIT
+    trap "/bin/rm -rf -- '$work'" EXIT
     local args=(create -n aux -x -z -V release -r /Library/Extensions)
     if [ "$major" -ge 13 ]; then args+=(--allow-missing-kdk); fi
     for kext in /Library/Extensions/*.kext; do

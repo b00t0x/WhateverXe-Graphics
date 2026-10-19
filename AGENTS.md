@@ -21,3 +21,8 @@ Release versioning is independent from WEX. Use source commits for provenance,
 not a floating dependency on another repository's main branch. Build TGLCompat
 from one WEX commit for every OS; keep the single build in Common. If ABI
 differences require multiple outputs, build all variants from that same commit.
+
+Release assets are the pkg and its checksum only. AMFIPass stays under extras/;
+the root uninstall.sh is a committed, standalone cleanup script for all current
+and historical Xe Data-volume layouts. Keep its AuxKC function consistent with
+tools/auxkc.sh. Do not bind either auxiliary download to the package lifecycle.

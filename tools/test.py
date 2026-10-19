@@ -13,8 +13,11 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('package', type=Path)
 parser.add_argument('--rcodesign', default='rcodesign')
 args = parser.parse_args()
+subprocess.run([sys.executable, str(Path(__file__).with_name('test_uninstall.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('verify.py')), '--rcodesign', args.rcodesign], check=True)
 manifest = json.loads((args.package.parent / 'manifest.json').read_text())
+assert (args.package.parent / 'SHA256SUMS').read_text() == (
+    hashlib.sha256(args.package.read_bytes()).hexdigest() + '  ' + args.package.name + '\n')
 cases = {
     '11.7.10': None, '11.7.11': 'Big Sur', '12.7.5': None, '12.7.6': 'Monterey',
     '13.7.7': None, '13.7.8': 'Ventura', '14.8.8': None, '14.8.9': 'Sonoma',
@@ -79,5 +82,5 @@ for (const [version, expected] of Object.entries(input.cases)) {
             assert len(data) == expected[rel]['size']
             assert p.stat().st_mode & 0o777 == expected[rel]['mode'], rel
         total += len(actual)
-    subprocess.run(['bash', '-n', str(args.package.parent / 'uninstall.sh')], check=True)
+    subprocess.run(['bash', '-n', str(Path(__file__).resolve().parents[1] / 'uninstall.sh')], check=True)
 print(f'PASS: {len(cases)} version boundaries, 7 standard payloads/BOMs, {total} reconstructed files, script syntax')

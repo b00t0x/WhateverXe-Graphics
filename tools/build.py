@@ -116,16 +116,8 @@ def main():
         shutil.copyfile(distribution, output / 'Distribution.xml')
     # Development provenance stays outside the installer and installed system.
     (output / 'manifest.json').write_text(json.dumps({'policy': policy, 'systems': manifests}, indent=2) + '\n')
-    shell_script(output / 'uninstall.sh', (HERE / 'auxkc.sh').read_text() + '\n' +
-                 (HERE / 'uninstall.sh').read_text())
     digest = hashlib.sha256(package.read_bytes()).hexdigest()
-    files = [package, output / 'uninstall.sh']
-    for extra in (ROOT / 'extras').iterdir():
-        if extra.is_file():
-            shutil.copyfile(extra, output / extra.name)
-            files.append(output / extra.name)
-    (output / 'SHA256SUMS').write_text(''.join(
-        hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in files))
+    (output / 'SHA256SUMS').write_text(digest + '  ' + package.name + '\n')
     print(json.dumps({'package': package.name, 'bytes': package.stat().st_size,
                       'components': len(components), 'sha256': digest}))
 
