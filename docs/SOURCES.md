@@ -64,10 +64,9 @@ there are no signing secrets in Actions.
 ## Repository utilities and package releases
 
 The committed [`uninstall.sh`](../uninstall.sh) runs on its own and is maintained
-across pkg versions. It removes current and historical Xe additions under
-`/Library`, rebuilds AuxKC and forgets the graphics receipts. It also cleans up
-old revision-named adapters, earlier OpenCL/Metal directory layouts and the early
-installer's support directory. It does not restore System-volume patches; use
+across pkg versions. It removes the graphics components distributed by this
+project under `/Library`, removes the scaling override, rebuilds AuxKC and
+forgets the graphics receipts. It does not restore System-volume patches; use
 the original patcher's restoration procedure for those.
 
 Only the pkg and its checksum are release assets. AMFIPass and the uninstaller

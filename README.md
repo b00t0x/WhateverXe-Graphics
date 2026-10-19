@@ -65,8 +65,8 @@ Download the current [`uninstall.sh`](uninstall.sh) from this repository, then r
 sudo bash uninstall.sh
 ```
 
-Restart after successful removal. The script cleans up current and historical Xe
-Data-volume additions, removes the scaling override, rebuilds AuxKC and forgets
+Restart after successful removal. The script removes the graphics components
+distributed by this project, removes the scaling override, rebuilds AuxKC and forgets
 the graphics package receipts. Use the current script regardless of which pkg
 version was installed. It leaves other CoreMedia settings intact. It does not remove WEX,
 Lilu or AMFIPass from EFI, or restore an older graphics stack.

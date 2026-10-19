@@ -24,30 +24,17 @@ for version, fail in [('11.7.11', False), ('26.7', False), ('26.7', True)]:
             if path.is_file():
                 rel = path.relative_to(ROOT / 'payloads').parts
                 payloads.add(Path(*rel[1:]))
-        historical = [
-            'Extensions/TGLCompat.kext/Contents/old',
-            'Extensions/AppleIntelTGLGraphicsGLDriver.bundle/Contents/old',
-            'GPUBundles/XeCompilerAdapter-r14.bundle/Contents/old',
-            'GPUBundles/XeCompilerAdapter-r2.bundle/Contents/old',
-            'GPUBundles/XeOpenCL.bundle/Contents/old',
-            'GPUBundles/XeOpenCL.plugin/Contents/old',
-            'GPUBundles/XeMetal/old',
-            'Application Support/WhateverXe/installer.pl',
-        ]
-        removed = [root / p for p in payloads] + [library / p for p in historical]
+        removed = [root / p for p in payloads]
         retained = [
             library / 'Extensions/Other.kext/Contents/keep',
             library / 'Extensions/WhateverXe.kext/Contents/keep',
             library / 'Extensions/AMFIPass.kext/Contents/keep',
             library / 'GPUBundles/XeCompilerAdapterNotes.bundle/keep',
             root / 'System/Library/Extensions/AppleIntelTGLGraphics.kext/keep',
-            root / 'outside/keep',
         ]
         for path in removed + retained:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text('fixture')
-        # Removing a legacy bundle symlink must not traverse its target.
-        (library / 'Extensions/XeCompilerAdapter-r99.bundle').symlink_to(root / 'outside')
         feature = library / 'Preferences/FeatureFlags/Domain/CoreMedia.plist'
         feature.parent.mkdir(parents=True)
         feature.write_bytes(plistlib.dumps({'Other': True, 'AllowOnePassMetalScaling': {'Enabled': False, 'Other': 7}}))
@@ -64,8 +51,8 @@ if name == 'sw_vers': print(os.environ['XE_TEST_OS'])
 elif name == 'kmutil':
     if os.environ['XE_TEST_FAIL'] == '1': sys.exit(27)
     Path(args[args.index('-A') + 1]).write_text('rebuilt')
-elif args == ['--pkgs']:
-    print('org.b00t0x.WhateverXe.Common\\norg.b00t0x.WhateverXe.20G1443\\norg.b00t0x.WhateverXe.Data\\norg.other.pkg')
+elif name == 'pkgutil' and args[0] == '--pkg-info':
+    sys.exit(0 if args[1] in ['org.b00t0x.WhateverXe.Common', 'org.b00t0x.WhateverXe.Tahoe'] else 1)
 ''')
         mock.chmod(0o755)
         body = source.replace(guard, ': # Root guard checked above; test uses a temporary tree.')
@@ -84,12 +71,15 @@ elif args == ['--pkgs']:
         assert result.returncode == (27 if fail else 0), result.stderr
         assert all(not p.exists() for p in removed)
         assert all(p.read_text() == 'fixture' for p in retained)
-        assert not (library / 'Extensions/XeCompilerAdapter-r99.bundle').is_symlink()
         assert plistlib.loads(feature.read_bytes()) == {'Other': True, 'AllowOnePassMetalScaling': {'Other': 7}}
         assert kc.read_text() == ('previous' if fail else 'rebuilt')
         commands = log.read_text()
         assert ('--allow-missing-kdk' in commands) == version.startswith('26.')
-        assert not any('--forget' in line and 'org.other.pkg' in line for line in commands.splitlines())
-        assert commands.count('--forget') == (0 if fail else 3)
+        forgotten = [line for line in commands.splitlines() if '--forget' in line]
+        expected = [] if fail else [
+            "pkgutil ['--forget', 'org.b00t0x.WhateverXe.Common']",
+            "pkgutil ['--forget', 'org.b00t0x.WhateverXe.Tahoe']",
+        ]
+        assert forgotten == expected
         assert not list(kc.parent.glob('.WhateverXe.*'))
-print('PASS: standalone cleanup, historical paths, unrelated files, receipts and AuxKC success/failure')
+print('PASS: distributed payload removal, unrelated files, receipts and AuxKC success/failure')
