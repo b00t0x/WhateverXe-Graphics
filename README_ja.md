@@ -10,6 +10,7 @@ OpenCore・EFIの設定は別途必要です。
 対応GPU・機能・設定・既知の問題は[WhateverXe](https://github.com/b00t0x/WhateverXe)を
 参照してください。WEXと本pkgのリリース番号は独立しています。
 AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダーはWEXリポジトリで管理します。
+全対応macOSで単一ビルドを使用し、Common payloadに収録しています。
 
 ## 必要な構成
 

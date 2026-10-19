@@ -11,7 +11,8 @@ separate.
 For supported GPUs, features, configuration and known issues, see
 [WhateverXe](https://github.com/b00t0x/WhateverXe). WEX and this package have
 independent release versions. AppleIntelTGLCompat is included in the package;
-its source and shared headers remain in the WEX repository.
+its source and shared headers remain in the WEX repository. One TGLCompat build
+is shared by all supported macOS versions through the Common payload.
 
 ## Requirements
 

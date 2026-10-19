@@ -9,30 +9,28 @@ installer maintained alongside WhateverXe.
 ## AppleIntelTGLCompat
 
 Source and its shared headers remain in
-[WhateverXe](https://github.com/b00t0x/WhateverXe). The included providers retain
-the OS-specific 0.5.0 builds; they are not represented as builds of WEX's latest
-source. Each row identifies the provider source revision:
+[WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
+use one RELEASE build of AppleIntelTGLCompat 0.5.0 from WEX commit
+[`cfd968e`](https://github.com/b00t0x/WhateverXe/tree/cfd968e80fb48f5b0943ff4e20c7ade3f6918e63/AppleIntelTGLCompat).
+Build that checkout with `python3 tools/build.py --release`, then sign the
+resulting kext with the Mod chain before importing the complete bundle into
+`payloads/Common/Library/Extensions/`. The package contains no per-OS provider
+copies. OS admission uses the shared WEX kernel-version selector; physical-device
+and binding guards remain in the shared source.
 
-| Payload | WEX source revision |
-| --- | --- |
-| Big Sur | [7a2725b](https://github.com/b00t0x/WhateverXe/tree/7a2725b6e036ace9051c5c64b204718d1e72a0e5/AppleIntelTGLCompat) |
-| Monterey | [b04f9c2](https://github.com/b00t0x/WhateverXe/tree/b04f9c2a76ef6b6c52c3379c90c181e951f42b16/AppleIntelTGLCompat) |
-| Ventura | [91132d8](https://github.com/b00t0x/WhateverXe/tree/91132d890080769facd0fb29a7aa4ad3b1e666ff/AppleIntelTGLCompat) |
-| Sonoma | [5adb0e1](https://github.com/b00t0x/WhateverXe/tree/5adb0e1220c69ddad4b4909dd1d04e3cf2c8f897/AppleIntelTGLCompat) |
-| Sequoia | [4736307](https://github.com/b00t0x/WhateverXe/tree/4736307613f4ce40e881ce3e7f95fd6c18408a66/AppleIntelTGLCompat) |
-| Tahoe | [2446f37](https://github.com/b00t0x/WhateverXe/tree/2446f372e4f41652f543f795660250a2ecb1d8c7/AppleIntelTGLCompat) |
-
-[Machine-readable provenance](payload-provenance.json) records the source file
-and final executable hashes. Provider debug maps were removed where present,
-and the same Mod chain was reapplied. Section contents/addresses, exported
-symbols and entitlements were preserved. These source references do not promise
+[Machine-readable provenance](payload-provenance.json) records this single source
+revision, build configuration, source file hash and final signed executable hash.
+The build strips debug maps before signing. These source references do not promise
 byte-identical rebuilding with a different compiler or signing invocation.
+The provider source and its shared headers belong to the same WEX revision;
+do not combine historical per-OS source revisions in one package. If future ABI
+requirements need multiple outputs, build them from that same source revision.
 
 ## Graphics and compiler payloads
 
-`payloads/Common` contains the shared GL bundle. OS-named directories contain
-complete signed kernel, Metal, VA and OpenCL units. Compiler adapter/backend
-units accompany the later OS payloads; Big Sur uses its native compiler plugin.
+`payloads/Common` contains the shared TGLCompat kext and GL bundle. OS-named
+directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
+units. Compiler adapter/backend units accompany the later OS payloads; Big Sur uses its native compiler plugin.
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
 

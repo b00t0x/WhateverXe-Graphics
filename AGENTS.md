@@ -18,4 +18,6 @@ in Git. The checked-in final payloads are an explicit binary exception.
 Installer scripts use standard payloads and AuxKC; do not add custom backup,
 manifest, hash-store or uninstall infrastructure to the installed system.
 Release versioning is independent from WEX. Use source commits for provenance,
-not a floating dependency on another repository's main branch.
+not a floating dependency on another repository's main branch. Build TGLCompat
+from one WEX commit for every OS; keep the single build in Common. If ABI
+differences require multiple outputs, build all variants from that same commit.

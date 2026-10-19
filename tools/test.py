@@ -65,6 +65,10 @@ for (const [version, expected] of Object.entries(input.cases)) {
         for script in scripts.iterdir():
             subprocess.run(['bash', '-n', str(script)], check=True)
     total = 0
+    provider = 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
+    assert choices['Common'] == 'true'
+    assert provider in payloads['Common']
+    assert all(provider not in files for name, files in payloads.items() if name != 'Common')
     for build, expected in manifest['systems'].items():
         assert not (payloads['Common'].keys() & payloads[build].keys())
         actual = payloads['Common'] | payloads[build]

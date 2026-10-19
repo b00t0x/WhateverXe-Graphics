@@ -52,6 +52,10 @@ def main():
         result = subprocess.run(['codesign', '--verify', '--deep', '--strict', str(bundle)], capture_output=True)
         assert result.returncode == 0 or b'CSSMERR_TP_NOT_TRUSTED' in result.stderr, result.stderr
     expected = json.loads((ROOT / 'docs/payload-provenance.json').read_text())
+    # One build supplies every OS. Reject accidentally reintroduced per-OS copies.
+    provider = ROOT / 'payloads/Common/Library/Extensions/AppleIntelTGLCompat.kext'
+    assert list((ROOT / 'payloads').rglob('AppleIntelTGLCompat.kext')) == [provider]
+    assert set(expected['providers']) == {'Common'}
     for os, entry in expected['providers'].items():
         path = ROOT / 'payloads' / os / 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
         assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], os
