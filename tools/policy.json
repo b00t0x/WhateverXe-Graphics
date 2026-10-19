@@ -1,0 +1,53 @@
+{
+  "package_version": "0.1.0",
+  "systems": [
+    {
+      "name": "Big Sur",
+      "major": 11,
+      "minimum": "11.7.11",
+      "before": "12",
+      "payload": "Big Sur",
+      "source_build": "20G1443"
+    },
+    {
+      "name": "Monterey",
+      "major": 12,
+      "minimum": "12.7.6",
+      "before": "13",
+      "payload": "Monterey",
+      "source_build": "21H1320"
+    },
+    {
+      "name": "Ventura",
+      "major": 13,
+      "minimum": "13.7.8",
+      "before": "14",
+      "payload": "Ventura",
+      "source_build": "22H730"
+    },
+    {
+      "name": "Sonoma",
+      "major": 14,
+      "minimum": "14.8.9",
+      "before": "15",
+      "payload": "Sonoma",
+      "source_build": "23J631"
+    },
+    {
+      "name": "Sequoia",
+      "major": 15,
+      "minimum": "15.8",
+      "before": "15.9",
+      "payload": "Sequoia",
+      "source_build": "24H32"
+    },
+    {
+      "name": "Tahoe",
+      "major": 26,
+      "minimum": "26.7",
+      "before": "27",
+      "payload": "Tahoe",
+      "source_build": "25G241"
+    }
+  ]
+}

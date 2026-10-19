@@ -1,0 +1,49 @@
+{
+  "provider_source_repository": "https://github.com/b00t0x/WhateverXe",
+  "providers": {
+    "Big Sur": {
+      "source_commit": "7a2725b6e036ace9051c5c64b204718d1e72a0e5",
+      "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
+      "source_file_sha256": "e08147b966bf4f5f4de88b1c76788b0cd8f342e5f48a8b4f1bf4d8e477d813a0",
+      "version": "0.5.0",
+      "sha256": "d14a1f5c9ec819f3a201a1e6c11be68d49ddf03d7569da59ac8c4405703e8edf"
+    },
+    "Monterey": {
+      "source_commit": "b04f9c2a76ef6b6c52c3379c90c181e951f42b16",
+      "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
+      "source_file_sha256": "88ebb370c7de7c333bc6ee9d63ab90ac5ecb978efc7b90115b186f3e6f24cef2",
+      "version": "0.5.0",
+      "sha256": "a884cb3df17bc6752286e1b5cba8e053b91722fd426c29e5ce1ec3a43ab96c68"
+    },
+    "Ventura": {
+      "source_commit": "91132d890080769facd0fb29a7aa4ad3b1e666ff",
+      "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
+      "source_file_sha256": "00abb5c9ebb611c6006ccea5a890d91a8852d5e2ba11410fd359b9f90cf8f0f5",
+      "version": "0.5.0",
+      "sha256": "f7b10e887f51f4f68ecbe64cce60b893c43f71644a0a599e216f4ccc8539566b"
+    },
+    "Sonoma": {
+      "source_commit": "5adb0e1220c69ddad4b4909dd1d04e3cf2c8f897",
+      "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
+      "source_file_sha256": "6391ec823beeba5a0994ff26eaa010029112fcaf5934679587fb2747066493fd",
+      "version": "0.5.0",
+      "sha256": "9c1b3117cd201ffb3cf81e31cae9b06bc7e7dd2755819b3a0e5d0406fb511bd2"
+    },
+    "Sequoia": {
+      "source_commit": "4736307613f4ce40e881ce3e7f95fd6c18408a66",
+      "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
+      "source_file_sha256": "4f1f5ca2f16ea5d06a8c0e719aff20d50294d1559132297cbe4cb3b339f1ee30",
+      "version": "0.5.0",
+      "sha256": "3f1abaa79c433f1d4dcd76d36d89c40d25187eb52f5454b335f08dae14e622ba"
+    },
+    "Tahoe": {
+      "source_commit": "2446f372e4f41652f543f795660250a2ecb1d8c7",
+      "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
+      "source_file_sha256": "983513932350834fe200009e222a39144348de2886f037e38e369e73709180a4",
+      "version": "0.5.0",
+      "sha256": "eb427c59602aa8b5656d3d40b8ba3f8b6ac061e03f8dc4be43bb2ff21dbdbd69"
+    }
+  },
+  "amfipass_sha256": "71f41de42e355d2a83e6f093ef34a5b24d0a9c9a9085830b2317f1b874f56250",
+  "mod_leaf_sha1": "6de7fc5377deac4f5fe21194684f57f553c3592c"
+}
