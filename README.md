@@ -19,7 +19,7 @@ See the [changelog](CHANGELOG.md) for changes in each package version.
 ## Requirements
 
 - Intel macOS, with the WEX/OpenCore configuration described in the WEX README.
-- WhateverXe **0.5.0 or newer**, with Lilu.
+- WhateverXe **0.3.0 or newer**, with Lilu; **0.5.0** is needed for the newly added GPUs.
 - [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
 - SIP configuration `csr-active-config=03080000` (value `0x803`). Full SIP is not supported by this package.
 
@@ -36,6 +36,23 @@ Installer version ranges are not a guarantee of compatibility with future OS
 updates. The current payloads target builds 20G1443, 21H1320, 22H730, 23J631,
 24H32 and 25G241. Check the WEX documentation and release notes before updating
 macOS. `amfi=0x80` and `ipc_control_port_options=0` are not required.
+
+## Relationship to WEX
+
+WEX supplies the OS/GPU adaptations and display control. This package supplies
+the graphics drivers, their compiler components and AppleIntelTGLCompat, which
+provides shared driver services. The release numbers do not have to match.
+
+Graphics 0.2.0 retains the interfaces used by WEX 0.3.0/0.4.0 for previously
+supported GPUs. Its Chrome/rendering fixes can therefore be used without WEX
+0.5.0. Newly added GPUs and features that need changes on both sides require
+WEX 0.5.0 and Graphics 0.2.0. Safari-update compatibility and the WEX display
+startup fixes require the updated WEX plugin.
+
+Hardware regression testing for this release used updated development versions
+of both components. Compatibility
+with older WEX versions was checked in code and with CPU interface tests, not
+with a new full hardware regression run. Updating both is recommended.
 
 ## Using other OCLP root patches
 

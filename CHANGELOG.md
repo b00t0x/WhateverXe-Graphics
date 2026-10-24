@@ -2,7 +2,7 @@
 
 ## 0.2.0
 
-Requires **WhateverXe 0.5.0 or newer**. Update WEX in OpenCore and install this package.
+Works with WEX **0.3.0 or newer** on previously supported GPUs. The newly added GPUs require WEX **0.5.0**; updating both components is recommended.
 
 ### Added
 
