@@ -12,7 +12,7 @@ validation progress, host details and test captures outside this repository,
 including while the repository is private.
 
 Build: python3 tools/build.py
-Test: python3 tools/test.py dist/WhateverXe-Graphics-0.1.0.pkg
+Test: python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
 
 Preserve signed payloads exactly unless deliberately updating and requalifying
 an asset. Never sign original Apple compiler backends again. Keep signed bundles

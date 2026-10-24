@@ -14,10 +14,12 @@ independent release versions. AppleIntelTGLCompat is included in the package;
 its source and shared headers remain in the WEX repository. One TGLCompat build
 is shared by all supported macOS versions through the Common payload.
 
+See the [changelog](CHANGELOG.md) for changes in each package version.
+
 ## Requirements
 
 - Intel macOS, with the WEX/OpenCore configuration described in the WEX README.
-- WhateverXe **0.3.0 or newer**, with Lilu.
+- WhateverXe **0.5.0 or newer**, with Lilu.
 - [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
 - SIP configuration `csr-active-config=03080000` (value `0x803`). Full SIP is not supported by this package.
 
@@ -79,7 +81,7 @@ On macOS with Xcode Command Line Tools and Python 3.10 or newer:
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.1.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
 ```
 
 The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder

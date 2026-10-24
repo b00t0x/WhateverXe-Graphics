@@ -12,10 +12,12 @@ OpenCore・EFIの設定は別途必要です。
 AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダーはWEXリポジトリで管理します。
 全対応macOSで単一ビルドを使用し、Common payloadに収録しています。
 
+各pkgバージョンの変更点は[CHANGELOG](CHANGELOG.md)を参照してください。
+
 ## 必要な構成
 
 - WEXのREADMEに記載されたWEX・OpenCore構成を使用するIntel macOS。
-- LiluとWhateverXe **0.3.0以上**。
+- LiluとWhateverXe **0.5.0以上**。
 - OpenCoreから読み込む[AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip)。通常のupstream版AMFIPassでは、本資材の署名チェーンに対応できません。
 - SIP設定`csr-active-config=03080000`（値`0x803`）。本pkgはSIP全面有効化には対応していません。
 
@@ -74,7 +76,7 @@ Xcode Command Line ToolsとPython 3.10以上を用意したmacOSで実行しま�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.1.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
 ```
 
 検証にはNode.jsと`rcodesign` 0.29.0も必要です。CIでは両方を用意します。
