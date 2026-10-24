@@ -10,7 +10,7 @@ for this repository.
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
 use one RELEASE build of AppleIntelTGLCompat 0.5.0 from WEX commit
-[`cfd968e`](https://github.com/b00t0x/WhateverXe/tree/cfd968e80fb48f5b0943ff4e20c7ade3f6918e63/AppleIntelTGLCompat).
+[`31826af`](https://github.com/b00t0x/WhateverXe/tree/31826afc837977e1f09f5109173d5a2b577aff78/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -25,9 +25,10 @@ The provider source and its shared headers belong to the same WEX revision.
 
 ## Graphics and compiler payloads
 
-`payloads/Common` contains the shared TGLCompat kext and GL bundle. OS-named
+`payloads/Common` contains the shared TGLCompat kext, GL bundle and compiler adapter. OS-named
 directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
-units. Compiler adapter/backend units accompany the later OS payloads; Big Sur uses its native compiler plugin.
+units. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
+backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
 
