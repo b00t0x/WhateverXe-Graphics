@@ -10,12 +10,14 @@ for this repository.
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
 use one RELEASE build of AppleIntelTGLCompat 0.5.0 from WEX commit
-[`31826af`](https://github.com/b00t0x/WhateverXe/tree/31826afc837977e1f09f5109173d5a2b577aff78/AppleIntelTGLCompat).
+[`69bfa6d`](https://github.com/b00t0x/WhateverXe/tree/69bfa6d399aea0f25be5377f54afb586e07dd2fd/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
 copies. OS admission uses the shared WEX kernel-version selector; physical-device
-and binding guards remain in the shared source.
+and binding guards remain in the shared source. The provider also carries the
+source GraphicsPolicy.plist personality, restricted to admitted Display13 Intel
+framebuffer clients; it does not override policy for other GPUs.
 
 [Machine-readable provenance](payload-provenance.json) records this single source
 revision, build configuration, source file hash and final signed executable hash.

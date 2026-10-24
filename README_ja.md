@@ -50,6 +50,8 @@ Safari更新への対応やWEX側の表示初期化修正には、新しいWEX�
 呼出し仕様の試験で確認しており、その組合せでの実機回帰は追加実施していません。
 通常は両方の更新を推奨します。
 
+ADL-P/RPL-PのモバイルDisplay13構成では、この資材とWEX source revision `69bfa6d`または呼出し仕様を維持する後継版を使用してください。対応Compatには対象を限定した表示policyの登録を含み、機種別AGDP kextやdevice-ID上書きは不要です。公開済みGraphics 0.2.0の資材には、このモバイル系対応は含まれていません。
+
 ## OCLPの他のroot patchとの併用
 
 他のroot patchのためにOCLPを併用する場合は、

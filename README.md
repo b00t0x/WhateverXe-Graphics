@@ -54,6 +54,8 @@ of both components. Compatibility
 with older WEX versions was checked in code and with CPU interface tests, not
 with a new full hardware regression run. Updating both is recommended.
 
+For ADL-P/RPL-P mobile Display13 hardware, use WEX source revision `69bfa6d` or a compatible successor with these payloads. The matching Compat provider includes scoped graphics-policy registration; no machine-specific AGDP kext or device-ID override is required. The published Graphics 0.2.0 payloads do not contain this mobile support.
+
 ## Using other OCLP root patches
 
 If you also use OCLP for other root patches, use the

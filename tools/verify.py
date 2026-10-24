@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import plistlib
 import subprocess
 from pathlib import Path
 
@@ -59,6 +60,8 @@ def main():
     for os, entry in expected['providers'].items():
         path = ROOT / 'payloads' / os / 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
         assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], os
+        info = plistlib.loads((path.parent.parent / 'Info.plist').read_bytes())
+        assert hashlib.sha256(plistlib.dumps(info['IOKitPersonalities'])).hexdigest() == entry['policy_source_sha256'], os
     extra = ROOT / 'extras/AMFIPass-v1.4.1-Mod-RELEASE.zip'
     assert hashlib.sha256(extra.read_bytes()).hexdigest() == expected['amfipass_sha256']
     print(f'PASS: {len(seen)} unique signed Mach-O files, bundle seals, provider provenance and AMFIPass archive')
