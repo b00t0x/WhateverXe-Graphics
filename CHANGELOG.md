@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.0
+
+Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release for the new mobile GPU and fixed TC display support.
+
+### Added
+
+- Add signed graphics payloads for the Alder Lake-H/P/U and Raptor Lake-H/P/U devices accepted by WEX 0.6.0.
+- Update the common AppleIntelTGLCompat provider for fixed TC HDMI/DisplayPort and scoped graphics-policy registration.
+
+### Fixed
+
+- Fix shader compilation failures on Sonoma–Tahoe by using the OS-native AIR converter for inputs rejected by the previous converter. This approach was informed by the compiler adapter and LLVM bridge in [JulioNectar/Hackintosh-XPS13Plus-IrisXe-Tahoe](https://github.com/JulioNectar/Hackintosh-XPS13Plus-IrisXe-Tahoe/tree/0ad1bc5d3b9e73c918be174f791f4d739cde51e9/macos/src).
+- On Sonoma–Tahoe, accept compatible compiler updates without requiring an exact UUID match. Required API and image checks remain; incompatible inputs fail explicitly instead of falling back to the previous converter.
+
+Sequoia App Store video hangs remain unresolved. See [WEX compatibility and known issues](https://github.com/b00t0x/WhateverXe#compatibility) for hardware coverage and limitations.
+
 ## 0.2.0
 
 Works with WEX **0.3.0 or newer** on previously supported GPUs. The newly added GPUs require WEX **0.5.0**; updating both components is recommended.

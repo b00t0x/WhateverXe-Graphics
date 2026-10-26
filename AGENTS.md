@@ -11,6 +11,13 @@ Keep unpublished implementation plans, release-preparation status, internal
 validation progress, host details and test captures outside this repository,
 including while the repository is private.
 
+README describes the current state, not release-by-release changes. Recommend
+latest component releases instead of accumulating per-version dependency tables.
+Use GPU family names rather than internal display-generation labels in README
+prose. CHANGELOG describes the affected behavior and OS range; applications used
+for validation are not the scope of a general fix. Credit reference repositories
+when their work informed a change.
+
 Build: python3 tools/build.py
 Test: python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
 

@@ -9,13 +9,15 @@ for this repository.
 
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
-use one RELEASE build of AppleIntelTGLCompat 0.5.0 from WEX commit
-[`31826af`](https://github.com/b00t0x/WhateverXe/tree/31826afc837977e1f09f5109173d5a2b577aff78/AppleIntelTGLCompat).
+use one RELEASE build of AppleIntelTGLCompat 0.6.0 from WEX commit
+[`919e9af`](https://github.com/b00t0x/WhateverXe/tree/919e9af08258cfe8ffde1e47b952155381ec30db/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
 copies. OS admission uses the shared WEX kernel-version selector; physical-device
-and binding guards remain in the shared source.
+and binding guards remain in the shared source. The provider also carries the
+source GraphicsPolicy.plist personality, restricted to admitted Display13 Intel
+framebuffer clients; it does not override policy for other GPUs.
 
 [Machine-readable provenance](payload-provenance.json) records this single source
 revision, build configuration, source file hash and final signed executable hash.
@@ -31,6 +33,12 @@ units. The same compiler adapter serves Monterey through Tahoe; its unchanged Ap
 backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
+
+On Sonoma–Tahoe the adapter uses the OS GPUCompiler's native AIR-v4 serializer.
+It checks the required APIs, System paths and shared LLVM image identity rather
+than pinning compiler UUIDs. Missing APIs or incompatible inputs produce an
+explicit error; there is no fallback to the previous bitcode converter.
+Monterey and Ventura retain the direct compiler path.
 
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:
 the adapter checks its complete file hash. The verifier enforces that identity.
