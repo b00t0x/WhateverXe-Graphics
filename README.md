@@ -19,7 +19,7 @@ See the [changelog](CHANGELOG.md) for changes in each package version.
 ## Requirements
 
 - Intel macOS, with the WEX/OpenCore configuration described in the WEX README.
-- WhateverXe **0.3.0 or newer**, with Lilu; **0.5.0** is needed for S/HX and H45 GPUs, and **0.6.0** for H/P/U mobile Display13 GPUs.
+- The latest WhateverXe release, with Lilu.
 - [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
 - SIP configuration `csr-active-config=03080000` (value `0x803`). Full SIP is not supported by this package.
 
@@ -43,16 +43,8 @@ WEX supplies the OS/GPU adaptations and display control. This package supplies
 the graphics drivers, their compiler components and AppleIntelTGLCompat, which
 provides shared driver services. The release numbers do not have to match.
 
-Graphics 0.3.0 retains the interfaces used by WEX 0.3.0 and newer for previously
-supported GPUs. The new mobile GPU and fixed TC display support requires WEX
-0.6.0 and Graphics 0.3.0. No machine-specific AGDP kext or device-ID override
-is required. The shader-compiler improvements also apply to previously
-supported GPUs on Sonoma–Tahoe.
-
-Hardware testing used updated development versions of both components.
-Compatibility with older WEX versions was checked in code and with CPU
-interface tests, not with a new full hardware regression run. Updating both
-components is recommended.
+Use the latest releases of both components. GPU and display requirements are
+described in the [WEX configuration guide](https://github.com/b00t0x/WhateverXe#configuration).
 
 ## Using other OCLP root patches
 

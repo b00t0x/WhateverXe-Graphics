@@ -17,7 +17,7 @@ AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダー�
 ## 必要な構成
 
 - WEXのREADMEに記載されたWEX・OpenCore構成を使用するIntel macOS。
-- LiluとWhateverXe **0.3.0以上**。S/HX・H45系GPUには**0.5.0**、H/P/U系モバイルDisplay13 GPUには**0.6.0**が必要です。
+- Liluと最新版のWhateverXe。
 - OpenCoreから読み込む[AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip)。通常のupstream版AMFIPassでは、本資材の署名チェーンに対応できません。
 - SIP設定`csr-active-config=03080000`（値`0x803`）。本pkgはSIP全面有効化には対応していません。
 
@@ -41,14 +41,8 @@ WEXはOS・GPUへの適応処理と表示制御を担当します。本pkgはグ
 コンパイラー関連部品、およびドライバー共通サービスを提供するAppleIntelTGLCompatを含みます。
 両者のリリース番号を揃える必要はありません。
 
-Graphics 0.3.0は、従来対応GPUについてWEX 0.3.0以降が使う呼出し仕様を維持しています。
-今回のモバイルGPU・固定TC表示への対応には、WEX 0.6.0とGraphics 0.3.0が必要です。
-機種別AGDP kextやdevice-ID上書きは不要です。Sonoma〜Tahoeのシェーダーコンパイラーの
-改善は、従来対応GPUにも適用されます。
-
-実機試験は両方を更新した開発版で行っています。旧WEXとの互換性はコードとCPU上の
-呼出し仕様の試験で確認しており、その組合せでの実機回帰は追加実施していません。
-通常は両方の更新を推奨します。
+両方とも最新版を使用してください。GPU・表示に必要な設定は
+[WEXの設定ガイド](https://github.com/b00t0x/WhateverXe/blob/main/README_ja.md#設定)を参照してください。
 
 ## OCLPの他のroot patchとの併用
 

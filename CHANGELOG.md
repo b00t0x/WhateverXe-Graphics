@@ -2,7 +2,7 @@
 
 ## 0.3.0
 
-The new mobile GPU and fixed TC display support requires WEX **0.6.0**. Previously supported GPUs retain compatibility with WEX **0.3.0 or newer**; updating both components is recommended.
+Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release for the new mobile GPU and fixed TC display support.
 
 ### Added
 
@@ -11,10 +11,10 @@ The new mobile GPU and fixed TC display support requires WEX **0.6.0**. Previous
 
 ### Fixed
 
-- Use the OS-native AIR converter on Sonoma–Tahoe to support shader inputs rejected by the previous converter. Tahoe checks confirmed improved App Store scrolling and Maps rendering.
-- Accept compatible compiler updates without requiring an exact UUID match. Required API and image checks remain; incompatible inputs fail explicitly instead of falling back to the previous converter.
+- Fix shader compilation failures on Sonoma–Tahoe by using the OS-native AIR converter for inputs rejected by the previous converter. This approach was informed by the compiler adapter and LLVM bridge in [JulioNectar/Hackintosh-XPS13Plus-IrisXe-Tahoe](https://github.com/JulioNectar/Hackintosh-XPS13Plus-IrisXe-Tahoe/tree/0ad1bc5d3b9e73c918be174f791f4d739cde51e9/macos/src).
+- On Sonoma–Tahoe, accept compatible compiler updates without requiring an exact UUID match. Required API and image checks remain; incompatible inputs fail explicitly instead of falling back to the previous converter.
 
-Monterey/Ventura retain their direct compiler path; Big Sur continues to use its native compiler plugin. Sequoia App Store video hangs remain unresolved. See [WEX compatibility and known issues](https://github.com/b00t0x/WhateverXe#compatibility) for hardware coverage and limitations.
+Sequoia App Store video hangs remain unresolved. See [WEX compatibility and known issues](https://github.com/b00t0x/WhateverXe#compatibility) for hardware coverage and limitations.
 
 ## 0.2.0
 
