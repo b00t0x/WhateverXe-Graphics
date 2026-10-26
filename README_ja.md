@@ -17,7 +17,7 @@ AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダー�
 ## 必要な構成
 
 - WEXのREADMEに記載されたWEX・OpenCore構成を使用するIntel macOS。
-- LiluとWhateverXe **0.3.0以上**。今回追加したGPUには**0.5.0**が必要です。
+- LiluとWhateverXe **0.3.0以上**。S/HX・H45系GPUには**0.5.0**、H/P/U系モバイルDisplay13 GPUには**0.6.0**が必要です。
 - OpenCoreから読み込む[AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip)。通常のupstream版AMFIPassでは、本資材の署名チェーンに対応できません。
 - SIP設定`csr-active-config=03080000`（値`0x803`）。本pkgはSIP全面有効化には対応していません。
 
@@ -41,16 +41,14 @@ WEXはOS・GPUへの適応処理と表示制御を担当します。本pkgはグ
 コンパイラー関連部品、およびドライバー共通サービスを提供するAppleIntelTGLCompatを含みます。
 両者のリリース番号を揃える必要はありません。
 
-Graphics 0.2.0は、従来対応GPUについてWEX 0.3.0／0.4.0が使う呼出し仕様を維持しています。
-そのためChrome・描画の修正だけならWEX 0.5.0を必須としません。
-今回追加したGPUなど、双方の変更を使う機能にはWEX 0.5.0とGraphics 0.2.0が必要です。
-Safari更新への対応やWEX側の表示初期化修正には、新しいWEXプラグインが必要です。
+Graphics 0.3.0は、従来対応GPUについてWEX 0.3.0以降が使う呼出し仕様を維持しています。
+今回のモバイルGPU・固定TC表示への対応には、WEX 0.6.0とGraphics 0.3.0が必要です。
+機種別AGDP kextやdevice-ID上書きは不要です。Sonoma〜Tahoeのシェーダーコンパイラーの
+改善は、従来対応GPUにも適用されます。
 
-今回の実機回帰試験は両方を更新した開発版で行っています。旧WEXとの互換性はコードとCPU上の
+実機試験は両方を更新した開発版で行っています。旧WEXとの互換性はコードとCPU上の
 呼出し仕様の試験で確認しており、その組合せでの実機回帰は追加実施していません。
 通常は両方の更新を推奨します。
-
-ADL-P/RPL-PのモバイルDisplay13構成では、この資材とWEX source revision `69bfa6d`または呼出し仕様を維持する後継版を使用してください。対応Compatには対象を限定した表示policyの登録を含み、機種別AGDP kextやdevice-ID上書きは不要です。公開済みGraphics 0.2.0の資材には、このモバイル系対応は含まれていません。
 
 ## OCLPの他のroot patchとの併用
 
@@ -93,7 +91,7 @@ Xcode Command Line ToolsとPython 3.10以上を用意したmacOSで実行しま�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.3.0.pkg
 ```
 
 検証にはNode.jsと`rcodesign` 0.29.0も必要です。CIでは両方を用意します。

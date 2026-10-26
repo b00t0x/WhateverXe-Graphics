@@ -19,7 +19,7 @@ See the [changelog](CHANGELOG.md) for changes in each package version.
 ## Requirements
 
 - Intel macOS, with the WEX/OpenCore configuration described in the WEX README.
-- WhateverXe **0.3.0 or newer**, with Lilu; **0.5.0** is needed for the newly added GPUs.
+- WhateverXe **0.3.0 or newer**, with Lilu; **0.5.0** is needed for S/HX and H45 GPUs, and **0.6.0** for H/P/U mobile Display13 GPUs.
 - [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
 - SIP configuration `csr-active-config=03080000` (value `0x803`). Full SIP is not supported by this package.
 
@@ -43,18 +43,16 @@ WEX supplies the OS/GPU adaptations and display control. This package supplies
 the graphics drivers, their compiler components and AppleIntelTGLCompat, which
 provides shared driver services. The release numbers do not have to match.
 
-Graphics 0.2.0 retains the interfaces used by WEX 0.3.0/0.4.0 for previously
-supported GPUs. Its Chrome/rendering fixes can therefore be used without WEX
-0.5.0. Newly added GPUs and features that need changes on both sides require
-WEX 0.5.0 and Graphics 0.2.0. Safari-update compatibility and the WEX display
-startup fixes require the updated WEX plugin.
+Graphics 0.3.0 retains the interfaces used by WEX 0.3.0 and newer for previously
+supported GPUs. The new mobile GPU and fixed TC display support requires WEX
+0.6.0 and Graphics 0.3.0. No machine-specific AGDP kext or device-ID override
+is required. The shader-compiler improvements also apply to previously
+supported GPUs on Sonoma–Tahoe.
 
-Hardware regression testing for this release used updated development versions
-of both components. Compatibility
-with older WEX versions was checked in code and with CPU interface tests, not
-with a new full hardware regression run. Updating both is recommended.
-
-For ADL-P/RPL-P mobile Display13 hardware, use WEX source revision `69bfa6d` or a compatible successor with these payloads. The matching Compat provider includes scoped graphics-policy registration; no machine-specific AGDP kext or device-ID override is required. The published Graphics 0.2.0 payloads do not contain this mobile support.
+Hardware testing used updated development versions of both components.
+Compatibility with older WEX versions was checked in code and with CPU
+interface tests, not with a new full hardware regression run. Updating both
+components is recommended.
 
 ## Using other OCLP root patches
 
@@ -100,7 +98,7 @@ On macOS with Xcode Command Line Tools and Python 3.10 or newer:
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.3.0.pkg
 ```
 
 The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder
