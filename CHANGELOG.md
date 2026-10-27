@@ -2,8 +2,17 @@
 
 ## 0.3.1
 
-- Fix installation and AuxKC rebuild failures caused by the AppleIntelTGLCompat compatibility declaration in 0.3.0. Restore acceptance of the 0.5.0 dependency requested by the bundled framebuffer drivers on all supported macOS versions.
-- Validate bundled kext dependency version ranges in both source payloads and extracted packages.
+### Packaging correction
+
+- Correct the AppleIntelTGLCompat dependency metadata that prevented installation of 0.3.0.
+
+### Changes carried over from 0.3.0
+
+- Add graphics payloads for Alder Lake-H/P/U and Raptor Lake-H/P/U, with the updated Compat provider for fixed HDMI/DisplayPort support. Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases).
+- Fix shader compilation failures on Sonoma–Tahoe using the OS-native AIR converter, based on work in [JulioNectar/Hackintosh-XPS13Plus-IrisXe-Tahoe](https://github.com/JulioNectar/Hackintosh-XPS13Plus-IrisXe-Tahoe/tree/0ad1bc5d3b9e73c918be174f791f4d739cde51e9/macos/src).
+- Accept compatible compiler updates on Sonoma–Tahoe without requiring an exact UUID match; retain API and image checks and remove the previous converter fallback.
+
+See [WEX compatibility and known issues](https://github.com/b00t0x/WhateverXe#compatibility) for remaining limitations.
 
 ## 0.3.0
 
