@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2
+
+- Fix OpenGL texture updates and missing geometry for the measured six-bank VS-only and VS/GS URB layouts on Big Sur–Tahoe. Handle all four measured layouts in one rule set while preserving the four/eight-bank corrections.
+- Update AppleIntelTGLCompat to 0.6.1 for the experimental panel path in WEX 0.6.1, retaining the 0.5.0 compatibility floor. No GPU IDs are added.
+- Reject incompatible payload dependencies before packaging.
+
 ## 0.3.1
 
 ### Packaging correction

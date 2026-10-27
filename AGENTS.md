@@ -7,9 +7,9 @@ Keep README.md and README_ja.md synchronized. General GPU/OS compatibility and
 known issues belong in WhateverXe; this repository documents package use/builds.
 Keep public project knowledge here, with source provenance in docs/SOURCES.md.
 Public documentation describes usage, requirements, builds and source provenance.
-Keep unpublished implementation plans, release-preparation status, internal
-validation progress, host details and test captures outside this repository,
-including while the repository is private.
+Keep maintainer release procedures, unpublished implementation plans,
+release-preparation status, internal validation progress, host details and test
+captures outside this repository, including while the repository is private.
 
 README describes the current state, not release-by-release changes. Recommend
 latest component releases instead of accumulating per-version dependency tables.
@@ -20,6 +20,11 @@ when their work informed a change.
 
 Build: python3 tools/build.py
 Test: python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+
+Dependency checks must pass before packaging and against the extracted pkg for
+every supported OS. Signature/hash checks do not establish dependency compatibility.
+Keep packaging corrections brief in PRs and CHANGELOG; separate carried-over
+changes from the correction itself.
 
 Preserve signed payloads exactly unless deliberately updating and requalifying
 an asset. Never sign original Apple compiler backends again. Keep signed bundles

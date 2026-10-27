@@ -6,7 +6,7 @@ import json
 import plistlib
 import subprocess
 from pathlib import Path
-from kext_dependencies import check_dependencies
+from kext_dependencies import check_payload_sets
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD_LEAF = '6de7fc5377deac4f5fe21194684f57f553c3592c'
@@ -23,10 +23,7 @@ def main():
     parser.add_argument('--rcodesign', default='rcodesign')
     args = parser.parse_args()
     policy = json.loads((ROOT / 'tools/policy.json').read_text())
-    common = list((ROOT / 'payloads/Common/Library/Extensions').glob('*.kext/Contents/Info.plist'))
-    for system in policy['systems']:
-        clients = list((ROOT / 'payloads' / system['payload'] / 'Library/Extensions').glob('*.kext/Contents/Info.plist'))
-        assert check_dependencies(common + clients, system['name']) > 0
+    check_payload_sets(ROOT / 'payloads', policy['systems'])
     seen = set()
     for path in sorted((ROOT / 'payloads').rglob('*')):
         assert not path.is_symlink(), path
@@ -72,6 +69,8 @@ def main():
         assert hashlib.sha256(plistlib.dumps(info['IOKitPersonalities'])).hexdigest() == entry['policy_source_sha256'], os
     adapter = ROOT / 'payloads/Common/Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib'
     assert hashlib.sha256(adapter.read_bytes()).hexdigest() == expected['compiler_adapter']['sha256']
+    gl = ROOT / 'payloads/Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver'
+    assert hashlib.sha256(gl.read_bytes()).hexdigest() == expected['gl_driver']['sha256']
     extra = ROOT / 'extras/AMFIPass-v1.4.1-Mod-RELEASE.zip'
     assert hashlib.sha256(extra.read_bytes()).hexdigest() == expected['amfipass_sha256']
     print(f'PASS: {len(seen)} unique signed Mach-O files, bundle seals, provider provenance and AMFIPass archive')

@@ -33,3 +33,11 @@ def check_dependencies(plists, label):
                                  f'outside provider compatibility range {compatible}–{current}')
             checked += 1
     return checked
+
+
+def check_payload_sets(payloads, systems):
+    common = list((payloads / 'Common/Library/Extensions').rglob('*.kext/Contents/Info.plist'))
+    for system in systems:
+        clients = list((payloads / system['payload'] / 'Library/Extensions').rglob('*.kext/Contents/Info.plist'))
+        if not check_dependencies(common + clients, system['name']):
+            raise ValueError(f"{system['name']}: no bundled kext dependencies checked")
