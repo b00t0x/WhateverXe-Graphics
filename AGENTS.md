@@ -21,6 +21,12 @@ when their work informed a change.
 Build: python3 tools/build.py
 Test: python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
 
+Follow [release checks](docs/releasing.md) after finalizing versions and payloads.
+Dependency checks must pass before packaging and against the extracted pkg for
+every supported OS. Signature/hash checks do not establish dependency compatibility.
+Keep packaging corrections brief in PRs and CHANGELOG; separate carried-over
+changes from the correction itself.
+
 Preserve signed payloads exactly unless deliberately updating and requalifying
 an asset. Never sign original Apple compiler backends again. Keep signed bundles
 whole. No keys, credentials, Apple original input caches or generated packages

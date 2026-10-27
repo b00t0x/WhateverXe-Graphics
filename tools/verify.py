@@ -6,7 +6,7 @@ import json
 import plistlib
 import subprocess
 from pathlib import Path
-from kext_dependencies import check_dependencies
+from kext_dependencies import check_payload_sets
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD_LEAF = '6de7fc5377deac4f5fe21194684f57f553c3592c'
@@ -23,10 +23,7 @@ def main():
     parser.add_argument('--rcodesign', default='rcodesign')
     args = parser.parse_args()
     policy = json.loads((ROOT / 'tools/policy.json').read_text())
-    common = list((ROOT / 'payloads/Common/Library/Extensions').glob('*.kext/Contents/Info.plist'))
-    for system in policy['systems']:
-        clients = list((ROOT / 'payloads' / system['payload'] / 'Library/Extensions').glob('*.kext/Contents/Info.plist'))
-        assert check_dependencies(common + clients, system['name']) > 0
+    check_payload_sets(ROOT / 'payloads', policy['systems'])
     seen = set()
     for path in sorted((ROOT / 'payloads').rglob('*')):
         assert not path.is_symlink(), path

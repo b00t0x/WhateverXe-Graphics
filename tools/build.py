@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from kext_dependencies import check_payload_sets
 
 HERE = Path(__file__).resolve().parent
 PREFIX = 'org.b00t0x.WhateverXe'
@@ -31,6 +32,8 @@ def main():
     args = parser.parse_args()
     policy = json.loads((HERE / 'policy.json').read_text())
     assert not args.tag or args.tag == 'v' + policy['package_version'], 'tag/version mismatch'
+    # Reject incompatible payloads before creating any package or output directory.
+    check_payload_sets(ROOT / 'payloads', policy['systems'])
     components, sources = {}, {}
     for name in ['Common'] + [s['payload'] for s in policy['systems']]:
         directory = ROOT / 'payloads' / name
