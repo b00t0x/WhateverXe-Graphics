@@ -69,6 +69,8 @@ def main():
         assert hashlib.sha256(plistlib.dumps(info['IOKitPersonalities'])).hexdigest() == entry['policy_source_sha256'], os
     adapter = ROOT / 'payloads/Common/Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib'
     assert hashlib.sha256(adapter.read_bytes()).hexdigest() == expected['compiler_adapter']['sha256']
+    gl = ROOT / 'payloads/Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver'
+    assert hashlib.sha256(gl.read_bytes()).hexdigest() == expected['gl_driver']['sha256']
     extra = ROOT / 'extras/AMFIPass-v1.4.1-Mod-RELEASE.zip'
     assert hashlib.sha256(extra.read_bytes()).hexdigest() == expected['amfipass_sha256']
     print(f'PASS: {len(seen)} unique signed Mach-O files, bundle seals, provider provenance and AMFIPass archive')
