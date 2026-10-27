@@ -22,8 +22,8 @@
     "legacy_path": "Direct compiler input on Darwin 21–22; not used on Darwin 20"
   },
   "gl_driver": {
-    "sha256": "7d0222635fad28c866f9190506e682d998f43b8f0594bb517c8b41dfe118a0dd",
+    "sha256": "404b85e5b547fd9486bf8f10e8f55244708bff06d21d0a3091a0e159c74e63bb",
     "predecessor_sha256": "a1d8cc1863a2813ab54f5db84c197a9a1c3bc80796d2402563b6aa3e159da5f6",
-    "urb_corrections": "Preserve four/eight-bank VS rules; add measured six-bank VS-only and VS/GS layouts ending at 360 KiB."
+    "urb_corrections": "One exact-layout rule set for four/six/eight-bank VS-only and six-bank VS/GS allocations; no chained handlers."
   }
 }
