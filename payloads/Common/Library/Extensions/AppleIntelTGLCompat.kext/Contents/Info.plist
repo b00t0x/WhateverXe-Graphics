@@ -50,7 +50,7 @@
 		</dict>
 	</dict>
 	<key>OSBundleCompatibleVersion</key>
-	<string>0.6.0</string>
+	<string>0.5.0</string>
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.iokit.IOPCIFamily</key>

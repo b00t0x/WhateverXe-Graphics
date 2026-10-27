@@ -6,6 +6,7 @@ import json
 import plistlib
 import subprocess
 from pathlib import Path
+from kext_dependencies import check_dependencies
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD_LEAF = '6de7fc5377deac4f5fe21194684f57f553c3592c'
@@ -21,6 +22,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--rcodesign', default='rcodesign')
     args = parser.parse_args()
+    policy = json.loads((ROOT / 'tools/policy.json').read_text())
+    common = list((ROOT / 'payloads/Common/Library/Extensions').glob('*.kext/Contents/Info.plist'))
+    for system in policy['systems']:
+        clients = list((ROOT / 'payloads' / system['payload'] / 'Library/Extensions').glob('*.kext/Contents/Info.plist'))
+        assert check_dependencies(common + clients, system['name']) > 0
     seen = set()
     for path in sorted((ROOT / 'payloads').rglob('*')):
         assert not path.is_symlink(), path
@@ -61,6 +67,8 @@ def main():
         path = ROOT / 'payloads' / os / 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
         assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], os
         info = plistlib.loads((path.parent.parent / 'Info.plist').read_bytes())
+        assert info['CFBundleVersion'] == entry['version']
+        assert info['OSBundleCompatibleVersion'] == entry['compatible_version']
         assert hashlib.sha256(plistlib.dumps(info['IOKitPersonalities'])).hexdigest() == entry['policy_source_sha256'], os
     adapter = ROOT / 'payloads/Common/Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib'
     assert hashlib.sha256(adapter.read_bytes()).hexdigest() == expected['compiler_adapter']['sha256']

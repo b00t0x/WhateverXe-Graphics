@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Fix installation and AuxKC rebuild failures caused by the AppleIntelTGLCompat compatibility declaration in 0.3.0. Restore acceptance of the 0.5.0 dependency requested by the bundled framebuffer drivers on all supported macOS versions.
+- Validate bundled kext dependency version ranges in both source payloads and extracted packages.
+
 ## 0.3.0
 
 Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release for the new mobile GPU and fixed TC display support.

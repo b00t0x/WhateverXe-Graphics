@@ -19,7 +19,7 @@ for validation are not the scope of a general fix. Credit reference repositories
 when their work informed a change.
 
 Build: python3 tools/build.py
-Test: python3 tools/test.py dist/WhateverXe-Graphics-0.2.0.pkg
+Test: python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
 
 Preserve signed payloads exactly unless deliberately updating and requalifying
 an asset. Never sign original Apple compiler backends again. Keep signed bundles
