@@ -20,5 +20,10 @@
     "sha256": "11609123ce5b930aee500736f8bd504cd0280c37654f8e9f353fcc9fc876aff0",
     "modern_path": "OS-native AIR-v4 on Darwin 23–25; API and image checks without UUID pinning or translator fallback",
     "legacy_path": "Direct compiler input on Darwin 21–22; not used on Darwin 20"
+  },
+  "gl_driver": {
+    "sha256": "7d0222635fad28c866f9190506e682d998f43b8f0594bb517c8b41dfe118a0dd",
+    "predecessor_sha256": "a1d8cc1863a2813ab54f5db84c197a9a1c3bc80796d2402563b6aa3e159da5f6",
+    "urb_corrections": "Preserve four/eight-bank VS rules; add measured six-bank VS-only and VS/GS layouts ending at 360 KiB."
   }
 }

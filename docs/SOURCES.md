@@ -33,6 +33,11 @@ The provider release version is independent of this ABI compatibility floor.
 directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
 units. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
 backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
+The common GL payload also limits the measured six-bank VS-only and VS/GS URB
+layouts to an end address of 360 KiB, preserving its existing four/eight-bank
+VS corrections. The signed executable and predecessor hashes are recorded in
+`payload-provenance.json`.
+
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
 

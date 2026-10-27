@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fix OpenGL texture updates and missing geometry for the measured six-bank VS-only and VS/GS URB layouts on Big Sur–Tahoe. Preserve the existing four/eight-bank corrections.
+
 ## 0.3.1
 
 ### Packaging correction
