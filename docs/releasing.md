@@ -29,3 +29,11 @@
 Any version, metadata, payload or installer change after validation invalidates
 the corresponding result. Repeat those checks before publication. Keep release
 approval separate from CI success.
+
+For the optional AutoPkg, also run `tools/test.py dist/autopkg/AutoPkg-Assets.pkg`.
+Its hardware check must use a fresh macOS installation through AutoPkgInstaller,
+not a manual pkg invocation. Confirm that the Common/OS receipts are visible to
+the final component, AuxKC is loaded after one additional reboot, Setup Assistant
+has acceleration, and package execution does not repeat on the next boot.
+Qualify Tahoe separately with the upstream kext's beta argument. CI keeps this
+pkg in a separate artifact; the tag release job publishes the normal pkg only.

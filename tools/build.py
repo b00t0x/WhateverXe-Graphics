@@ -27,8 +27,10 @@ def shell_script(path, body):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT / 'dist')
+    parser.add_argument('--output', type=Path)
     parser.add_argument('--tag', default='')
+    parser.add_argument('--autopkg', action='store_true',
+                        help='build AutoPkg-Assets.pkg for fresh macOS installs before Setup Assistant')
     args = parser.parse_args()
     policy = json.loads((HERE / 'policy.json').read_text())
     assert not args.tag or args.tag == 'v' + policy['package_version'], 'tag/version mismatch'
@@ -56,9 +58,10 @@ def main():
         name = system['payload']
         assert not (components['Common'].keys() & components[name].keys()), name
         manifests[name] = components['Common'] | components[name]
-    output = args.output.resolve()
+    output = (args.output or (ROOT / 'dist' / 'autopkg' if args.autopkg else ROOT / 'dist')).resolve()
     output.mkdir(parents=True, exist_ok=True)
     version = policy['package_version']
+    auto_guard = (HERE / 'autopkg-preinstall.sh').read_text() if args.autopkg else ''
     with tempfile.TemporaryDirectory(prefix='xe-pkg-') as tmp:
         work = Path(tmp)
         for name, files in components.items():
@@ -71,7 +74,7 @@ def main():
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(Path(sources[info['sha256']]).read_bytes())
                 target.chmod(info['mode'])
-            shell_script(scripts / 'preinstall', (HERE / 'preinstall.sh').read_text())
+            shell_script(scripts / 'preinstall', auto_guard + (HERE / 'preinstall.sh').read_text())
             if name != 'Common':
                 shell_script(scripts / 'postinstall',
                              (HERE / 'auxkc.sh').read_text() + '\n' +
@@ -91,38 +94,57 @@ def main():
                 '--component-plist', str(component_plist), '--ownership', 'recommended',
                 '--identifier', PREFIX + '.' + component_id, '--version', version,
                 '--scripts', str(scripts), str(work / (component_id + '.pkg')))
+        if args.autopkg:
+            # The payload components keep their normal receipts. Only this final,
+            # payload-free component can interrupt its own receipt with a reboot.
+            scripts = work / 'AutoRestart' / 'scripts'
+            scripts.mkdir(parents=True)
+            shell_script(scripts / 'preinstall', auto_guard)
+            cases = '\n'.join(f"    {s['major']}) component={s['payload'].replace(' ', '')} ;;"
+                              for s in policy['systems'])
+            reboot = (HERE / 'autopkg-reboot.sh').read_text().replace('@OS_RECEIPTS@', cases)
+            shell_script(scripts / 'postinstall', auto_guard +
+                         f"expected_version='{version}'\n" + reboot)
+            run('pkgbuild', '--nopayload', '--identifier', PREFIX + '.AutoRestart',
+                '--version', version, '--scripts', str(scripts), str(work / 'AutoRestart.pkg'))
         dist = ET.Element('installer-gui-script', minSpecVersion='2')
-        ET.SubElement(dist, 'title').text = 'WhateverXe Graphics'
+        ET.SubElement(dist, 'title').text = ('WhateverXe Graphics — Automatic Installation'
+                                            if args.autopkg else 'WhateverXe Graphics')
         ET.SubElement(dist, 'options', customize='never', rootVolumeOnly='true', hostArchitectures='x86_64')
         ET.SubElement(dist, 'domains', enable_anywhere='false', enable_currentUserHome='false', enable_localSystem='true')
         ranges = ET.SubElement(ET.SubElement(dist, 'volume-check', script='true'), 'allowed-os-versions')
         for system in policy['systems']:
             ET.SubElement(ranges, 'os-version', min=system['minimum'], before=system['before'])
         outline = ET.SubElement(dist, 'choices-outline')
-        for name in components:
+        for name in list(components) + (['AutoRestart'] if args.autopkg else []):
             component_id = name.replace(' ', '')
             ET.SubElement(outline, 'line', choice=component_id)
             selected = 'true'
-            if name != 'Common':
+            if name not in ('Common', 'AutoRestart'):
                 s = next(s for s in policy['systems'] if s['payload'] == name)
                 selected = (f"system.compareVersions(system.version.ProductVersion, '{s['minimum']}') >= 0 && "
                             f"system.compareVersions(system.version.ProductVersion, '{s['before']}') < 0")
             choice = ET.SubElement(dist, 'choice', id=component_id, title=name, visible='false', enabled='false', selected=selected)
             ET.SubElement(choice, 'pkg-ref', id=PREFIX + '.' + component_id)
-            ET.SubElement(dist, 'pkg-ref', id=PREFIX + '.' + component_id, version=version,
-                          onConclusion='RequireRestart').text = component_id + '.pkg'
+            ref = ET.SubElement(dist, 'pkg-ref', id=PREFIX + '.' + component_id, version=version)
+            if not args.autopkg:
+                ref.set('onConclusion', 'RequireRestart')
+            ref.text = component_id + '.pkg'
         ET.indent(dist)
         distribution = work / 'Distribution'
         ET.ElementTree(dist).write(distribution, encoding='utf-8', xml_declaration=True)
-        package = output / f'WhateverXe-Graphics-{version}.pkg'
+        package = output / ('AutoPkg-Assets.pkg' if args.autopkg else f'WhateverXe-Graphics-{version}.pkg')
         run('productbuild', '--distribution', str(distribution), '--package-path', str(work), str(package))
         shutil.copyfile(distribution, output / 'Distribution.xml')
     # Development provenance stays outside the installer and installed system.
-    (output / 'manifest.json').write_text(json.dumps({'policy': policy, 'systems': manifests}, indent=2) + '\n')
+    manifest = {'policy': policy, 'systems': manifests}
+    if args.autopkg:
+        manifest['autopkg'] = True
+    (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     digest = hashlib.sha256(package.read_bytes()).hexdigest()
     (output / 'SHA256SUMS').write_text(digest + '  ' + package.name + '\n')
     print(json.dumps({'package': package.name, 'bytes': package.stat().st_size,
-                      'components': len(components), 'sha256': digest}))
+                      'components': len(components) + int(args.autopkg), 'sha256': digest}))
 
 
 if __name__ == '__main__':

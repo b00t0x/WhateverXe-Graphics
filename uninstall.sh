@@ -40,7 +40,7 @@ if [ -f "$feature" ] && /usr/libexec/PlistBuddy -c 'Print :AllowOnePassMetalScal
     /usr/libexec/PlistBuddy -c 'Delete :AllowOnePassMetalScaling:Enabled' "$feature"
 fi
 update_auxkc
-for component in Common BigSur Monterey Ventura Sonoma Sequoia Tahoe; do
+for component in Common BigSur Monterey Ventura Sonoma Sequoia Tahoe AutoRestart; do
     id="org.b00t0x.WhateverXe.$component"
     if /usr/sbin/pkgutil --pkg-info "$id" >/dev/null 2>&1; then
         /usr/sbin/pkgutil --forget "$id"

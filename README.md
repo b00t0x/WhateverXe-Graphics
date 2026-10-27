@@ -67,6 +67,31 @@ boot arguments or SIP. The pkg container is unsigned and not notarized; the
 modified payloads carry the Mod code signature. If installation reports an
 error, resolve it and reinstall before restarting.
 
+## Automatic installation before Setup Assistant (experimental)
+
+An optional `AutoPkg-Assets.pkg` installs the same Graphics payloads during a
+fresh macOS installation and explicitly restarts after AuxKC is built. It uses
+OCLP's [AutoPkgInstaller.kext](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera);
+the OCLP application is not included or required. This mode requires validation
+on a test installation before relying on it for first-boot graphics.
+
+1. Prepare a USB macOS installer whose version meets the requirements above.
+2. Add upstream AutoPkgInstaller 1.0.4 to OpenCore alongside Lilu, WEX and the
+   **Mod** AMFIPass. AutoPkgInstaller 1.0.4 requires `-autopkgbeta` for Tahoe;
+   that flag bypasses its OS-version limit, not a guarantee of compatibility.
+3. Build with `python3 tools/build.py --autopkg` and copy
+   `dist/autopkg/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root.
+   Keep that exact filename. Do not replace it with the upstream OCLP package.
+4. Install macOS normally. Graphics installation and an additional restart
+   take place before Setup Assistant; the initial USB installer UI is unchanged.
+
+Never open this pkg manually. It rejects configured systems and non-running
+target volumes. In-place upgrades, Software Update/OTA, and combining WEX and
+OCLP AutoPkg assets on the same USB are outside this mode's scope. KDK.pkg and
+MetallibSupportPkg.pkg are not needed by the WEX payload. Inspect
+`/var/log/install.log` if installation fails; failure does not request a reboot.
+The payloads keep their normal receipts and use the same uninstaller below.
+
 ## Uninstall
 
 Download the current [`uninstall.sh`](uninstall.sh) from this repository, then run:
@@ -91,6 +116,13 @@ On macOS with Xcode Command Line Tools and Python 3.10 or newer:
 ```sh
 python3 tools/build.py
 python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+```
+
+To build and verify the optional automatic-installation pkg:
+
+```sh
+python3 tools/build.py --autopkg
+python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
 ```
 
 The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder

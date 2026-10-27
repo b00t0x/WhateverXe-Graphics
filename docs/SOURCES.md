@@ -69,6 +69,23 @@ for CMS/signature checks, alongside Apple's `codesign`. The Mod chain need not
 be trusted by the build host. Signing happens before an asset is imported here;
 there are no signing secrets in Actions.
 
+## Installer-time package chainloading
+
+The optional AutoPkg build uses the additional-package entry point described in
+[OCLP PR #986](https://github.com/dortania/OpenCore-Legacy-Patcher/pull/986).
+Upstream [AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip)
+registers the fixed `Library/Packages/AutoPkg-Assets.pkg` path during Installer
+boot. The ZIP checked on 2026-10-27 has SHA-256
+`91368c6e37002d19f5b8f39a6746790b8f73fc17a80fb27ab78d9ae743725745`.
+The kext is obtained separately; this repository does not redistribute it.
+Its plugin accepts Darwin 20–24 by default and provides `-autopkgbeta`.
+
+The Graphics AutoPkg contains the existing signed payloads and native shell
+scripts. It does not embed OCLP, its patch-selection engine or support DMGs.
+The explicit final reboot follows OCLP's approach, with payload components
+completed and their receipts checked before the separate reboot component.
+No OCLP application source is copied into this package.
+
 ## Repository utilities and package releases
 
 The committed [`uninstall.sh`](../uninstall.sh) runs on its own and is maintained

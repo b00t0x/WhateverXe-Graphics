@@ -18,6 +18,7 @@ subprocess.run([sys.executable, str(Path(__file__).with_name('test_uninstall.py'
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_dependencies.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('verify.py')), '--rcodesign', args.rcodesign], check=True)
 manifest = json.loads((args.package.parent / 'manifest.json').read_text())
+autopkg = manifest.get('autopkg', False)
 assert (args.package.parent / 'SHA256SUMS').read_text() == (
     hashlib.sha256(args.package.read_bytes()).hexdigest() + '  ' + args.package.name + '\n')
 cases = {
@@ -35,6 +36,20 @@ with tempfile.TemporaryDirectory(prefix='xe-pkg-test-') as tmp:
     ranges = [(x.attrib['min'], x.attrib['before']) for x in distribution.findall('./volume-check/allowed-os-versions/os-version')]
     assert ranges == [(s['minimum'], s['before']) for s in manifest['policy']['systems']]
     choices = {x.attrib['title']: x.attrib['selected'] for x in distribution.findall('choice')}
+    payload_choices = {name: expr for name, expr in choices.items() if name != 'AutoRestart'}
+    order = [x.attrib['choice'] for x in distribution.findall('./choices-outline/line')]
+    expected_order = ['Common'] + [s['payload'].replace(' ', '') for s in manifest['policy']['systems']]
+    assert order == expected_order + (['AutoRestart'] if autopkg else [])
+    # productbuild adds a second pkg-ref per identifier for bundle metadata.
+    refs = [x for x in distribution.findall('pkg-ref') if (x.text or '').strip().startswith('#')]
+    assert len(refs) == len(order)
+    assert all(x.attrib.get('onConclusion') == (None if autopkg else 'RequireRestart')
+               for x in refs)
+    if autopkg:
+        assert args.package.name == 'AutoPkg-Assets.pkg'
+        assert choices['AutoRestart'] == 'true'
+        from test_autopkg import check_autopkg
+        check_autopkg(root, manifest['policy'])
     # Exercise the actual generated expressions with numeric compareVersions semantics.
     js = '''const input = JSON.parse(process.argv[1]);
 const system = {version: {}, compareVersions(a, b) {
@@ -49,9 +64,9 @@ for (const [version, expected] of Object.entries(input.cases)) {
   if(JSON.stringify(actual)!==JSON.stringify(expected ? [expected] : [])) throw new Error(version);
 }
 '''
-    subprocess.run(['node', '-e', js, json.dumps({'choices': choices, 'cases': cases})], check=True)
+    subprocess.run(['node', '-e', js, json.dumps({'choices': payload_choices, 'cases': cases})], check=True)
     payloads = {}
-    for name in choices:
+    for name in payload_choices:
         component = root / (name.replace(' ', '') + '.pkg')
         assert (component / 'Bom').is_file()
         info = ET.parse(component / 'PackageInfo').getroot()
@@ -69,6 +84,17 @@ for (const [version, expected] of Object.entries(input.cases)) {
         assert {p.name for p in scripts.iterdir()} == ({'preinstall'} if name == 'Common' else {'preinstall', 'postinstall'})
         for script in scripts.iterdir():
             subprocess.run(['bash', '-n', str(script)], check=True)
+            assert '/sbin/reboot' not in script.read_text()
+        source = Path(__file__).parent
+        preinstall = (scripts / 'preinstall').read_text()
+        assert preinstall.endswith((source / 'preinstall.sh').read_text())
+        if autopkg:
+            assert (source / 'autopkg-preinstall.sh').read_text() in preinstall
+        else:
+            assert 'AutoPkg' not in preinstall
+        if name != 'Common':
+            assert (scripts / 'postinstall').read_text().endswith(
+                (source / 'auxkc.sh').read_text() + '\n' + (source / 'postinstall.sh').read_text())
     total = 0
     provider = 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
     assert choices['Common'] == 'true'
@@ -87,4 +113,4 @@ for (const [version, expected] of Object.entries(input.cases)) {
             assert p.stat().st_mode & 0o777 == expected[rel]['mode'], rel
         total += len(actual)
     subprocess.run(['bash', '-n', str(Path(__file__).resolve().parents[1] / 'uninstall.sh')], check=True)
-print(f'PASS: {len(cases)} version boundaries, 7 standard payloads/BOMs, {total} reconstructed files, script syntax')
+print(f'PASS: {len(cases)} version boundaries, 7 standard payloads/BOMs, {total} reconstructed files, script syntax; autopkg={autopkg}')
