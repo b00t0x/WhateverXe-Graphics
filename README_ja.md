@@ -85,7 +85,7 @@ Xcode Command Line ToolsとPython 3.10以上を用意したmacOSで実行しま�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
 ```
 
 検証にはNode.jsと`rcodesign` 0.29.0も必要です。CIでは両方を用意します。

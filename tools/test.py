@@ -8,12 +8,14 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from kext_dependencies import check_dependencies
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('package', type=Path)
 parser.add_argument('--rcodesign', default='rcodesign')
 args = parser.parse_args()
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_uninstall.py'))], check=True)
+subprocess.run([sys.executable, str(Path(__file__).with_name('test_dependencies.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('verify.py')), '--rcodesign', args.rcodesign], check=True)
 manifest = json.loads((args.package.parent / 'manifest.json').read_text())
 assert (args.package.parent / 'SHA256SUMS').read_text() == (
@@ -76,6 +78,8 @@ for (const [version, expected] of Object.entries(input.cases)) {
         assert not (payloads['Common'].keys() & payloads[build].keys())
         actual = payloads['Common'] | payloads[build]
         assert actual.keys() == expected.keys()
+        plists = [p for rel, p in actual.items() if rel.startswith('Library/Extensions/') and rel.endswith('.kext/Contents/Info.plist')]
+        assert check_dependencies(plists, build) > 0
         for rel, p in actual.items():
             data = p.read_bytes()
             assert hashlib.sha256(data).hexdigest() == expected[rel]['sha256'], rel

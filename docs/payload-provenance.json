@@ -2,15 +2,16 @@
   "provider_source_repository": "https://github.com/b00t0x/WhateverXe",
   "providers": {
     "Common": {
-      "source_commit": "919e9af08258cfe8ffde1e47b952155381ec30db",
+      "source_commit": "5ea5f002db9dc53ea72d6ec1f3722d4ed4adbe39",
       "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
       "source_file_sha256": "42288d2c53f1a8df67307ef35f67477906d79c197d0b3c65a6700c86dec660dc",
       "version": "0.6.0",
       "configuration": "RELEASE",
       "build_command": "python3 tools/build.py --release",
-      "sha256": "d713c30fd1144cb4acfbca2c72118d22eb6f6ae99d2055e3dbc626d9898509e3",
+      "sha256": "62aa75c694ca633cfe0b24e7a75c713bccd2aabb568d125a7e24205361998830",
       "policy_source_file": "AppleIntelTGLCompat/GraphicsPolicy.plist",
-      "policy_source_sha256": "dd9555491052208445abbd9daa96dd0a9dd4e5e71b1e6a14355224199cfb17eb"
+      "policy_source_sha256": "dd9555491052208445abbd9daa96dd0a9dd4e5e71b1e6a14355224199cfb17eb",
+      "compatible_version": "0.5.0"
     }
   },
   "amfipass_sha256": "71f41de42e355d2a83e6f093ef34a5b24d0a9c9a9085830b2317f1b874f56250",

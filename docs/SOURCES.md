@@ -10,7 +10,7 @@ for this repository.
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
 use one RELEASE build of AppleIntelTGLCompat 0.6.0 from WEX commit
-[`919e9af`](https://github.com/b00t0x/WhateverXe/tree/919e9af08258cfe8ffde1e47b952155381ec30db/AppleIntelTGLCompat).
+[`5ea5f00`](https://github.com/b00t0x/WhateverXe/tree/5ea5f002db9dc53ea72d6ec1f3722d4ed4adbe39/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -24,6 +24,8 @@ revision, build configuration, source file hash and final signed executable hash
 The build strips debug maps before signing. These source references do not promise
 byte-identical rebuilding with a different compiler or signing invocation.
 The provider source and its shared headers belong to the same WEX revision.
+Its compatibility floor is 0.5.0, matching the bundled framebuffer dependency.
+The provider release version is independent of this ABI compatibility floor.
 
 ## Graphics and compiler payloads
 

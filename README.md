@@ -90,7 +90,7 @@ On macOS with Xcode Command Line Tools and Python 3.10 or newer:
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
 ```
 
 The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder
