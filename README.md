@@ -100,4 +100,3 @@ fetch Apple originals, patch binaries or use signing keys. Output goes to
 
 [Source and signing information](docs/SOURCES.md). The license for the packaging
 tools does not relicense the third-party payloads; see [notices](THIRD_PARTY.md).
-Maintainers: [release checks](docs/releasing.md).
