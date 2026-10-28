@@ -9,8 +9,8 @@ for this repository.
 
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
-use one RELEASE build of AppleIntelTGLCompat 0.6.0 from WEX commit
-[`5ea5f00`](https://github.com/b00t0x/WhateverXe/tree/5ea5f002db9dc53ea72d6ec1f3722d4ed4adbe39/AppleIntelTGLCompat).
+use one RELEASE build of AppleIntelTGLCompat 0.6.1 from WEX commit
+[`eb3a2e2`](https://github.com/b00t0x/WhateverXe/tree/eb3a2e24cd55120a0aa3c1c650750bb9c09820c6/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -33,6 +33,11 @@ The provider release version is independent of this ABI compatibility floor.
 directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
 units. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
 backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
+The common GL payload uses one set of exact-layout URB rules for four/six/eight-bank
+VS-only and six-bank VS/GS allocations. The four-bank VS allocation ends at
+160 KiB; the other measured layouts end at 360 KiB. The signed executable and predecessor hashes are recorded in
+`payload-provenance.json`.
+
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
 

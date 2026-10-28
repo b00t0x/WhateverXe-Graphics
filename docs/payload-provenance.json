@@ -2,13 +2,13 @@
   "provider_source_repository": "https://github.com/b00t0x/WhateverXe",
   "providers": {
     "Common": {
-      "source_commit": "5ea5f002db9dc53ea72d6ec1f3722d4ed4adbe39",
+      "source_commit": "eb3a2e24cd55120a0aa3c1c650750bb9c09820c6",
       "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
-      "source_file_sha256": "42288d2c53f1a8df67307ef35f67477906d79c197d0b3c65a6700c86dec660dc",
-      "version": "0.6.0",
+      "source_file_sha256": "0098339f3fec98209769b4b9f28db5fff325b981dac2c7331693be30af652248",
+      "version": "0.6.1",
       "configuration": "RELEASE",
       "build_command": "python3 tools/build.py --release",
-      "sha256": "62aa75c694ca633cfe0b24e7a75c713bccd2aabb568d125a7e24205361998830",
+      "sha256": "dd2e222d47a857de809c6036316a0db07c257a67aea8ad54e47c09908f176b9c",
       "policy_source_file": "AppleIntelTGLCompat/GraphicsPolicy.plist",
       "policy_source_sha256": "dd9555491052208445abbd9daa96dd0a9dd4e5e71b1e6a14355224199cfb17eb",
       "compatible_version": "0.5.0"
@@ -20,5 +20,10 @@
     "sha256": "11609123ce5b930aee500736f8bd504cd0280c37654f8e9f353fcc9fc876aff0",
     "modern_path": "OS-native AIR-v4 on Darwin 23–25; API and image checks without UUID pinning or translator fallback",
     "legacy_path": "Direct compiler input on Darwin 21–22; not used on Darwin 20"
+  },
+  "gl_driver": {
+    "sha256": "404b85e5b547fd9486bf8f10e8f55244708bff06d21d0a3091a0e159c74e63bb",
+    "predecessor_sha256": "a1d8cc1863a2813ab54f5db84c197a9a1c3bc80796d2402563b6aa3e159da5f6",
+    "urb_corrections": "One exact-layout rule set for four/six/eight-bank VS-only and six-bank VS/GS allocations; no chained handlers."
   }
 }

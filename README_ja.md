@@ -106,7 +106,7 @@ Xcode Command Line ToolsとPython 3.10以上を用意したmacOSで実行しま�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
 ```
 
 自動インストール用pkgの生成と検査：
@@ -123,4 +123,3 @@ Apple原本の取得・バイナリ改変・署名鍵の使用は行いません
 
 [ソース・署名情報](docs/SOURCES.md)。パッケージング用ツールのライセンスは第三者の
 payloadには適用されません。[権利表記](THIRD_PARTY.md)を参照してください。
-メンテナー向け：[リリース時の確認手順](docs/releasing.md)。

@@ -115,7 +115,7 @@ On macOS with Xcode Command Line Tools and Python 3.10 or newer:
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
 ```
 
 To build and verify the optional automatic-installation pkg:
@@ -132,4 +132,3 @@ fetch Apple originals, patch binaries or use signing keys. Output goes to
 
 [Source and signing information](docs/SOURCES.md). The license for the packaging
 tools does not relicense the third-party payloads; see [notices](THIRD_PARTY.md).
-Maintainers: [release checks](docs/releasing.md).
