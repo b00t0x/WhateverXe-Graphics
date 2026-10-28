@@ -94,9 +94,10 @@ AutoPkgを手動で開かないでください。セットアップ済みOS、�
 WEX資材のためのKDK.pkg・MetallibSupportPkg.pkgは不要です。導入失敗時は`/var/log/install.log`を確認してください。
 
 完了処理と再起動要求はInstallerが扱います。scriptは強制再起動や未確定receiptの照会を行いません。
-AutoPkgは通常版のCommon/OS receiptではなく、専用の`org.b00t0x.WhateverXe.AutoGraphics` receiptを使用します。
-scriptで資材をコピーするため、receiptにファイル一覧は記録されません。
-以下の共通の単独uninstallerでファイルとreceiptを削除できます。
+script-only componentの識別子は`org.b00t0x.WhateverXe.AutoGraphics`として導入ログに記録されます。
+`--nopayload`で生成するため、package receiptは残りません。導入成功は`/var/log/install.log`と
+`/Library/Receipts/InstallHistory.plist`で確認してください。
+以下の共通の単独uninstallerで導入したGraphicsファイルを削除できます。
 
 ## アンインストール
 

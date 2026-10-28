@@ -105,10 +105,11 @@ outside this mode's scope. KDK.pkg and MetallibSupportPkg.pkg are not needed by
 WEX. Inspect `/var/log/install.log` if installation fails.
 
 Installer handles completion and the restart request; no script forces a reboot
-or reads unfinished receipts. AutoPkg uses the dedicated
-`org.b00t0x.WhateverXe.AutoGraphics` receipt, rather than the normal Common/OS
-receipts. Its receipt has no file inventory because its script copies the assets.
-The same standalone uninstaller below removes its files and receipt.
+or reads unfinished receipts. The script-only component is identified as
+`org.b00t0x.WhateverXe.AutoGraphics` in the install log. Because it is built with
+`--nopayload`, it leaves no package receipt. Check the successful transaction in
+`/var/log/install.log` and `/Library/Receipts/InstallHistory.plist` instead.
+The same standalone uninstaller below removes its installed graphics files.
 
 ## Uninstall
 

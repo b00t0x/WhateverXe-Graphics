@@ -92,6 +92,9 @@ script resources, then builds AuxKC. It uses the native package restart requirem
 including `postinstall-action="restart"` on that component. This component
 metadata is also used by [Yubico's package builder](https://github.com/Yubico/ifd-yubico/blob/master/build-installer.sh).
 The package scripts do not force a reboot or query in-progress receipts.
+As documented by [munki-pkg](https://github.com/munki/munki-pkg#payload-free-packages),
+`pkgbuild --nopayload` leaves no package receipt. AutoPkg success is recorded in
+the install log and install history; its component identifier is not a receipt.
 No OCLP application source is copied into this package.
 
 ## Repository utilities and package releases
