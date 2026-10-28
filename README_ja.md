@@ -66,7 +66,7 @@ Mod署名が付いています。導入エラーが出た場合は、問題を�
 ## セットアップ前の自動インストール（実験的機能）
 
 追加の`AutoPkg-Assets.pkg`は、新規macOSインストールの途中で同じGraphics資材を配置し、
-AuxKC生成後に明示的に再起動します。OCLPの
+AuxKC生成後の再起動を標準Installerに要求します。OCLPの
 [AutoPkgInstaller.kext](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera)
 を使用し、OCLPアプリの同梱・導入は不要です。初回起動時の加速をこの機能に任せる前に、
 テスト用インストールで検証してください。
@@ -74,15 +74,23 @@ AuxKC生成後に明示的に再起動します。OCLPの
 1. 上記のOSバージョン条件を満たすmacOSインストーラーUSBを作成します。
 2. Lilu・WEX・**Mod版**AMFIPassに加え、本家AutoPkgInstaller 1.0.4をOpenCoreに設定します。
    Tahoeでは`-autopkgbeta`が必要です。この引数はOS上限を回避するもので、互換性の保証ではありません。
-3. `python3 tools/build.py --autopkg`で生成した`dist/autopkg/AutoPkg-Assets.pkg`を、
-   USBルートの`Library/Packages/`へコピーします。ファイル名は変更せず、OCLP本家のpkgとも置き換えないでください。
-4. 通常どおりmacOSをインストールします。セットアップアシスタントの前にGraphics導入と追加の再起動を行います。
+3. インストーラー起動前に`csr-active-config=030A0000`（値`0xA03`）を設定します。
+   追加の`0x200`はPrivacy & Securityでの承認を省略するもので、WEXに限らず全kextに適用されます。
+   インストール後に外しても承認が維持されるとは限りません。
+4. USBのOSを指定して生成します。Sequoiaなら`python3 tools/build.py --autopkg Sequoia`で生成した
+   `dist/autopkg/Sequoia/AutoPkg-Assets.pkg`をUSBルートの`Library/Packages/`へコピーします。ファイル名は変更せず、OCLP本家のpkgとも置き換えないでください。
+5. 通常どおりmacOSをインストールします。セットアップアシスタントの前にGraphics導入と追加の再起動を行います。
    最初のUSBインストーラー画面は加速されません。
 
-このpkgを手動で開かないでください。セットアップ済みOSと、起動中ではない対象ボリュームへの導入は拒否します。
+生成対象は`BigSur`・`Monterey`・`Ventura`・`Sonoma`・`Sequoia`・`Tahoe`です。
+各pkgはCommonと指定OSのpayloadだけを含みます。別OSのインストーラーへ流用しないでください。
+
+このpkgを手動で開かないでください。セットアップ済みOS、起動中ではない対象ボリューム、
+指定OSの対応バージョン範囲外への導入は拒否します。
 上書きアップグレード、Software Update／OTA、同じUSBでのWEXとOCLP AutoPkgの併用は対象外です。
 WEX資材のためのKDK.pkg・MetallibSupportPkg.pkgは不要です。導入失敗時は`/var/log/install.log`を確認してください。
-失敗時には再起動を要求しません。payloadのreceiptと削除手順は通常版と共通です。
+完了処理と再起動要求はInstallerが扱います。pkgのscriptは強制再起動や未確定receiptの照会を行いません。
+payloadのreceiptと削除手順は通常版と共通です。
 
 ## アンインストール
 
@@ -112,8 +120,8 @@ python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
 自動インストール用pkgの生成と検査：
 
 ```sh
-python3 tools/build.py --autopkg
-python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
+python3 tools/build.py --autopkg Sequoia
+python3 tools/test.py dist/autopkg/Sequoia/AutoPkg-Assets.pkg
 ```
 
 検証にはNode.jsと`rcodesign` 0.29.0も必要です。CIでは両方を用意します。

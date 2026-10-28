@@ -29,13 +29,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--tag', default='')
-    parser.add_argument('--autopkg', action='store_true',
-                        help='build AutoPkg-Assets.pkg for fresh macOS installs before Setup Assistant')
+    parser.add_argument('--autopkg', choices=['BigSur', 'Monterey', 'Ventura', 'Sonoma', 'Sequoia', 'Tahoe'],
+                        help='build an OS-specific AutoPkg-Assets.pkg for fresh macOS installation')
     args = parser.parse_args()
     policy = json.loads((HERE / 'policy.json').read_text())
     assert not args.tag or args.tag == 'v' + policy['package_version'], 'tag/version mismatch'
     # Reject incompatible payloads before creating any package or output directory.
     check_payload_sets(ROOT / 'payloads', policy['systems'])
+    if args.autopkg:
+        policy['systems'] = [s for s in policy['systems'] if s['payload'].replace(' ', '') == args.autopkg]
     components, sources = {}, {}
     for name in ['Common'] + [s['payload'] for s in policy['systems']]:
         directory = ROOT / 'payloads' / name
@@ -58,10 +60,13 @@ def main():
         name = system['payload']
         assert not (components['Common'].keys() & components[name].keys()), name
         manifests[name] = components['Common'] | components[name]
-    output = (args.output or (ROOT / 'dist' / 'autopkg' if args.autopkg else ROOT / 'dist')).resolve()
+    output = (args.output or (ROOT / 'dist' / 'autopkg' / args.autopkg if args.autopkg else ROOT / 'dist')).resolve()
     output.mkdir(parents=True, exist_ok=True)
     version = policy['package_version']
     auto_guard = (HERE / 'autopkg-preinstall.sh').read_text() if args.autopkg else ''
+    if args.autopkg:
+        system = policy['systems'][0]
+        auto_guard = auto_guard.replace('@MINIMUM@', system['minimum']).replace('@BEFORE@', system['before'])
     with tempfile.TemporaryDirectory(prefix='xe-pkg-') as tmp:
         work = Path(tmp)
         for name, files in components.items():
@@ -94,19 +99,17 @@ def main():
                 '--component-plist', str(component_plist), '--ownership', 'recommended',
                 '--identifier', PREFIX + '.' + component_id, '--version', version,
                 '--scripts', str(scripts), str(work / (component_id + '.pkg')))
-        if args.autopkg:
-            # The payload components keep their normal receipts. Only this final,
-            # payload-free component can interrupt its own receipt with a reboot.
-            scripts = work / 'AutoRestart' / 'scripts'
-            scripts.mkdir(parents=True)
-            shell_script(scripts / 'preinstall', auto_guard)
-            cases = '\n'.join(f"    {s['major']}) component={s['payload'].replace(' ', '')} ;;"
-                              for s in policy['systems'])
-            reboot = (HERE / 'autopkg-reboot.sh').read_text().replace('@OS_RECEIPTS@', cases)
-            shell_script(scripts / 'postinstall', auto_guard +
-                         f"expected_version='{version}'\n" + reboot)
-            run('pkgbuild', '--nopayload', '--identifier', PREFIX + '.AutoRestart',
-                '--version', version, '--scripts', str(scripts), str(work / 'AutoRestart.pkg'))
+            if args.autopkg and name != 'Common':
+                # Boot-time installs can bypass Distribution choice expressions.
+                # Put the restart requirement on the component itself as well.
+                expanded = work / (component_id + '-metadata')
+                run('pkgutil', '--expand', str(work / (component_id + '.pkg')), str(expanded))
+                info = ET.parse(expanded / 'PackageInfo')
+                info.getroot().set('postinstall-action', 'restart')
+                info.write(expanded / 'PackageInfo', encoding='utf-8', xml_declaration=True)
+                repacked = work / (component_id + '-restart.pkg')
+                run('pkgutil', '--flatten', str(expanded), str(repacked))
+                repacked.replace(work / (component_id + '.pkg'))
         dist = ET.Element('installer-gui-script', minSpecVersion='2')
         ET.SubElement(dist, 'title').text = ('WhateverXe Graphics — Automatic Installation'
                                             if args.autopkg else 'WhateverXe Graphics')
@@ -116,19 +119,18 @@ def main():
         for system in policy['systems']:
             ET.SubElement(ranges, 'os-version', min=system['minimum'], before=system['before'])
         outline = ET.SubElement(dist, 'choices-outline')
-        for name in list(components) + (['AutoRestart'] if args.autopkg else []):
+        for name in components:
             component_id = name.replace(' ', '')
             ET.SubElement(outline, 'line', choice=component_id)
             selected = 'true'
-            if name not in ('Common', 'AutoRestart'):
+            if name != 'Common':
                 s = next(s for s in policy['systems'] if s['payload'] == name)
                 selected = (f"system.compareVersions(system.version.ProductVersion, '{s['minimum']}') >= 0 && "
                             f"system.compareVersions(system.version.ProductVersion, '{s['before']}') < 0")
             choice = ET.SubElement(dist, 'choice', id=component_id, title=name, visible='false', enabled='false', selected=selected)
             ET.SubElement(choice, 'pkg-ref', id=PREFIX + '.' + component_id)
             ref = ET.SubElement(dist, 'pkg-ref', id=PREFIX + '.' + component_id, version=version)
-            if not args.autopkg:
-                ref.set('onConclusion', 'RequireRestart')
+            ref.set('onConclusion', 'RequireRestart')
             ref.text = component_id + '.pkg'
         ET.indent(dist)
         distribution = work / 'Distribution'
@@ -144,7 +146,7 @@ def main():
     digest = hashlib.sha256(package.read_bytes()).hexdigest()
     (output / 'SHA256SUMS').write_text(digest + '  ' + package.name + '\n')
     print(json.dumps({'package': package.name, 'bytes': package.stat().st_size,
-                      'components': len(components) + int(args.autopkg), 'sha256': digest}))
+                      'components': len(components), 'sha256': digest}))
 
 
 if __name__ == '__main__':

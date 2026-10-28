@@ -36,20 +36,25 @@ with tempfile.TemporaryDirectory(prefix='xe-pkg-test-') as tmp:
     ranges = [(x.attrib['min'], x.attrib['before']) for x in distribution.findall('./volume-check/allowed-os-versions/os-version')]
     assert ranges == [(s['minimum'], s['before']) for s in manifest['policy']['systems']]
     choices = {x.attrib['title']: x.attrib['selected'] for x in distribution.findall('choice')}
-    payload_choices = {name: expr for name, expr in choices.items() if name != 'AutoRestart'}
+    payload_choices = choices
+    if autopkg:
+        assert len(manifest['policy']['systems']) == 1
+        selected = manifest['policy']['systems'][0]['name']
+        cases = {v: name if name == selected else None for v, name in cases.items()}
     order = [x.attrib['choice'] for x in distribution.findall('./choices-outline/line')]
     expected_order = ['Common'] + [s['payload'].replace(' ', '') for s in manifest['policy']['systems']]
-    assert order == expected_order + (['AutoRestart'] if autopkg else [])
+    assert order == expected_order
     # productbuild adds a second pkg-ref per identifier for bundle metadata.
     refs = [x for x in distribution.findall('pkg-ref') if (x.text or '').strip().startswith('#')]
     assert len(refs) == len(order)
-    assert all(x.attrib.get('onConclusion') == (None if autopkg else 'RequireRestart')
+    assert all(x.attrib.get('onConclusion') == 'RequireRestart'
                for x in refs)
     if autopkg:
         assert args.package.name == 'AutoPkg-Assets.pkg'
-        assert choices['AutoRestart'] == 'true'
+        assert len(refs) == 2
+        assert sorted(p.name for p in root.glob('*.pkg')) == sorted(x + '.pkg' for x in order)
         from test_autopkg import check_autopkg
-        check_autopkg(root, manifest['policy'])
+        check_autopkg(root, manifest['policy'], cases)
     # Exercise the actual generated expressions with numeric compareVersions semantics.
     js = '''const input = JSON.parse(process.argv[1]);
 const system = {version: {}, compareVersions(a, b) {
@@ -89,12 +94,17 @@ for (const [version, expected] of Object.entries(input.cases)) {
         preinstall = (scripts / 'preinstall').read_text()
         assert preinstall.endswith((source / 'preinstall.sh').read_text())
         if autopkg:
-            assert (source / 'autopkg-preinstall.sh').read_text() in preinstall
+            system = manifest['policy']['systems'][0]
+            guard = (source / 'autopkg-preinstall.sh').read_text().replace('@MINIMUM@', system['minimum']).replace('@BEFORE@', system['before'])
+            assert guard in preinstall
         else:
             assert 'AutoPkg' not in preinstall
         if name != 'Common':
             assert (scripts / 'postinstall').read_text().endswith(
                 (source / 'auxkc.sh').read_text() + '\n' + (source / 'postinstall.sh').read_text())
+    if autopkg:
+        action = subprocess.check_output(['installer', '-query', 'RestartAction', '-pkg', str(args.package.resolve()), '-target', '/'], text=True)
+        assert 'RequireRestart' in action, action
     total = 0
     provider = 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
     assert choices['Common'] == 'true'
@@ -113,4 +123,4 @@ for (const [version, expected] of Object.entries(input.cases)) {
             assert p.stat().st_mode & 0o777 == expected[rel]['mode'], rel
         total += len(actual)
     subprocess.run(['bash', '-n', str(Path(__file__).resolve().parents[1] / 'uninstall.sh')], check=True)
-print(f'PASS: {len(cases)} version boundaries, 7 standard payloads/BOMs, {total} reconstructed files, script syntax; autopkg={autopkg}')
+print(f'PASS: {len(cases)} version boundaries, {len(payload_choices)} standard payloads/BOMs, {total} reconstructed files, script syntax; autopkg={autopkg}')

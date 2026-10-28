@@ -70,7 +70,7 @@ error, resolve it and reinstall before restarting.
 ## Automatic installation before Setup Assistant (experimental)
 
 An optional `AutoPkg-Assets.pkg` installs the same Graphics payloads during a
-fresh macOS installation and explicitly restarts after AuxKC is built. It uses
+fresh macOS installation and requests a native Installer restart after AuxKC is built. It uses
 OCLP's [AutoPkgInstaller.kext](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera);
 the OCLP application is not included or required. This mode requires validation
 on a test installation before relying on it for first-boot graphics.
@@ -79,17 +79,26 @@ on a test installation before relying on it for first-boot graphics.
 2. Add upstream AutoPkgInstaller 1.0.4 to OpenCore alongside Lilu, WEX and the
    **Mod** AMFIPass. AutoPkgInstaller 1.0.4 requires `-autopkgbeta` for Tahoe;
    that flag bypasses its OS-version limit, not a guarantee of compatibility.
-3. Build with `python3 tools/build.py --autopkg` and copy
-   `dist/autopkg/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root.
+3. Set `csr-active-config=030A0000` (value `0xA03`) before booting the installer.
+   The extra `0x200` allows unapproved kexts to load without a Privacy & Security
+   approval; it applies to all kexts, not just WEX. Do not assume removing it
+   after installation preserves approval.
+4. Build for the USB's OS, for example `python3 tools/build.py --autopkg Sequoia`,
+   and copy `dist/autopkg/Sequoia/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root.
    Keep that exact filename. Do not replace it with the upstream OCLP package.
-4. Install macOS normally. Graphics installation and an additional restart
+5. Install macOS normally. Graphics installation and an additional restart
    take place before Setup Assistant; the initial USB installer UI is unchanged.
 
-Never open this pkg manually. It rejects configured systems and non-running
-target volumes. In-place upgrades, Software Update/OTA, and combining WEX and
+Build targets are `BigSur`, `Monterey`, `Ventura`, `Sonoma`, `Sequoia` and `Tahoe`.
+Each package contains only Common and the selected OS payload. Do not copy one
+OS's package to another OS's installer.
+
+Never open this pkg manually. It rejects configured systems, non-running target
+volumes and OS versions outside the selected target's supported range. In-place upgrades, Software Update/OTA, and combining WEX and
 OCLP AutoPkg assets on the same USB are outside this mode's scope. KDK.pkg and
 MetallibSupportPkg.pkg are not needed by the WEX payload. Inspect
-`/var/log/install.log` if installation fails; failure does not request a reboot.
+`/var/log/install.log` if installation fails. Installer handles completion and
+the restart request; no package script forces a reboot or reads unfinished receipts.
 The payloads keep their normal receipts and use the same uninstaller below.
 
 ## Uninstall
@@ -121,8 +130,8 @@ python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
 To build and verify the optional automatic-installation pkg:
 
 ```sh
-python3 tools/build.py --autopkg
-python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
+python3 tools/build.py --autopkg Sequoia
+python3 tools/test.py dist/autopkg/Sequoia/AutoPkg-Assets.pkg
 ```
 
 The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder
