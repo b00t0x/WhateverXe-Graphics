@@ -4,7 +4,7 @@
 
 ### Added
 
-- Add an experimental `--autopkg` build for fresh macOS installation through upstream AutoPkgInstaller, using OS-specific Graphics payloads and a native Installer restart request before Setup Assistant.
+- Add an experimental `--autopkg` build for fresh macOS installation through upstream AutoPkgInstaller, selecting the matching Graphics assets from one universal package and requesting a native Installer restart before Setup Assistant.
 
 ## 0.3.2
 

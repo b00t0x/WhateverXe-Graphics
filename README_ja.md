@@ -77,20 +77,26 @@ AuxKC生成後の再起動を標準Installerに要求します。OCLPの
 3. インストーラー起動前に`csr-active-config=030A0000`（値`0xA03`）を設定します。
    追加の`0x200`はPrivacy & Securityでの承認を省略するもので、WEXに限らず全kextに適用されます。
    インストール後に外しても承認が維持されるとは限りません。
-4. USBのOSを指定して生成します。Sequoiaなら`python3 tools/build.py --autopkg Sequoia`で生成した
-   `dist/autopkg/Sequoia/AutoPkg-Assets.pkg`をUSBルートの`Library/Packages/`へコピーします。ファイル名は変更せず、OCLP本家のpkgとも置き換えないでください。
-5. 通常どおりmacOSをインストールします。セットアップアシスタントの前にGraphics導入と追加の再起動を行います。
-   最初のUSBインストーラー画面は加速されません。
+4. `python3 tools/build.py --autopkg`で生成した`dist/autopkg/AutoPkg-Assets.pkg`を、
+   USBルートの`Library/Packages/`へコピーします。同じpkgで上記6 OSに対応します。
+   ファイル名は変更せず、OCLP本家のpkgとも置き換えないでください。
+5. 通常どおりmacOSをインストールします。起動中のOS用資材を選択し、AuxKCを生成して、
+   セットアップアシスタント前の追加再起動を要求します。最初のUSBインストーラー画面は加速されません。
 
-生成対象は`BigSur`・`Monterey`・`Ventura`・`Sonoma`・`Sequoia`・`Tahoe`です。
-各pkgはCommonと指定OSのpayloadだけを含みます。別OSのインストーラーへ流用しないでください。
+AutoPkgはscriptだけの1 componentで構成します。内部資材としてCommonと全対応OS分を保持し、
+Commonと検出したOSの資材だけを`/Library`へコピーします。内部資材はInstallerの一時領域に置かれます。
+通常のGraphics pkgは標準payloadとInstaller UIによるOS選択を引き続き使用します。
 
-このpkgを手動で開かないでください。セットアップ済みOS、起動中ではない対象ボリューム、
-指定OSの対応バージョン範囲外への導入は拒否します。
+AutoPkgを手動で開かないでください。セットアップ済みOS、起動中ではない対象ボリューム、
+対応範囲外のOS、旧System-volume patch、既存Graphics bundle（導入途中の残存物を含む）を拒否します。
+新規OSインストール専用であり、この判定は誤実行防止用で、セキュリティ境界ではありません。
 上書きアップグレード、Software Update／OTA、同じUSBでのWEXとOCLP AutoPkgの併用は対象外です。
 WEX資材のためのKDK.pkg・MetallibSupportPkg.pkgは不要です。導入失敗時は`/var/log/install.log`を確認してください。
-完了処理と再起動要求はInstallerが扱います。pkgのscriptは強制再起動や未確定receiptの照会を行いません。
-payloadのreceiptと削除手順は通常版と共通です。
+
+完了処理と再起動要求はInstallerが扱います。scriptは強制再起動や未確定receiptの照会を行いません。
+AutoPkgは通常版のCommon/OS receiptではなく、専用の`org.b00t0x.WhateverXe.AutoGraphics` receiptを使用します。
+scriptで資材をコピーするため、receiptにファイル一覧は記録されません。
+以下の共通の単独uninstallerでファイルとreceiptを削除できます。
 
 ## アンインストール
 
@@ -120,8 +126,8 @@ python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
 自動インストール用pkgの生成と検査：
 
 ```sh
-python3 tools/build.py --autopkg Sequoia
-python3 tools/test.py dist/autopkg/Sequoia/AutoPkg-Assets.pkg
+python3 tools/build.py --autopkg
+python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
 ```
 
 検証にはNode.jsと`rcodesign` 0.29.0も必要です。CIでは両方を用意します。

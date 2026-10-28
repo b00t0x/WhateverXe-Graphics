@@ -45,16 +45,14 @@ jobs:
         run: python3 tools/test.py dist/WhateverXe-Graphics-*.pkg
       - name: Build and verify automatic-installation pkg
         run: |
-          for os in BigSur Monterey Ventura Sonoma Sequoia Tahoe; do
-            python3 tools/build.py --autopkg "$os"
-            python3 tools/test.py "dist/autopkg/$os/AutoPkg-Assets.pkg"
-          done
+          python3 tools/build.py --autopkg
+          python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
       - uses: actions/upload-artifact@v4
         with:
           name: AutoPkg-Assets
           path: |
-            dist/autopkg/*/AutoPkg-Assets.pkg
-            dist/autopkg/*/SHA256SUMS
+            dist/autopkg/AutoPkg-Assets.pkg
+            dist/autopkg/SHA256SUMS
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:

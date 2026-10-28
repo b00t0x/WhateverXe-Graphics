@@ -87,8 +87,9 @@ Its plugin accepts Darwin 20–24 by default and provides `-autopkgbeta`.
 
 The Graphics AutoPkg contains the existing signed payloads and native shell
 scripts. It does not embed OCLP, its patch-selection engine or support DMGs.
-Each AutoPkg targets one OS and uses the native package restart requirement,
-including `postinstall-action="restart"` on the OS component. This component
+A single script-only component selects Common and the running OS from private
+script resources, then builds AuxKC. It uses the native package restart requirement,
+including `postinstall-action="restart"` on that component. This component
 metadata is also used by [Yubico's package builder](https://github.com/Yubico/ifd-yubico/blob/master/build-installer.sh).
 The package scripts do not force a reboot or query in-progress receipts.
 No OCLP application source is copied into this package.

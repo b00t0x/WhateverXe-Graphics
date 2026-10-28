@@ -29,15 +29,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--tag', default='')
-    parser.add_argument('--autopkg', choices=['BigSur', 'Monterey', 'Ventura', 'Sonoma', 'Sequoia', 'Tahoe'],
-                        help='build an OS-specific AutoPkg-Assets.pkg for fresh macOS installation')
+    parser.add_argument('--autopkg', action='store_true',
+                        help='build one AutoPkg-Assets.pkg for all supported fresh macOS installations')
     args = parser.parse_args()
     policy = json.loads((HERE / 'policy.json').read_text())
     assert not args.tag or args.tag == 'v' + policy['package_version'], 'tag/version mismatch'
     # Reject incompatible payloads before creating any package or output directory.
     check_payload_sets(ROOT / 'payloads', policy['systems'])
-    if args.autopkg:
-        policy['systems'] = [s for s in policy['systems'] if s['payload'].replace(' ', '') == args.autopkg]
     components, sources = {}, {}
     for name in ['Common'] + [s['payload'] for s in policy['systems']]:
         directory = ROOT / 'payloads' / name
@@ -60,13 +58,13 @@ def main():
         name = system['payload']
         assert not (components['Common'].keys() & components[name].keys()), name
         manifests[name] = components['Common'] | components[name]
-    output = (args.output or (ROOT / 'dist' / 'autopkg' / args.autopkg if args.autopkg else ROOT / 'dist')).resolve()
+    output = (args.output or (ROOT / 'dist' / 'autopkg' if args.autopkg else ROOT / 'dist')).resolve()
     output.mkdir(parents=True, exist_ok=True)
     version = policy['package_version']
-    auto_guard = (HERE / 'autopkg-preinstall.sh').read_text() if args.autopkg else ''
     if args.autopkg:
-        system = policy['systems'][0]
-        auto_guard = auto_guard.replace('@MINIMUM@', system['minimum']).replace('@BEFORE@', system['before'])
+        from build_autopkg import build_autopkg
+        build_autopkg(output, policy, components, sources, manifests)
+        return
     with tempfile.TemporaryDirectory(prefix='xe-pkg-') as tmp:
         work = Path(tmp)
         for name, files in components.items():
@@ -79,7 +77,7 @@ def main():
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(Path(sources[info['sha256']]).read_bytes())
                 target.chmod(info['mode'])
-            shell_script(scripts / 'preinstall', auto_guard + (HERE / 'preinstall.sh').read_text())
+            shell_script(scripts / 'preinstall', (HERE / 'preinstall.sh').read_text())
             if name != 'Common':
                 shell_script(scripts / 'postinstall',
                              (HERE / 'auxkc.sh').read_text() + '\n' +
@@ -99,20 +97,8 @@ def main():
                 '--component-plist', str(component_plist), '--ownership', 'recommended',
                 '--identifier', PREFIX + '.' + component_id, '--version', version,
                 '--scripts', str(scripts), str(work / (component_id + '.pkg')))
-            if args.autopkg and name != 'Common':
-                # Boot-time installs can bypass Distribution choice expressions.
-                # Put the restart requirement on the component itself as well.
-                expanded = work / (component_id + '-metadata')
-                run('pkgutil', '--expand', str(work / (component_id + '.pkg')), str(expanded))
-                info = ET.parse(expanded / 'PackageInfo')
-                info.getroot().set('postinstall-action', 'restart')
-                info.write(expanded / 'PackageInfo', encoding='utf-8', xml_declaration=True)
-                repacked = work / (component_id + '-restart.pkg')
-                run('pkgutil', '--flatten', str(expanded), str(repacked))
-                repacked.replace(work / (component_id + '.pkg'))
         dist = ET.Element('installer-gui-script', minSpecVersion='2')
-        ET.SubElement(dist, 'title').text = ('WhateverXe Graphics — Automatic Installation'
-                                            if args.autopkg else 'WhateverXe Graphics')
+        ET.SubElement(dist, 'title').text = 'WhateverXe Graphics'
         ET.SubElement(dist, 'options', customize='never', rootVolumeOnly='true', hostArchitectures='x86_64')
         ET.SubElement(dist, 'domains', enable_anywhere='false', enable_currentUserHome='false', enable_localSystem='true')
         ranges = ET.SubElement(ET.SubElement(dist, 'volume-check', script='true'), 'allowed-os-versions')
@@ -135,13 +121,11 @@ def main():
         ET.indent(dist)
         distribution = work / 'Distribution'
         ET.ElementTree(dist).write(distribution, encoding='utf-8', xml_declaration=True)
-        package = output / ('AutoPkg-Assets.pkg' if args.autopkg else f'WhateverXe-Graphics-{version}.pkg')
+        package = output / f'WhateverXe-Graphics-{version}.pkg'
         run('productbuild', '--distribution', str(distribution), '--package-path', str(work), str(package))
         shutil.copyfile(distribution, output / 'Distribution.xml')
     # Development provenance stays outside the installer and installed system.
     manifest = {'policy': policy, 'systems': manifests}
-    if args.autopkg:
-        manifest['autopkg'] = True
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     digest = hashlib.sha256(package.read_bytes()).hexdigest()
     (output / 'SHA256SUMS').write_text(digest + '  ' + package.name + '\n')

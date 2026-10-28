@@ -83,23 +83,32 @@ on a test installation before relying on it for first-boot graphics.
    The extra `0x200` allows unapproved kexts to load without a Privacy & Security
    approval; it applies to all kexts, not just WEX. Do not assume removing it
    after installation preserves approval.
-4. Build for the USB's OS, for example `python3 tools/build.py --autopkg Sequoia`,
-   and copy `dist/autopkg/Sequoia/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root.
-   Keep that exact filename. Do not replace it with the upstream OCLP package.
-5. Install macOS normally. Graphics installation and an additional restart
-   take place before Setup Assistant; the initial USB installer UI is unchanged.
+4. Build with `python3 tools/build.py --autopkg` and copy
+   `dist/autopkg/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root.
+   The same package supports all six OS versions listed above. Keep that exact
+   filename. Do not replace it with the upstream OCLP package.
+5. Install macOS normally. The package selects the running OS's assets, builds
+   AuxKC and requests an additional restart before Setup Assistant; the initial
+   USB installer UI is unchanged.
 
-Build targets are `BigSur`, `Monterey`, `Ventura`, `Sonoma`, `Sequoia` and `Tahoe`.
-Each package contains only Common and the selected OS payload. Do not copy one
-OS's package to another OS's installer.
+AutoPkg has one script-only component. Its private resources contain Common and
+all supported OS assets; only Common and the detected OS are copied to `/Library`.
+The resources stay in Installer's temporary directory. The normal Graphics pkg
+continues to use standard payloads and OS selection in the Installer UI.
 
-Never open this pkg manually. It rejects configured systems, non-running target
-volumes and OS versions outside the selected target's supported range. In-place upgrades, Software Update/OTA, and combining WEX and
-OCLP AutoPkg assets on the same USB are outside this mode's scope. KDK.pkg and
-MetallibSupportPkg.pkg are not needed by the WEX payload. Inspect
-`/var/log/install.log` if installation fails. Installer handles completion and
-the restart request; no package script forces a reboot or reads unfinished receipts.
-The payloads keep their normal receipts and use the same uninstaller below.
+Never open AutoPkg manually. It rejects configured systems, non-running target
+volumes, unsupported OS versions, old System-volume patches and existing Graphics
+bundles (including partial installations). It is intended for fresh OS installation;
+these guards are misuse checks, not a security boundary. In-place upgrades,
+Software Update/OTA, and combining WEX and OCLP AutoPkg assets on the same USB are
+outside this mode's scope. KDK.pkg and MetallibSupportPkg.pkg are not needed by
+WEX. Inspect `/var/log/install.log` if installation fails.
+
+Installer handles completion and the restart request; no script forces a reboot
+or reads unfinished receipts. AutoPkg uses the dedicated
+`org.b00t0x.WhateverXe.AutoGraphics` receipt, rather than the normal Common/OS
+receipts. Its receipt has no file inventory because its script copies the assets.
+The same standalone uninstaller below removes its files and receipt.
 
 ## Uninstall
 
@@ -130,8 +139,8 @@ python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
 To build and verify the optional automatic-installation pkg:
 
 ```sh
-python3 tools/build.py --autopkg Sequoia
-python3 tools/test.py dist/autopkg/Sequoia/AutoPkg-Assets.pkg
+python3 tools/build.py --autopkg
+python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
 ```
 
 The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder

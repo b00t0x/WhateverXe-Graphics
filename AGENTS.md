@@ -30,8 +30,10 @@ Preserve signed payloads exactly unless deliberately updating and requalifying
 an asset. Never sign original Apple compiler backends again. Keep signed bundles
 whole. No keys, credentials, Apple original input caches or generated packages
 in Git. The checked-in final payloads are an explicit binary exception.
-Installer scripts use standard payloads and AuxKC; do not add custom backup,
-manifest, hash-store or uninstall infrastructure to the installed system.
+The normal installer uses standard payloads and AuxKC. AutoPkg may select and
+copy private script resources during first boot; it uses one dedicated receipt
+and the same AuxKC function. Do not add custom backup, manifest, hash-store or
+uninstall infrastructure to the installed system.
 Release versioning is independent from WEX. Use source commits for provenance,
 not a floating dependency on another repository's main branch. Build TGLCompat
 from one WEX commit for every OS; keep the single build in Common. If ABI
