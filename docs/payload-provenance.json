@@ -2,24 +2,26 @@
   "provider_source_repository": "https://github.com/b00t0x/WhateverXe",
   "providers": {
     "Common": {
-      "source_commit": "afd01c2bff19786796a305096756865295a5e67a",
+      "source_commit": "65f14e8153c728cf8a2728a526bef792b7b22bb7",
       "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
       "source_file_sha256": "2a5f7622cbd35e222d1d0b1e3f78f421bd0a9f691fec51a7b18d3725ab61c445",
       "version": "0.6.1",
       "configuration": "RELEASE",
       "build_command": "python3 tools/build.py --release",
-      "sha256": "b6b58d2cd4abe476c84800d37f9ad95c43d48a89801459b2f1ff91e6ef718aac",
+      "sha256": "63e09e72eb5d75df4fb8f38f82e61a6f0505e8f5e9e584570b8becb4382d4b58",
       "policy_source_file": "AppleIntelTGLCompat/GraphicsPolicy.plist",
       "policy_source_sha256": "dd9555491052208445abbd9daa96dd0a9dd4e5e71b1e6a14355224199cfb17eb",
-      "compatible_version": "0.5.0"
+      "compatible_version": "0.5.0",
+      "device_table_source_file": "WhateverXe/kern_xelp_devices.hpp",
+      "device_table_source_sha256": "a16ad44a5ee5c4c4c44682effdaf52bb8f98e0adc6d9ece494c8e53545f97d5d"
     }
   },
   "amfipass_sha256": "71f41de42e355d2a83e6f093ef34a5b24d0a9c9a9085830b2317f1b874f56250",
   "mod_leaf_sha1": "6de7fc5377deac4f5fe21194684f57f553c3592c",
   "compiler_adapter": {
     "sha256": "11609123ce5b930aee500736f8bd504cd0280c37654f8e9f353fcc9fc876aff0",
-    "modern_path": "OS-native AIR-v4 on Darwin 23–25; API and image checks without UUID pinning or translator fallback",
-    "legacy_path": "Direct compiler input on Darwin 21–22; not used on Darwin 20"
+    "modern_path": "OS-native AIR-v4 on Darwin 23\u201325; API and image checks without UUID pinning or translator fallback",
+    "legacy_path": "Direct compiler input on Darwin 21\u201322; not used on Darwin 20"
   },
   "gl_driver": {
     "sha256": "404b85e5b547fd9486bf8f10e8f55244708bff06d21d0a3091a0e159c74e63bb",

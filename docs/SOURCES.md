@@ -10,7 +10,7 @@ for this repository.
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
 use one RELEASE build of AppleIntelTGLCompat 0.6.1 from WEX commit
-[`afd01c2`](https://github.com/b00t0x/WhateverXe/tree/afd01c2bff19786796a305096756865295a5e67a/AppleIntelTGLCompat).
+[`65f14e8`](https://github.com/b00t0x/WhateverXe/tree/65f14e8153c728cf8a2728a526bef792b7b22bb7/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -20,7 +20,9 @@ source GraphicsPolicy.plist personality, restricted to admitted Display13 Intel
 framebuffer clients; it does not override policy for other GPUs.
 The provider includes the USB-C DisplayPort Alt Mode capability required by
 the corresponding WEX connector support, including admission when another
-output such as HDMI is connected.
+output such as HDMI is connected. It also recognizes the complete Linux i915
+Alder Lake-P and Raptor Lake-P/U PCI ID sets, including the single-DIMM
+`4626` identity; WEX must use the same updated device table.
 
 [Machine-readable provenance](payload-provenance.json) records this single source
 revision, build configuration, source file hash and final signed executable hash.
