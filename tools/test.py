@@ -112,7 +112,7 @@ for (const [version, expected] of Object.entries(input.cases)) {
         check_files(actual, build)
         assert actual.keys() == expected.keys()
         plists = [p for rel, p in actual.items() if rel.startswith('Library/Extensions/') and rel.endswith('.kext/Contents/Info.plist')]
-        assert check_dependencies(plists, build) > 0
+        assert check_dependencies(plists, build, manifest['policy']['device_ids']) > 0
         for rel, p in actual.items():
             data = p.read_bytes()
             assert hashlib.sha256(data).hexdigest() == expected[rel]['sha256'], rel

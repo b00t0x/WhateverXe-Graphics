@@ -47,6 +47,36 @@ class DependencyTests(unittest.TestCase):
             self.check(include_provider=False)
 
 
+class DeviceMatchTests(unittest.TestCase):
+    def check(self, framebuffer, accelerator='0x46a68086 0x46268086'):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = []
+            for name, matches in [('AppleIntelTGLGraphics', accelerator),
+                                  ('AppleIntelTGLGraphicsFramebuffer', framebuffer)]:
+                path = Path(tmp) / (name + '.plist')
+                path.write_bytes(plistlib.dumps({'CFBundleIdentifier': 'com.apple.driver.' + name,
+                    'IOKitPersonalities': {'GPU': {'IOPCIPrimaryMatch': matches}}}))
+                paths.append(path)
+            check_dependencies(paths, 'test', ['46a6', '4626'])
+
+    def test_single_and_dual_dimm(self):
+        self.check('0x46a68086 0x46268086')
+
+    def test_missing_framebuffer_identity(self):
+        with self.assertRaisesRegex(ValueError, "missing=.*4626"):
+            self.check('0x46a68086')
+
+    def test_missing_accelerator_identity(self):
+        with self.assertRaisesRegex(ValueError, "missing=.*4626"):
+            self.check('0x46a68086 0x46268086', '0x46a68086')
+
+    def test_unknown_or_masked_identity(self):
+        with self.assertRaisesRegex(ValueError, 'extra=.*12348086'):
+            self.check('0x46a68086 0x46268086 0x12348086')
+        with self.assertRaisesRegex(ValueError, 'unsupported device match'):
+            self.check('0x46008086&0xff00ffff')
+
+
 class BuildPreflightTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
@@ -55,13 +85,20 @@ class BuildPreflightTests(unittest.TestCase):
         # Use the real supported OS list so newly added payloads are covered.
         policy = json.loads((build.HERE / 'policy.json').read_text())
         self.systems = policy['systems']
+        self.device_ids = policy['device_ids']
+        personalities = {'GPU': {'IOPCIPrimaryMatch': ' '.join('0x' + device + '8086' for device in self.device_ids)}}
         self.provider = self.write('Common', 'Compat', {
             'CFBundleIdentifier': 'org.b00t0x.AppleIntelTGLCompat',
             'CFBundleVersion': '0.6.0', 'OSBundleCompatibleVersion': '0.5.0'})
         self.clients = [self.write(s['payload'], 'Framebuffer', {
             'CFBundleIdentifier': 'com.apple.driver.AppleIntelTGLGraphicsFramebuffer',
-            'OSBundleLibraries': {'org.b00t0x.AppleIntelTGLCompat': '0.5.0'}})
+            'OSBundleLibraries': {'org.b00t0x.AppleIntelTGLCompat': '0.5.0'},
+            'IOKitPersonalities': personalities})
             for s in self.systems]
+        for system in self.systems:
+            self.write(system['payload'], 'Graphics', {
+                'CFBundleIdentifier': 'com.apple.driver.AppleIntelTGLGraphics',
+                'IOKitPersonalities': personalities})
 
     def write(self, component, name, info):
         path = self.root / 'payloads' / component / 'Library/Extensions' / (name + '.kext') / 'Contents/Info.plist'
@@ -79,7 +116,7 @@ class BuildPreflightTests(unittest.TestCase):
         self.assertFalse(output.exists())
 
     def test_current_payload_sets(self):
-        check_payload_sets(self.root / 'payloads', self.systems)
+        check_payload_sets(self.root / 'payloads', self.systems, self.device_ids)
 
     def test_released_mismatch_stops_build(self):
         info = plistlib.loads(self.provider.read_bytes())

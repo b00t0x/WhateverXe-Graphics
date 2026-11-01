@@ -6,6 +6,16 @@
 
 - Add an experimental `--autopkg` build for fresh macOS installation through upstream AutoPkgInstaller, selecting the matching Graphics assets from one universal package and requesting a native Installer restart before Setup Assistant.
 
+### Fixed
+
+- Accept the added physical IDs in GL compiler, video and OpenCL dispatch on Big Sur–Tahoe, preserving the existing shader, URB and codec paths.
+
+- Match the supported PCI IDs in both framebuffer and accelerator personalities for every OS payload; reject missing or extra IDs before packaging and when checking extracted packages.
+
+- Update the common Compat provider to accept omitted Alder Lake-H/P/U and Raptor Lake-H/P/U PCI IDs, including `4626`, with matching WEX on Big Sur–Tahoe.
+
+- Fix graphics initialization when the WEX display configuration requires USB-C DisplayPort Alt Mode support, including HDMI output on those systems, on Big Sur–Tahoe.
+
 ## 0.3.2
 
 - Fix OpenGL texture updates and missing geometry for the measured six-bank VS-only and VS/GS URB layouts on Big Sur–Tahoe. Handle all four measured layouts in one rule set while preserving the four/eight-bank corrections.

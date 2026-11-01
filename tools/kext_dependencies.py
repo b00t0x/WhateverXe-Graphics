@@ -10,7 +10,7 @@ def version(value):
     return tuple(map(int, value.split('.')))
 
 
-def check_dependencies(plists, label):
+def check_dependencies(plists, label, device_ids=None):
     providers = {}
     for path in plists:
         info = plistlib.loads(path.read_bytes())
@@ -32,12 +32,28 @@ def check_dependencies(plists, label):
                 raise ValueError(f'{label}: {client} requires {dependency} {requested}, '
                                  f'outside provider compatibility range {compatible}–{current}')
             checked += 1
+    if device_ids is not None:
+        expected = {int(device, 16) << 16 | 0x8086 for device in device_ids}
+        for client in ('com.apple.driver.AppleIntelTGLGraphics',
+                       'com.apple.driver.AppleIntelTGLGraphicsFramebuffer'):
+            if client not in providers:
+                raise ValueError(f'{label}: missing device-match client {client}')
+            actual = set()
+            for personality in providers[client].get('IOKitPersonalities', {}).values():
+                for match in personality.get('IOPCIPrimaryMatch', '').split():
+                    if not re.fullmatch(r'0x[0-9a-fA-F]{8}', match):
+                        raise ValueError(f'{label}: unsupported device match {match}')
+                    actual.add(int(match, 16))
+            if actual != expected:
+                missing = sorted(f'{pci >> 16:04x}' for pci in expected - actual)
+                extra = sorted(f'{pci:08x}' for pci in actual - expected)
+                raise ValueError(f'{label}: {client} PCI match mismatch: missing={missing}, extra={extra}')
     return checked
 
 
-def check_payload_sets(payloads, systems):
+def check_payload_sets(payloads, systems, device_ids=None):
     common = list((payloads / 'Common/Library/Extensions').rglob('*.kext/Contents/Info.plist'))
     for system in systems:
         clients = list((payloads / system['payload'] / 'Library/Extensions').rglob('*.kext/Contents/Info.plist'))
-        if not check_dependencies(common + clients, system['name']):
+        if not check_dependencies(common + clients, system['name'], device_ids):
             raise ValueError(f"{system['name']}: no bundled kext dependencies checked")

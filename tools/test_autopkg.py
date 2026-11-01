@@ -56,7 +56,7 @@ def check_autopkg(expanded, manifest, boundaries):
         check_servicing_files(actual, name)
         check_files(actual, manifest['systems'][name])
         plists = [p for r, p in actual.items() if r.startswith('Library/Extensions/') and r.endswith('.kext/Contents/Info.plist')]
-        assert check_dependencies(plists, name) > 0
+        assert check_dependencies(plists, name, policy['device_ids']) > 0
 
     cases = [(v, name, 'success' if name else 'unsupported') for v, name in boundaries.items()]
     cases += [('15.8.1', 'Sequoia', failure) for failure in (

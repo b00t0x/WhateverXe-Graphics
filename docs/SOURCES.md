@@ -10,7 +10,7 @@ for this repository.
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
 use one RELEASE build of AppleIntelTGLCompat 0.6.1 from WEX commit
-[`eb3a2e2`](https://github.com/b00t0x/WhateverXe/tree/eb3a2e24cd55120a0aa3c1c650750bb9c09820c6/AppleIntelTGLCompat).
+[`e6494d0`](https://github.com/b00t0x/WhateverXe/tree/e6494d0ecdc33b36b1c5ca90442f8b5f4b490c2a/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -18,6 +18,11 @@ copies. OS admission uses the shared WEX kernel-version selector; physical-devic
 and binding guards remain in the shared source. The provider also carries the
 source GraphicsPolicy.plist personality, restricted to admitted Display13 Intel
 framebuffer clients; it does not override policy for other GPUs.
+The provider includes the USB-C DisplayPort Alt Mode capability required by
+the corresponding WEX connector support, including admission when another
+output such as HDMI is connected. It also recognizes the complete Linux i915
+Alder Lake-P and Raptor Lake-P/U PCI ID sets, including the single-DIMM
+`4626` identity; WEX must use the same updated device table.
 
 [Machine-readable provenance](payload-provenance.json) records this single source
 revision, build configuration, source file hash and final signed executable hash.
@@ -31,12 +36,22 @@ The provider release version is independent of this ABI compatibility floor.
 
 `payloads/Common` contains the shared TGLCompat kext, GL bundle and compiler adapter. OS-named
 directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
-units. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
+units. Framebuffer and accelerator PCI personalities use the supported IDs recorded
+in `tools/policy.json`; build and extracted-package checks require both client
+match sets to agree with that list. ID additions preserve driver code and
+re-sign the complete bundles. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
 backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
 The common GL payload uses one set of exact-layout URB rules for four/six/eight-bank
 VS-only and six-bank VS/GS allocations. The four-bank VS allocation ends at
 160 KiB; the other measured layouts end at 360 KiB. The signed executable and predecessor hashes are recorded in
 `payload-provenance.json`.
+
+The GL, VA and OS-specific OpenCL dispatches admit the same physical IDs as
+the supported device list. OpenCL uses exact vendor-checked bitmaps to fit
+its existing code padding. Original compiler backends remain byte-identical;
+these additions do not alter shader, URB or codec behavior. The signed file
+hashes and accepted ID set are recorded under `userspace_admission` in the
+provenance file and checked before package validation.
 
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
