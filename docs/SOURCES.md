@@ -46,6 +46,13 @@ VS-only and six-bank VS/GS allocations. The four-bank VS allocation ends at
 160 KiB; the other measured layouts end at 360 KiB. The signed executable and predecessor hashes are recorded in
 `payload-provenance.json`.
 
+The GL, VA and OS-specific OpenCL dispatches admit the same physical IDs as
+the supported device list. OpenCL uses exact vendor-checked bitmaps to fit
+its existing code padding. Original compiler backends remain byte-identical;
+these additions do not alter shader, URB or codec behavior. The signed file
+hashes and accepted ID set are recorded under `userspace_admission` in the
+provenance file and checked before package validation.
+
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
 

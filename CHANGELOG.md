@@ -8,6 +8,8 @@
 
 ### Fixed
 
+- Accept the added physical IDs in GL compiler, video and OpenCL dispatch on Big Sur–Tahoe, preserving the existing shader, URB and codec paths.
+
 - Match the supported PCI IDs in both framebuffer and accelerator personalities for every OS payload; reject missing or extra IDs before packaging and when checking extracted packages.
 
 - Update the common Compat provider to accept omitted Alder Lake-H/P/U and Raptor Lake-H/P/U PCI IDs, including `4626`, with matching WEX on Big Sur–Tahoe.

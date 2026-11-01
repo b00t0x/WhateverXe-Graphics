@@ -67,6 +67,10 @@ def main():
         assert info['CFBundleVersion'] == entry['version']
         assert info['OSBundleCompatibleVersion'] == entry['compatible_version']
         assert hashlib.sha256(plistlib.dumps(info['IOKitPersonalities'])).hexdigest() == entry['policy_source_sha256'], os
+    admission = expected['userspace_admission']
+    assert set(admission['device_ids']) == set(policy['device_ids'])
+    for relative, sha in admission['files'].items():
+        assert hashlib.sha256((ROOT / 'payloads' / relative).read_bytes()).hexdigest() == sha, relative
     adapter = ROOT / 'payloads/Common/Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib'
     assert hashlib.sha256(adapter.read_bytes()).hexdigest() == expected['compiler_adapter']['sha256']
     gl = ROOT / 'payloads/Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver'
