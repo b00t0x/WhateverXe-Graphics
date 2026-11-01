@@ -49,6 +49,10 @@ hashes and signed outputs. `descriptor.dylib`, `libigdmd.dylib` and the donor
 driver code/data are preserved; the enclosing bundles are sealed with the Mod chain.
 Package build/test checks cover the servicing adapters in both normal payloads
 and AutoPkg resources. Source-build labels remain provenance only.
+The companion also replaces the imported bridge's numeric shared-cache threshold
+with dyld's current cache range. Only its symbol-resolved, byte-verified predicate
+entry is redirected in process memory; projection code and the signed on-disk
+bridge are unchanged. The companion remains mapped for that redirect's lifetime.
 
 On Sonoma–Tahoe the adapter uses the OS GPUCompiler's native AIR-v4 serializer.
 It checks the required APIs, System paths and shared LLVM image identity rather

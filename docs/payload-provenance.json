@@ -30,18 +30,20 @@
     "admission": "OS family and ABI contracts; no product-build allowlist",
     "sources_sha256": {
       "servicing-os.h": "0738aa64db22890b5059762946b75ef5f1bdfc0abca71c1aa7e684fdc95539e1",
-      "tahoe-mtl-descriptor.m": "ab9bec83be239da1cab05752dcb958b662a896c1ed0c1452edbd32cf998bec12",
+      "tahoe-mtl-descriptor.m": "a2ae2069753a31c95287d65595547af7195b0b13e12d8ec01d34879c370cfda5",
       "tahoe-mtl-descriptor.h": "177fff11114c347393d18a3ddb4b06a5522ef4f2d1cb082e36cdf3cae14966dc",
-      "sequoia-mtl-archive.m": "ae405d5f1e170102c74682348153aeb70a8a893ed56a296bf070f53c7b481cb0",
+      "sequoia-mtl-archive.m": "0972f693fe62d8c4c92dc346093f9449b4ea9c0a68636dc4b2a1f9e082c9bc4e",
       "va-vt-adapter.c": "e75875288584db70b1de574b2b89c106593b835a89d02b01b66581bef101cb01",
       "va-vt-adapter.S": "f2dbaddc64555a2401856b9cf9688daa2573408d429d45cb396a9eea394212fe",
-      "va-monterey-sps.h": "b2e3ed6a00c1ab1a97984fdf9a1992d3ef7dc32c8aee7d91367cd277916b48b6"
+      "va-monterey-sps.h": "b2e3ed6a00c1ab1a97984fdf9a1992d3ef7dc32c8aee7d91367cd277916b48b6",
+      "descriptor-cache-placement.m": "f678f1d30223e2806cb28df7adf8aa3d287d2bc0da2dd9120047e710d6fbfd14"
     },
     "signed_sha256": {
-      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "4524b0217da8f329037ceada0aa3392f0842126b19d4e10b95dffbecf22f7ad8",
+      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "071f0a5a544a050457df5aa2e40f3a1976bcf0819657b935fdc77b88ca45c805",
       "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "d91a48b2dd41a494d7d4b5cd611290fd57835a78efaa7405c872e6286d432bd2",
-      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "d8d16c7c132f78346cacfa96e9bb991037c8f9007fbc9bc599c0f32ead6fdeb1",
+      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "940584418587eabf8325290de166d91736e71abc1a0460357546c99b9bc7782a",
       "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "d11bc0f2e2bee7558dc9555a9a6263d86c036f8d713a5c6f26b53b7c267255f4"
-    }
+    },
+    "cache_classification": "dyld shared cache range; symbol-resolved imported predicate, full byte guard, pinned destination"
   }
 }

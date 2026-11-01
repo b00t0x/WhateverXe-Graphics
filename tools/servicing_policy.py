@@ -25,6 +25,9 @@ def check_files(files, family):
         return
     for name in ADAPTERS:
         check_bytes(files[name].read_bytes(), family + '/' + name)
+    companion = files[ADAPTERS[0]].read_bytes()
+    assert b'_dyld_get_shared_cache_range\0' in companion, family + ': missing dynamic cache classification'
+    assert b'xe_install_descriptor_placement\0' in companion, family + ': missing descriptor integration'
 
 
 def check_payloads(root):
