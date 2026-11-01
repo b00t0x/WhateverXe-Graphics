@@ -15,10 +15,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			3wlXCTZOcpLBxQo8VVzY/qGeWzQ=
+			kL0rhdeEImeV9C7qEI0fyt6R5h4=
 			</data>
 			<key>requirement</key>
-			<string>(identifier "TGLVA") and (certificate root = H"6de7fc5377deac4f5fe21194684f57f553c3592c")</string>
+			<string>certificate leaf = H"6de7fc5377deac4f5fe21194684f57f553c3592c"</string>
 		</dict>
 		<key>version.plist</key>
 		<dict>

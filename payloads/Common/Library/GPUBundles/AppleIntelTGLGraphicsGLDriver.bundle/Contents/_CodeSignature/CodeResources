@@ -15,10 +15,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			uNsBUfS/UOKjQC6rj2AzyRqzgaY=
+			F3UdsBJD5eNjV7Z0E9HtBuh0YZc=
 			</data>
 			<key>requirement</key>
-			<string>(identifier "libigdmd") and (certificate root = H"6de7fc5377deac4f5fe21194684f57f553c3592c")</string>
+			<string>certificate leaf = H"6de7fc5377deac4f5fe21194684f57f553c3592c"</string>
 		</dict>
 		<key>version.plist</key>
 		<dict>

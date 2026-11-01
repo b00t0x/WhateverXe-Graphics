@@ -24,7 +24,7 @@
     "legacy_path": "Direct compiler input on Darwin 21\u201322; not used on Darwin 20"
   },
   "gl_driver": {
-    "sha256": "4dadc833543e79899a059f877ad1e013f9cba649b93c058336f4ae65ad599d7d",
+    "sha256": "03b0638678c9d0da63b41b5255eae20e27afa5bf820999391c406cde003944b9",
     "predecessor_sha256": "404b85e5b547fd9486bf8f10e8f55244708bff06d21d0a3091a0e159c74e63bb",
     "urb_corrections": "One exact-layout rule set for four/six/eight-bank VS-only and six-bank VS/GS allocations; no chained handlers."
   },
@@ -87,13 +87,13 @@
       "a7ad"
     ],
     "files": {
-      "Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver": "4dadc833543e79899a059f877ad1e013f9cba649b93c058336f4ae65ad599d7d",
-      "Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "42227a33580680714a5502dc459048c305f78e85b32f2fce930c0422a17177dc",
-      "Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "d07e7a5fada4107606abeb1fa1f59cc7d7ee751c83e51b827e8cebd7b5d736c7",
-      "Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "934cfa68d05de068fedc6a52533a1ebf6dcdd2566b0fa6e31ef3e3c0ac4ee16f",
-      "Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "909a712df6bda9763eec9099a43f81863354dbac8b30b09e0bd24c22e9014326",
-      "Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "34b252132d0816ca437f2bedb89b86553a7783efbca21cd0e799ad74d6b10e06",
-      "Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "066258d51430bec56942606126161c18bc2e5c8e22b05b089ef2d91a8db6daaf",
+      "Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver": "03b0638678c9d0da63b41b5255eae20e27afa5bf820999391c406cde003944b9",
+      "Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "2711b024ca8dd3918d804066ba1668453fdfc1a8dd00f06ea50f88e09c6fae0e",
+      "Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "d7333e6f59963720919db3662a661fa117b1401566beda391d637e6e5c3e9f08",
+      "Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "41772798a8827a06ec3f73ad1d4386231db1a06a7b8e875ff557e8eadc8b7ccb",
+      "Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "2d1fdcacc052113b2e7d08497f324976c78b9619b07e9dd428d35be9ce7cea3f",
+      "Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "cb4aa0b3d9bae8643162fedef01509b080cddc232847f9f9e991e7c26c451922",
+      "Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "2d92e8f1f814e0c97b74b4431e5964ceac3c989ac7a0b694eed3ed38d50993ed",
       "Big Sur/Library/GPUBundles/XeOpenCL/libCLVMIGCPlugin.dylib": "7a517927069df16c1350602f25de22caee680c80b6ce2ad0e5a515475ce9a19e",
       "Monterey/Library/GPUBundles/XeOpenCL/libCLVMIGCPlugin.dylib": "4912ca63520c7a538874bbd2a68a35084a9ca74cf5cebf8c43baac828006a191",
       "Ventura/Library/GPUBundles/XeOpenCL/libCLVMIGCPlugin.dylib": "d0507823bd0d9caaada1b2b83ec49e33d22cbc85d2a4a8d6802c3f122855ff8e",
