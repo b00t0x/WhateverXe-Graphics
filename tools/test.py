@@ -9,11 +9,13 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from kext_dependencies import check_dependencies
+from servicing_policy import check_files, test_rejection
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('package', type=Path)
 parser.add_argument('--rcodesign', default='rcodesign')
 args = parser.parse_args()
+test_rejection()
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_uninstall.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_dependencies.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('verify.py')), '--rcodesign', args.rcodesign], check=True)
@@ -28,6 +30,11 @@ cases = {
     '15.9': None, '16.0': None, '26.6.99': None, '26.7': 'Tahoe',
     '26.7.1': 'Tahoe', '26.8': 'Tahoe', '26.99.99': 'Tahoe', '27.0': None,
 }
+# Product revision changes must retain the same payload choice. Runtime build
+# identity/ABI contracts are exercised by the adapters' source tests separately.
+cases.update({f'{base}.{patch}': family for base, family in
+              (('15.8', 'Sequoia'), ('26.7', 'Tahoe'), ('26.8', 'Tahoe'))
+              for patch in (137, 823)})
 with tempfile.TemporaryDirectory(prefix='xe-pkg-test-') as tmp:
     root = Path(tmp) / 'expanded'
     subprocess.run(['pkgutil', '--expand-full', str(args.package.resolve()), str(root)], check=True)
@@ -102,6 +109,7 @@ for (const [version, expected] of Object.entries(input.cases)) {
     for build, expected in manifest['systems'].items():
         assert not (payloads['Common'].keys() & payloads[build].keys())
         actual = payloads['Common'] | payloads[build]
+        check_files(actual, build)
         assert actual.keys() == expected.keys()
         plists = [p for rel, p in actual.items() if rel.startswith('Library/Extensions/') and rel.endswith('.kext/Contents/Info.plist')]
         assert check_dependencies(plists, build) > 0

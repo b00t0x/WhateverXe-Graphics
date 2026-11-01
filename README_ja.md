@@ -30,9 +30,10 @@ AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダー�
 | Sequoia | 15.8.x |
 | Tahoe | 26.7以上 |
 
-受付範囲は将来のOS更新での動作保証ではありません。現在の資材の対象buildは
-20G1443、21H1320、22H730、23J631、24H32、25G241です。
-macOS更新前にWEXの説明とリリースノートを確認してください。
+SequoiaとTahoeの更新版には、product buildの許可リストを使わず同じOS系統の適応を適用します。
+実行時のABI検査は維持するため、Apple側の非互換なABI変更には対応更新が必要になる場合があります。
+資材metadataのsource buildは出典の記録であり、受付制限ではありません。
+Big SurからSonomaは対応バージョン固定を維持します。
 `amfi=0x80`と`ipc_control_port_options=0`は不要です。
 
 ## WEXとの関係

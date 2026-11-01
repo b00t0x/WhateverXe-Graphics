@@ -10,6 +10,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from kext_dependencies import check_dependencies
+from servicing_policy import check_files as check_servicing_files
 
 
 def files_at(root):
@@ -52,6 +53,7 @@ def check_autopkg(expanded, manifest, boundaries):
         selected = files_at(assets / name)
         assert not common.keys() & selected.keys()
         actual = common | selected
+        check_servicing_files(actual, name)
         check_files(actual, manifest['systems'][name])
         plists = [p for r, p in actual.items() if r.startswith('Library/Extensions/') and r.endswith('.kext/Contents/Info.plist')]
         assert check_dependencies(plists, name) > 0
@@ -136,6 +138,7 @@ else: sys.exit(99)
                 assert len(kmutil) == 1 and kc.read_bytes() == b'new-kc'
                 actual = {r: p for r, p in files_at(root).items() if r.startswith(('Library/Extensions/', 'Library/GPUBundles/'))}
                 check_files(actual, manifest['systems'][selected])
+                check_servicing_files(actual, selected)
                 assert len([x for x in calls if x[0] == 'chown']) == len(copied) > 0
                 assert all(x[1][:2] == ['-R', 'root:wheel'] for x in calls if x[0] == 'chown')
                 assert all('/Common/' in x[1][-2] or '/' + selected + '/' in x[1][-2] for x in copied)

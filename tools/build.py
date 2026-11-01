@@ -10,6 +10,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from kext_dependencies import check_payload_sets
+from servicing_policy import check_payloads
 
 HERE = Path(__file__).resolve().parent
 PREFIX = 'org.b00t0x.WhateverXe'
@@ -36,6 +37,7 @@ def main():
     assert not args.tag or args.tag == 'v' + policy['package_version'], 'tag/version mismatch'
     # Reject incompatible payloads before creating any package or output directory.
     check_payload_sets(ROOT / 'payloads', policy['systems'])
+    check_payloads(ROOT / 'payloads')
     components, sources = {}, {}
     for name in ['Common'] + [s['payload'] for s in policy['systems']]:
         directory = ROOT / 'payloads' / name

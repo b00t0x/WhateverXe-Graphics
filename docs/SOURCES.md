@@ -41,6 +41,15 @@ VS-only and six-bank VS/GS allocations. The four-bank VS allocation ends at
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
 
+The Sequoia/Tahoe `impostor.dylib` and `TGLVA` companions select the OS family
+without a product-build allowlist. Metal checks the method types and descriptor
+private-pointer contract; VA retains its donor vtable and SPS input checks.
+`servicing_adapters` in `payload-provenance.json` records the companion source
+hashes and signed outputs. `descriptor.dylib`, `libigdmd.dylib` and the donor
+driver code/data are preserved; the enclosing bundles are sealed with the Mod chain.
+Package build/test checks cover the servicing adapters in both normal payloads
+and AutoPkg resources. Source-build labels remain provenance only.
+
 On Sonoma–Tahoe the adapter uses the OS GPUCompiler's native AIR-v4 serializer.
 It checks the required APIs, System paths and shared LLVM image identity rather
 than pinning compiler UUIDs. Missing APIs or incompatible inputs produce an

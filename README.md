@@ -32,10 +32,11 @@ See the [changelog](CHANGELOG.md) for changes in each package version.
 | Sequoia | 15.8.x |
 | Tahoe | 26.7 or newer |
 
-Installer version ranges are not a guarantee of compatibility with future OS
-updates. The current payloads target builds 20G1443, 21H1320, 22H730, 23J631,
-24H32 and 25G241. Check the WEX documentation and release notes before updating
-macOS. `amfi=0x80` and `ipc_control_port_options=0` are not required.
+Sequoia and Tahoe servicing updates use the same OS-family adaptations without
+a product-build allowlist. Runtime ABI checks still apply; an incompatible Apple
+ABI change can require an update. The source-build identifiers in payload metadata
+record provenance, not admission limits. Big Sur through Sonoma retain their
+fixed supported versions. `amfi=0x80` and `ipc_control_port_options=0` are not required.
 
 ## Relationship to WEX
 

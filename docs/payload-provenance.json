@@ -18,12 +18,30 @@
   "mod_leaf_sha1": "6de7fc5377deac4f5fe21194684f57f553c3592c",
   "compiler_adapter": {
     "sha256": "11609123ce5b930aee500736f8bd504cd0280c37654f8e9f353fcc9fc876aff0",
-    "modern_path": "OS-native AIR-v4 on Darwin 23–25; API and image checks without UUID pinning or translator fallback",
-    "legacy_path": "Direct compiler input on Darwin 21–22; not used on Darwin 20"
+    "modern_path": "OS-native AIR-v4 on Darwin 23\u201325; API and image checks without UUID pinning or translator fallback",
+    "legacy_path": "Direct compiler input on Darwin 21\u201322; not used on Darwin 20"
   },
   "gl_driver": {
     "sha256": "404b85e5b547fd9486bf8f10e8f55244708bff06d21d0a3091a0e159c74e63bb",
     "predecessor_sha256": "a1d8cc1863a2813ab54f5db84c197a9a1c3bc80796d2402563b6aa3e159da5f6",
     "urb_corrections": "One exact-layout rule set for four/six/eight-bank VS-only and six-bank VS/GS allocations; no chained handlers."
+  },
+  "servicing_adapters": {
+    "admission": "OS family and ABI contracts; no product-build allowlist",
+    "sources_sha256": {
+      "servicing-os.h": "0738aa64db22890b5059762946b75ef5f1bdfc0abca71c1aa7e684fdc95539e1",
+      "tahoe-mtl-descriptor.m": "ab9bec83be239da1cab05752dcb958b662a896c1ed0c1452edbd32cf998bec12",
+      "tahoe-mtl-descriptor.h": "177fff11114c347393d18a3ddb4b06a5522ef4f2d1cb082e36cdf3cae14966dc",
+      "sequoia-mtl-archive.m": "ae405d5f1e170102c74682348153aeb70a8a893ed56a296bf070f53c7b481cb0",
+      "va-vt-adapter.c": "e75875288584db70b1de574b2b89c106593b835a89d02b01b66581bef101cb01",
+      "va-vt-adapter.S": "f2dbaddc64555a2401856b9cf9688daa2573408d429d45cb396a9eea394212fe",
+      "va-monterey-sps.h": "b2e3ed6a00c1ab1a97984fdf9a1992d3ef7dc32c8aee7d91367cd277916b48b6"
+    },
+    "signed_sha256": {
+      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "4524b0217da8f329037ceada0aa3392f0842126b19d4e10b95dffbecf22f7ad8",
+      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "d91a48b2dd41a494d7d4b5cd611290fd57835a78efaa7405c872e6286d432bd2",
+      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "d8d16c7c132f78346cacfa96e9bb991037c8f9007fbc9bc599c0f32ead6fdeb1",
+      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "d11bc0f2e2bee7558dc9555a9a6263d86c036f8d713a5c6f26b53b7c267255f4"
+    }
   }
 }
