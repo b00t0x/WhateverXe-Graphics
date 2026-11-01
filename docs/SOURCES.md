@@ -36,7 +36,10 @@ The provider release version is independent of this ABI compatibility floor.
 
 `payloads/Common` contains the shared TGLCompat kext, GL bundle and compiler adapter. OS-named
 directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
-units. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
+units. Framebuffer and accelerator PCI personalities use the supported IDs recorded
+in `tools/policy.json`; build and extracted-package checks require both client
+match sets to agree with that list. ID additions preserve driver code and
+re-sign the complete bundles. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
 backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
 The common GL payload uses one set of exact-layout URB rules for four/six/eight-bank
 VS-only and six-bank VS/GS allocations. The four-bank VS allocation ends at

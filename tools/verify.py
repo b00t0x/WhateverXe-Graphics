@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--rcodesign', default='rcodesign')
     args = parser.parse_args()
     policy = json.loads((ROOT / 'tools/policy.json').read_text())
-    check_payload_sets(ROOT / 'payloads', policy['systems'])
+    check_payload_sets(ROOT / 'payloads', policy['systems'], policy['device_ids'])
     seen = set()
     for path in sorted((ROOT / 'payloads').rglob('*')):
         assert not path.is_symlink(), path

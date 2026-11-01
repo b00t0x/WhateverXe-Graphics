@@ -8,6 +8,8 @@
 
 ### Fixed
 
+- Match the supported PCI IDs in both framebuffer and accelerator personalities for every OS payload; reject missing or extra IDs before packaging and when checking extracted packages.
+
 - Update the common Compat provider to accept omitted Alder Lake-H/P/U and Raptor Lake-H/P/U PCI IDs, including `4626`, with matching WEX on Big Sur–Tahoe.
 
 - Fix graphics initialization when the WEX display configuration requires USB-C DisplayPort Alt Mode support, including HDMI output on those systems, on Big Sur–Tahoe.
