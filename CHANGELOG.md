@@ -6,6 +6,10 @@
 
 - Add an experimental `--autopkg` build for fresh macOS installation through upstream AutoPkgInstaller, selecting the matching Graphics assets from one universal package and requesting a native Installer restart before Setup Assistant.
 
+### Fixed
+
+- Fix graphics initialization when the WEX display configuration requires USB-C DisplayPort Alt Mode support, including HDMI output on those systems, on Big Sur–Tahoe.
+
 ## 0.3.2
 
 - Fix OpenGL texture updates and missing geometry for the measured six-bank VS-only and VS/GS URB layouts on Big Sur–Tahoe. Handle all four measured layouts in one rule set while preserving the four/eight-bank corrections.
