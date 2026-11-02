@@ -30,11 +30,7 @@ AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダー�
 | Sequoia | 15.8.x |
 | Tahoe | 26.7以上 |
 
-SequoiaとTahoeの更新版には、product buildの許可リストを使わず同じOS系統の適応を適用します。
-実行時のABI検査は維持するため、Apple側の非互換なABI変更には対応更新が必要になる場合があります。
-資材metadataのsource buildは出典の記録であり、受付制限ではありません。
-Big SurからSonomaは対応バージョン固定を維持します。
-`amfi=0x80`と`ipc_control_port_options=0`は不要です。
+SequoiaとTahoeは同じOS系列内の互換性のある更新に対応します。将来のApple側の変更によりGraphicsの更新が必要になる場合があります。Big SurからSonomaは上記のバージョンが必要です。`amfi=0x80`と`ipc_control_port_options=0`は不要です。
 
 ## WEXとの関係
 
@@ -66,39 +62,17 @@ Mod署名が付いています。導入エラーが出た場合は、問題を�
 
 ## セットアップ前の自動インストール（実験的機能）
 
-追加の`AutoPkg-Assets.pkg`は、新規macOSインストールの途中で同じGraphics資材を配置し、
-AuxKC生成後の再起動を標準Installerに要求します。OCLPの
-[AutoPkgInstaller.kext](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera)
-を使用し、OCLPアプリの同梱・導入は不要です。初回起動時の加速をこの機能に任せる前に、
-テスト用インストールで検証してください。
+AutoPkgは**新規macOSインストール中**にGraphicsを導入し、セットアップアシスタントから加速を有効にします。SequoiaとTahoeで実機確認済みで、対応する6 OSに同じpkgを使用します。
 
-1. 上記のOSバージョン条件を満たすmacOSインストーラーUSBを作成します。
-2. Lilu・WEX・**Mod版**AMFIPassに加え、本家AutoPkgInstaller 1.0.4をOpenCoreに設定します。
-   Tahoeでは`-autopkgbeta`が必要です。この引数はOS上限を回避するもので、互換性の保証ではありません。
-3. インストーラー起動前に`csr-active-config=030A0000`（値`0xA03`）を設定します。
-   追加の`0x200`はPrivacy & Securityでの承認を省略するもので、WEXに限らず全kextに適用されます。
-   インストール後に外しても承認が維持されるとは限りません。
-4. `python3 tools/build.py --autopkg`で生成した`dist/autopkg/AutoPkg-Assets.pkg`を、
-   USBルートの`Library/Packages/`へコピーします。同じpkgで上記6 OSに対応します。
-   ファイル名は変更せず、OCLP本家のpkgとも置き換えないでください。
-5. 通常どおりmacOSをインストールします。起動中のOS用資材を選択し、AuxKCを生成して、
-   セットアップアシスタント前の追加再起動を要求します。最初のUSBインストーラー画面は加速されません。
+1. 対応バージョンのmacOSインストーラーUSBを用意します。
+2. Lilu・WEX・**Mod版**AMFIPassに加え、本家[AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera)をOpenCoreに設定します。Tahoeでは`-autopkgbeta`も追加します。
+3. インストーラー起動前に`csr-active-config=030A0000`（`0xA03`）を設定します。未承認kextのロードを許可する設定で、追加の`0x200`を後から外しても承認が維持されるとは限りません。
+4. このリポジトリで`python3 tools/build.py --autopkg`を実行し、`dist/autopkg/AutoPkg-Assets.pkg`をUSBルートの`Library/Packages/`へコピーします。ファイル名は変更しません。
+5. 通常どおりmacOSをインストールします。対象OSの資材配置とAuxKC生成後、セットアップアシスタント前に追加再起動を要求します。最初のUSBインストーラー画面は加速されません。
 
-AutoPkgはscriptだけの1 componentで構成します。内部資材としてCommonと全対応OS分を保持し、
-Commonと検出したOSの資材だけを`/Library`へコピーします。内部資材はInstallerの一時領域に置かれます。
-通常のGraphics pkgは標準payloadとInstaller UIによるOS選択を引き続き使用します。
+OCLPアプリ・KDK.pkg・MetallibSupportPkg.pkgは不要です。AutoPkgを手動で開いたり、既存環境・上書きアップグレード・OTAに使ったりしないでください。同じUSBでWEXとOCLPのAutoPkg資材を併用しないでください。既存環境の更新には上記の通常pkgを使用します。
 
-AutoPkgを手動で開かないでください。セットアップ済みOS、起動中ではない対象ボリューム、
-対応範囲外のOS、旧System-volume patch、既存Graphics bundle（導入途中の残存物を含む）を拒否します。
-新規OSインストール専用であり、この判定は誤実行防止用で、セキュリティ境界ではありません。
-上書きアップグレード、Software Update／OTA、同じUSBでのWEXとOCLP AutoPkgの併用は対象外です。
-WEX資材のためのKDK.pkg・MetallibSupportPkg.pkgは不要です。導入失敗時は`/var/log/install.log`を確認してください。
-
-完了処理と再起動要求はInstallerが扱います。scriptは強制再起動や未確定receiptの照会を行いません。
-script-only componentの識別子は`org.b00t0x.WhateverXe.AutoGraphics`として導入ログに記録されます。
-`--nopayload`で生成するため、package receiptは残りません。導入成功は`/var/log/install.log`と
-`/Library/Receipts/InstallHistory.plist`で確認してください。
-以下の共通の単独uninstallerで導入したGraphicsファイルを削除できます。
+導入エラーは`/var/log/install.log`で確認できます。AutoPkgで導入したGraphicsも、共通の[アンインストーラー](#アンインストール)で削除できます。
 
 ## アンインストール
 
@@ -122,7 +96,7 @@ Xcode Command Line ToolsとPython 3.10以上を用意したmacOSで実行しま�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
 ```
 
 自動インストール用pkgの生成と検査：

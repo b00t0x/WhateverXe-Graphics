@@ -1,20 +1,18 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
+
+Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release with this update.
 
 ### Added
 
-- Add an experimental `--autopkg` build for fresh macOS installation through upstream AutoPkgInstaller, selecting the matching Graphics assets from one universal package and requesting a native Installer restart before Setup Assistant.
+- Add experimental automatic Graphics installation before Setup Assistant through upstream AutoPkgInstaller, using one package for all six supported macOS versions.
 
 ### Fixed
 
-- Accept the added physical IDs in GL compiler, video and OpenCL dispatch on Big Sur–Tahoe, preserving the existing shader, URB and codec paths.
-
-- Match the supported PCI IDs in both framebuffer and accelerator personalities for every OS payload; reject missing or extra IDs before packaging and when checking extracted packages.
-
-- Update the common Compat provider to accept omitted Alder Lake-H/P/U and Raptor Lake-H/P/U PCI IDs, including `4626`, with matching WEX on Big Sur–Tahoe.
-
-- Fix graphics initialization when the WEX display configuration requires USB-C DisplayPort Alt Mode support, including HDMI output on those systems, on Big Sur–Tahoe.
+- Fix graphics initialization on systems using the new USB-C DisplayPort Alt Mode support.
+- Extend driver matching and OpenGL, video and OpenCL acceleration to the additional GPU IDs accepted by WEX.
+- Fix Metal and video compatibility with Sequoia and Tahoe updates without requiring an exact OS build match, and ensure the Metal driver can load its bundled dependencies on first use.
 
 ## 0.3.2
 

@@ -32,11 +32,7 @@ See the [changelog](CHANGELOG.md) for changes in each package version.
 | Sequoia | 15.8.x |
 | Tahoe | 26.7 or newer |
 
-Sequoia and Tahoe servicing updates use the same OS-family adaptations without
-a product-build allowlist. Runtime ABI checks still apply; an incompatible Apple
-ABI change can require an update. The source-build identifiers in payload metadata
-record provenance, not admission limits. Big Sur through Sonoma retain their
-fixed supported versions. `amfi=0x80` and `ipc_control_port_options=0` are not required.
+Sequoia and Tahoe accept compatible updates within their OS family. Future Apple changes may require a Graphics update. Big Sur through Sonoma require the versions listed above. `amfi=0x80` and `ipc_control_port_options=0` are not required.
 
 ## Relationship to WEX
 
@@ -70,47 +66,17 @@ error, resolve it and reinstall before restarting.
 
 ## Automatic installation before Setup Assistant (experimental)
 
-An optional `AutoPkg-Assets.pkg` installs the same Graphics payloads during a
-fresh macOS installation and requests a native Installer restart after AuxKC is built. It uses
-OCLP's [AutoPkgInstaller.kext](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera);
-the OCLP application is not included or required. This mode requires validation
-on a test installation before relying on it for first-boot graphics.
+AutoPkg installs Graphics during a **fresh macOS installation**, so acceleration is available in Setup Assistant. It has been tested on Sequoia and Tahoe; all six supported OS versions use the same package.
 
-1. Prepare a USB macOS installer whose version meets the requirements above.
-2. Add upstream AutoPkgInstaller 1.0.4 to OpenCore alongside Lilu, WEX and the
-   **Mod** AMFIPass. AutoPkgInstaller 1.0.4 requires `-autopkgbeta` for Tahoe;
-   that flag bypasses its OS-version limit, not a guarantee of compatibility.
-3. Set `csr-active-config=030A0000` (value `0xA03`) before booting the installer.
-   The extra `0x200` allows unapproved kexts to load without a Privacy & Security
-   approval; it applies to all kexts, not just WEX. Do not assume removing it
-   after installation preserves approval.
-4. Build with `python3 tools/build.py --autopkg` and copy
-   `dist/autopkg/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root.
-   The same package supports all six OS versions listed above. Keep that exact
-   filename. Do not replace it with the upstream OCLP package.
-5. Install macOS normally. The package selects the running OS's assets, builds
-   AuxKC and requests an additional restart before Setup Assistant; the initial
-   USB installer UI is unchanged.
+1. Prepare a USB installer for a supported macOS version.
+2. Add upstream [AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/payloads/Kexts/Acidanthera) to OpenCore alongside Lilu, WEX and **Mod** AMFIPass. Add `-autopkgbeta` for Tahoe.
+3. Set `csr-active-config=030A0000` (`0xA03`) before starting the installer. This allows unapproved kexts to load; do not assume approval persists if you later remove the extra `0x200` bit.
+4. Run `python3 tools/build.py --autopkg` from this repository and copy `dist/autopkg/AutoPkg-Assets.pkg` to `Library/Packages/` at the USB root. Keep the filename unchanged.
+5. Install macOS normally. AutoPkg installs the matching assets, builds AuxKC and requests an extra restart before Setup Assistant. The initial USB installer UI is not accelerated.
 
-AutoPkg has one script-only component. Its private resources contain Common and
-all supported OS assets; only Common and the detected OS are copied to `/Library`.
-The resources stay in Installer's temporary directory. The normal Graphics pkg
-continues to use standard payloads and OS selection in the Installer UI.
+The OCLP application, KDK.pkg and MetallibSupportPkg.pkg are not needed. Do not open AutoPkg manually or use it for an existing installation, an in-place upgrade or OTA. Do not combine WEX and OCLP AutoPkg assets on the same USB. Use the normal pkg above to update an existing system.
 
-Never open AutoPkg manually. It rejects configured systems, non-running target
-volumes, unsupported OS versions, old System-volume patches and existing Graphics
-bundles (including partial installations). It is intended for fresh OS installation;
-these guards are misuse checks, not a security boundary. In-place upgrades,
-Software Update/OTA, and combining WEX and OCLP AutoPkg assets on the same USB are
-outside this mode's scope. KDK.pkg and MetallibSupportPkg.pkg are not needed by
-WEX. Inspect `/var/log/install.log` if installation fails.
-
-Installer handles completion and the restart request; no script forces a reboot
-or reads unfinished receipts. The script-only component is identified as
-`org.b00t0x.WhateverXe.AutoGraphics` in the install log. Because it is built with
-`--nopayload`, it leaves no package receipt. Check the successful transaction in
-`/var/log/install.log` and `/Library/Receipts/InstallHistory.plist` instead.
-The same standalone uninstaller below removes its installed graphics files.
+For installation errors, check `/var/log/install.log`. The standard [uninstaller](#uninstall) also removes AutoPkg-installed Graphics files.
 
 ## Uninstall
 
@@ -135,7 +101,7 @@ On macOS with Xcode Command Line Tools and Python 3.10 or newer:
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.2.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
 ```
 
 To build and verify the optional automatic-installation pkg:
