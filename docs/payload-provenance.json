@@ -121,11 +121,12 @@
       "descriptor-cache-placement.m": "f678f1d30223e2806cb28df7adf8aa3d287d2bc0da2dd9120047e710d6fbfd14"
     },
     "signed_sha256": {
-      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "071f0a5a544a050457df5aa2e40f3a1976bcf0819657b935fdc77b88ca45c805",
+      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "1cc38c7941333d3f4b88316795c78ca0095addf945fa35b6ff8634ecc93a1060",
       "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "db879dbae1c708b5fcdb3c39e251e63e635016d19885e9186fdc6baca68414aa",
-      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "940584418587eabf8325290de166d91736e71abc1a0460357546c99b9bc7782a",
+      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/impostor.dylib": "cd415a30e111d9ad48e6dd1936d848c1e809821aa3770c93ae7c759a4454567c",
       "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "cbf0a308a536d2d54565684025d32b200649681aa2fda45dd46bdfdb77b3da9e"
     },
-    "cache_classification": "dyld shared cache range; symbol-resolved imported predicate, full byte guard, pinned destination"
+    "cache_classification": "dyld shared cache range; symbol-resolved imported predicate, full byte guard, pinned destination",
+    "descriptor_dependency": "@loader_path/descriptor.dylib; cold load without descriptor preload verified"
   }
 }
