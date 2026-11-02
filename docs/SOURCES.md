@@ -9,8 +9,8 @@ for this repository.
 
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
-use one RELEASE build of AppleIntelTGLCompat 0.6.1 from WEX commit
-[`eb3a2e2`](https://github.com/b00t0x/WhateverXe/tree/eb3a2e24cd55120a0aa3c1c650750bb9c09820c6/AppleIntelTGLCompat).
+use one RELEASE build of AppleIntelTGLCompat 0.7.0 from WEX commit
+[`2aa06ad`](https://github.com/b00t0x/WhateverXe/tree/2aa06ad013e08f7b79779d446cdd12084b4e3dfd/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -18,6 +18,11 @@ copies. OS admission uses the shared WEX kernel-version selector; physical-devic
 and binding guards remain in the shared source. The provider also carries the
 source GraphicsPolicy.plist personality, restricted to admitted Display13 Intel
 framebuffer clients; it does not override policy for other GPUs.
+The provider includes the USB-C DisplayPort Alt Mode capability required by
+the corresponding WEX connector support, including admission when another
+output such as HDMI is connected. It also recognizes the complete Linux i915
+Alder Lake-P and Raptor Lake-P/U PCI ID sets, including the single-DIMM
+`4626` identity; WEX must use the same updated device table.
 
 [Machine-readable provenance](payload-provenance.json) records this single source
 revision, build configuration, source file hash and final signed executable hash.
@@ -31,15 +36,38 @@ The provider release version is independent of this ABI compatibility floor.
 
 `payloads/Common` contains the shared TGLCompat kext, GL bundle and compiler adapter. OS-named
 directories contain complete signed graphics/framebuffer, Metal, VA and OpenCL
-units. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
+units. Framebuffer and accelerator PCI personalities use the supported IDs recorded
+in `tools/policy.json`; build and extracted-package checks require both client
+match sets to agree with that list. ID additions preserve driver code and
+re-sign the complete bundles. The same compiler adapter serves Monterey through Tahoe; its unchanged Apple
 backend and runtime accompany those OS payloads. Big Sur uses its native compiler plugin.
 The common GL payload uses one set of exact-layout URB rules for four/six/eight-bank
 VS-only and six-bank VS/GS allocations. The four-bank VS allocation ends at
 160 KiB; the other measured layouts end at 360 KiB. The signed executable and predecessor hashes are recorded in
 `payload-provenance.json`.
 
+The GL, VA and OS-specific OpenCL dispatches admit the same physical IDs as
+the supported device list. OpenCL uses exact vendor-checked bitmaps to fit
+its existing code padding. Original compiler backends remain byte-identical;
+these additions do not alter shader, URB or codec behavior. The signed file
+hashes and accepted ID set are recorded under `userspace_admission` in the
+provenance file and checked before package validation.
+
 The imported assets preserve the established Data paths and OS-specific ABI
 adaptations. The builder never rewrites them or chooses hardware/connector paths.
+
+The Sequoia/Tahoe `impostor.dylib` and `TGLVA` companions select the OS family
+without a product-build allowlist. Metal checks the method types and descriptor
+private-pointer contract; VA retains its donor vtable and SPS input checks.
+`servicing_adapters` in `payload-provenance.json` records the companion source
+hashes and signed outputs. `descriptor.dylib`, `libigdmd.dylib` and the donor
+driver code/data are preserved; the enclosing bundles are sealed with the Mod chain.
+Package build/test checks cover the servicing adapters in both normal payloads
+and AutoPkg resources. Source-build labels remain provenance only.
+The companion also replaces the imported bridge's numeric shared-cache threshold
+with dyld's current cache range. Only its symbol-resolved, byte-verified predicate
+entry is redirected in process memory; projection code and the signed on-disk
+bridge are unchanged. The companion remains mapped for that redirect's lifetime.
 
 On Sonoma–Tahoe the adapter uses the OS GPUCompiler's native AIR-v4 serializer.
 It checks the required APIs, System paths and shared LLVM image identity rather
@@ -73,6 +101,29 @@ CI pins [apple-codesign 0.29.0](https://github.com/indygreg/apple-platform-rs/re
 for CMS/signature checks, alongside Apple's `codesign`. The Mod chain need not
 be trusted by the build host. Signing happens before an asset is imported here;
 there are no signing secrets in Actions.
+
+## Installer-time package chainloading
+
+The optional AutoPkg build uses the additional-package entry point described in
+[OCLP PR #986](https://github.com/dortania/OpenCore-Legacy-Patcher/pull/986).
+Upstream [AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip)
+registers the fixed `Library/Packages/AutoPkg-Assets.pkg` path during Installer
+boot. The ZIP checked on 2026-10-27 has SHA-256
+`91368c6e37002d19f5b8f39a6746790b8f73fc17a80fb27ab78d9ae743725745`.
+The kext is obtained separately; this repository does not redistribute it.
+Its plugin accepts Darwin 20–24 by default and provides `-autopkgbeta`.
+
+The Graphics AutoPkg contains the existing signed payloads and native shell
+scripts. It does not embed OCLP, its patch-selection engine or support DMGs.
+A single script-only component selects Common and the running OS from private
+script resources, then builds AuxKC. It uses the native package restart requirement,
+including `postinstall-action="restart"` on that component. This component
+metadata is also used by [Yubico's package builder](https://github.com/Yubico/ifd-yubico/blob/master/build-installer.sh).
+The package scripts do not force a reboot or query in-progress receipts.
+As documented by [munki-pkg](https://github.com/munki/munki-pkg#payload-free-packages),
+`pkgbuild --nopayload` leaves no package receipt. AutoPkg success is recorded in
+the install log and install history; its component identifier is not a receipt.
+No OCLP application source is copied into this package.
 
 ## Repository utilities and package releases
 

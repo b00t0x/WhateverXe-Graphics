@@ -7,6 +7,7 @@ import plistlib
 import subprocess
 from pathlib import Path
 from kext_dependencies import check_payload_sets
+from servicing_policy import check_payloads
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD_LEAF = '6de7fc5377deac4f5fe21194684f57f553c3592c'
@@ -23,7 +24,8 @@ def main():
     parser.add_argument('--rcodesign', default='rcodesign')
     args = parser.parse_args()
     policy = json.loads((ROOT / 'tools/policy.json').read_text())
-    check_payload_sets(ROOT / 'payloads', policy['systems'])
+    check_payload_sets(ROOT / 'payloads', policy['systems'], policy['device_ids'])
+    check_payloads(ROOT / 'payloads')
     seen = set()
     for path in sorted((ROOT / 'payloads').rglob('*')):
         assert not path.is_symlink(), path
@@ -56,6 +58,8 @@ def main():
         result = subprocess.run(['codesign', '--verify', '--deep', '--strict', str(bundle)], capture_output=True)
         assert result.returncode == 0 or b'CSSMERR_TP_NOT_TRUSTED' in result.stderr, result.stderr
     expected = json.loads((ROOT / 'docs/payload-provenance.json').read_text())
+    for name, digest in expected['servicing_adapters']['signed_sha256'].items():
+        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, name
     # One build supplies every OS. Reject accidentally reintroduced per-OS copies.
     provider = ROOT / 'payloads/Common/Library/Extensions/AppleIntelTGLCompat.kext'
     assert list((ROOT / 'payloads').rglob('AppleIntelTGLCompat.kext')) == [provider]
@@ -67,6 +71,10 @@ def main():
         assert info['CFBundleVersion'] == entry['version']
         assert info['OSBundleCompatibleVersion'] == entry['compatible_version']
         assert hashlib.sha256(plistlib.dumps(info['IOKitPersonalities'])).hexdigest() == entry['policy_source_sha256'], os
+    admission = expected['userspace_admission']
+    assert set(admission['device_ids']) == set(policy['device_ids'])
+    for relative, sha in admission['files'].items():
+        assert hashlib.sha256((ROOT / 'payloads' / relative).read_bytes()).hexdigest() == sha, relative
     adapter = ROOT / 'payloads/Common/Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib'
     assert hashlib.sha256(adapter.read_bytes()).hexdigest() == expected['compiler_adapter']['sha256']
     gl = ROOT / 'payloads/Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver'

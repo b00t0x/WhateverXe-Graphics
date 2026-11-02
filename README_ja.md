@@ -2,24 +2,13 @@
 
 [English](README.md)
 
-[WhateverXe](https://github.com/b00t0x/WhateverXe)用の署名済みグラフィックス資材と、
-通常のmacOSインストーラーです。1つのpkgが起動中macOS用のpayloadを選び、
-`/Library`へ配置してAuxKCを更新します。Systemファイルやsnapshotへのパッチは行いません。
-OpenCore・EFIの設定は別途必要です。
-
-対応GPU・機能・設定・既知の問題は[WhateverXe](https://github.com/b00t0x/WhateverXe)を
-参照してください。WEXと本pkgのリリース番号は独立しています。
-AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダーはWEXリポジトリで管理します。
-全対応macOSで単一ビルドを使用し、Common payloadに収録しています。
-
-各pkgバージョンの変更点は[CHANGELOG](CHANGELOG.md)を参照してください。
+[WhateverXe](https://github.com/b00t0x/WhateverXe)用の署名済みグラフィックスドライバーとmacOSインストーラーです。`/Library`への配置とAuxKC生成を行い、Systemファイルやsnapshotにはパッチしません。
+WEXとGraphicsは両方とも最新版を使用してください。対応GPU・設定・既知の問題は[WEX](https://github.com/b00t0x/WhateverXe/blob/main/README_ja.md)、pkgの変更点は[CHANGELOG](CHANGELOG.md)を参照してください。
 
 ## 必要な構成
 
-- WEXのREADMEに記載されたWEX・OpenCore構成を使用するIntel macOS。
-- Liluと最新版のWhateverXe。
-- OpenCoreから読み込む[AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip)。通常のupstream版AMFIPassでは、本資材の署名チェーンに対応できません。
-- SIP設定`csr-active-config=03080000`（値`0x803`）。本pkgはSIP全面有効化には対応していません。
+- Lilu・最新版WEX・[AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip)を設定したOpenCore。本家AMFIPassでは代用できません。
+- SIP設定`csr-active-config=03080000`（`0x803`）。SIP全面有効には対応していません。
 
 | macOS | 必要バージョン |
 | --- | --- |
@@ -30,68 +19,53 @@ AppleIntelTGLCompatはpkgに含まれますが、ソースと共有ヘッダー�
 | Sequoia | 15.8.x |
 | Tahoe | 26.7以上 |
 
-受付範囲は将来のOS更新での動作保証ではありません。現在の資材の対象buildは
-20G1443、21H1320、22H730、23J631、24H32、25G241です。
-macOS更新前にWEXの説明とリリースノートを確認してください。
-`amfi=0x80`と`ipc_control_port_options=0`は不要です。
-
-## WEXとの関係
-
-WEXはOS・GPUへの適応処理と表示制御を担当します。本pkgはグラフィックスドライバー、
-コンパイラー関連部品、およびドライバー共通サービスを提供するAppleIntelTGLCompatを含みます。
-両者のリリース番号を揃える必要はありません。
-
-両方とも最新版を使用してください。GPU・表示に必要な設定は
-[WEXの設定ガイド](https://github.com/b00t0x/WhateverXe/blob/main/README_ja.md#設定)を参照してください。
-
-## OCLPの他のroot patchとの併用
-
-他のroot patchのためにOCLPを併用する場合は、
-[独自ビルド版OCLP](https://github.com/b00t0x/OpenCore-Legacy-Patcher)を使用してください。
-通常版OCLPとXeの資材ではAMFIPassのtrust anchorが異なり、1つのAMFIPassで
-両方の署名に対応できません。独自版OCLPは本資材と同じMod署名チェーンを使用します。
+OCLPの他のroot patchを併用する場合は、同じMod署名に対応した[独自ビルド版OCLP](https://github.com/b00t0x/OpenCore-Legacy-Patcher)を使用してください。
 
 ## インストール
 
-1. OpenCoreにWEX・Liluとリンク先の**Mod版**AMFIPassを設定します。
-   旧Xe System patchが適用されている場合は、その復元手順で先に戻してください。
-2. 導入先のmacOSを起動します。
-3. [Releases](https://github.com/b00t0x/WhateverXe-Graphics/releases)からpkgをダウンロードし、Installerで開きます。導入成功後に再起動してください。
+1. [WEXの手順](https://github.com/b00t0x/WhateverXe/blob/main/README_ja.md#インストール)に従ってOpenCoreを設定し、旧Xe System patchがあれば先に復元します。
+2. 対象macOSを起動し、[Releases](https://github.com/b00t0x/WhateverXe-Graphics/releases)の`WhateverXe-Graphics-*.pkg`を開きます。
+3. 導入成功後に再起動します。エラーが出た場合は解決してから再起動してください。
 
-通常のInstaller payloadとreceiptを使用します。AuxKCを更新し、Tahoeでは
-`CoreMedia / AllowOnePassMetalScaling`を無効化します。
-EFI・起動引数・SIPは変更しません。pkg自体は未署名・未公証ですが、改変したpayloadには
-Mod署名が付いています。導入エラーが出た場合は、問題を解決して再導入してから再起動してください。
+インストーラーはEFI・SIPを変更しません。pkg自体は未署名・未公証ですが、改変したグラフィックス資材にはMod署名が付いています。
+
+## セットアップ前の自動インストール
+
+AutoPkgは**新規macOSインストール中**にグラフィックス加速を有効にします。SequoiaとTahoeで実機確認済みです。
+
+1. 対応するmacOSのインストーラーUSBを作成し、Releasesから[`AutoPkg-Assets.pkg`](https://github.com/b00t0x/WhateverXe-Graphics/releases/latest/download/AutoPkg-Assets.pkg)をダウンロードします。
+2. ファイル名を変えず、USB内の`Library/Packages/`へコピーします。`Packages`がなければ作成してください。不可視の`Library`を開くには、USBのボリューム名に合わせて次を実行します。
+
+   ```sh
+   open "/Volumes/Install macOS Tahoe/Library"
+   ```
+
+3. Lilu・WEX・Mod AMFIPassに加え、本家[AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip)をOpenCoreに追加します。`csr-active-config=030A0000`（`0xA03`）を設定し、Tahoeでは`-autopkgbeta`も追加します。
+4. 通常どおりmacOSをインストールします。追加再起動を経てセットアップアシスタントから加速が有効になります。最初のUSBインストーラー画面は加速されません。
+
+AutoPkgを手動で開かないでください。既存環境・更新には通常pkgを使用し、同じUSBでWEXとOCLPのAutoPkgを併用しないでください。OCLPアプリ・KDK・MetallibSupportPkgは不要です。
+`0xA03`は未承認kextのロードを許可する設定で、追加の`0x200`を後から外しても承認が維持されるとは限りません。
 
 ## アンインストール
 
-このリポジトリの最新の[`uninstall.sh`](uninstall.sh)をダウンロードし、次を実行します。
+最新版の[`uninstall.sh`](uninstall.sh)をダウンロードし、実行後に再起動します。
 
 ```sh
 sudo bash uninstall.sh
 ```
 
-削除成功後に再起動してください。本プロジェクトが配布するグラフィックス資材と
-scalingの上書き設定を削除し、AuxKCを更新してグラフィックスpkgのreceiptを解除します。
-導入したpkgのバージョンによらず最新のスクリプトを使用します。他のCoreMedia設定は維持します。
-EFI内のWEX・Lilu・AMFIPassの削除や、以前のグラフィックス構成の復元は行いません。
-
-AMFIPassと削除スクリプトは、グラフィックスpkgとは独立してリポジトリで管理します。
-Releaseに添付するのはpkgとそのチェックサムです。
+どちらの方法で導入したGraphicsも削除し、AuxKCを生成し直します。EFIの部品は削除せず、以前のグラフィックス構成も復元しません。導入エラーは`/var/log/install.log`で確認できます。
 
 ## ビルド
 
-Xcode Command Line ToolsとPython 3.10以上を用意したmacOSで実行します。
+macOS、Xcode Command Line Tools、Python 3.10以上が必要です。検査にはNode.jsと`rcodesign` 0.29.0も使用します。
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
 ```
 
-検証にはNode.jsと`rcodesign` 0.29.0も必要です。CIでは両方を用意します。
-ビルダーはGit内の署名済み`payloads/Common`とOS別ディレクトリを使用し、
-Apple原本の取得・バイナリ改変・署名鍵の使用は行いません。出力先は`dist/`です。
-導入先MacにPython・Node.js・rcodesignを用意する必要はありません。
+AutoPkgはビルド時に`--autopkg`を追加し、`dist/autopkg/AutoPkg-Assets.pkg`を検査します。
+Git内の署名済み資材を使用するため、Apple原本の取得や署名鍵は不要です。
 
-[ソース・署名情報](docs/SOURCES.md)。パッケージング用ツールのライセンスは第三者の
-payloadには適用されません。[権利表記](THIRD_PARTY.md)を参照してください。
+[ソース・署名情報](docs/SOURCES.md) · [第三者の権利表記](THIRD_PARTY.md)

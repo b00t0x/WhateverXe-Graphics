@@ -10,6 +10,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from kext_dependencies import check_payload_sets
+from servicing_policy import check_payloads
 
 HERE = Path(__file__).resolve().parent
 PREFIX = 'org.b00t0x.WhateverXe'
@@ -27,13 +28,16 @@ def shell_script(path, body):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT / 'dist')
+    parser.add_argument('--output', type=Path)
     parser.add_argument('--tag', default='')
+    parser.add_argument('--autopkg', action='store_true',
+                        help='build one AutoPkg-Assets.pkg for all supported fresh macOS installations')
     args = parser.parse_args()
     policy = json.loads((HERE / 'policy.json').read_text())
     assert not args.tag or args.tag == 'v' + policy['package_version'], 'tag/version mismatch'
     # Reject incompatible payloads before creating any package or output directory.
-    check_payload_sets(ROOT / 'payloads', policy['systems'])
+    check_payload_sets(ROOT / 'payloads', policy['systems'], policy['device_ids'])
+    check_payloads(ROOT / 'payloads')
     components, sources = {}, {}
     for name in ['Common'] + [s['payload'] for s in policy['systems']]:
         directory = ROOT / 'payloads' / name
@@ -56,9 +60,13 @@ def main():
         name = system['payload']
         assert not (components['Common'].keys() & components[name].keys()), name
         manifests[name] = components['Common'] | components[name]
-    output = args.output.resolve()
+    output = (args.output or (ROOT / 'dist' / 'autopkg' if args.autopkg else ROOT / 'dist')).resolve()
     output.mkdir(parents=True, exist_ok=True)
     version = policy['package_version']
+    if args.autopkg:
+        from build_autopkg import build_autopkg
+        build_autopkg(output, policy, components, sources, manifests)
+        return
     with tempfile.TemporaryDirectory(prefix='xe-pkg-') as tmp:
         work = Path(tmp)
         for name, files in components.items():
@@ -109,8 +117,9 @@ def main():
                             f"system.compareVersions(system.version.ProductVersion, '{s['before']}') < 0")
             choice = ET.SubElement(dist, 'choice', id=component_id, title=name, visible='false', enabled='false', selected=selected)
             ET.SubElement(choice, 'pkg-ref', id=PREFIX + '.' + component_id)
-            ET.SubElement(dist, 'pkg-ref', id=PREFIX + '.' + component_id, version=version,
-                          onConclusion='RequireRestart').text = component_id + '.pkg'
+            ref = ET.SubElement(dist, 'pkg-ref', id=PREFIX + '.' + component_id, version=version)
+            ref.set('onConclusion', 'RequireRestart')
+            ref.text = component_id + '.pkg'
         ET.indent(dist)
         distribution = work / 'Distribution'
         ET.ElementTree(dist).write(distribution, encoding='utf-8', xml_declaration=True)
@@ -118,7 +127,8 @@ def main():
         run('productbuild', '--distribution', str(distribution), '--package-path', str(work), str(package))
         shutil.copyfile(distribution, output / 'Distribution.xml')
     # Development provenance stays outside the installer and installed system.
-    (output / 'manifest.json').write_text(json.dumps({'policy': policy, 'systems': manifests}, indent=2) + '\n')
+    manifest = {'policy': policy, 'systems': manifests}
+    (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     digest = hashlib.sha256(package.read_bytes()).hexdigest()
     (output / 'SHA256SUMS').write_text(digest + '  ' + package.name + '\n')
     print(json.dumps({'package': package.name, 'bytes': package.stat().st_size,

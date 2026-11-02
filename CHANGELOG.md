@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0
+
+Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release with this update.
+
+### Added
+
+- Add experimental automatic Graphics installation before Setup Assistant through upstream AutoPkgInstaller.
+
+### Fixed
+
+- Fix graphics initialization on systems using the new USB-C DisplayPort Alt Mode support.
+- Extend driver matching and OpenGL, video and OpenCL acceleration to the additional GPU IDs accepted by WEX.
+- Fix Metal and video compatibility with Sequoia and Tahoe updates without requiring an exact OS build match, and ensure the Metal driver can load its bundled dependencies on first use.
+
 ## 0.3.2
 
 - Fix OpenGL texture updates and missing geometry for the measured six-bank VS-only and VS/GS URB layouts on Big Sur–Tahoe. Handle all four measured layouts in one rule set while preserving the four/eight-bank corrections.

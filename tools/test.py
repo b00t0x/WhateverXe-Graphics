@@ -9,15 +9,18 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from kext_dependencies import check_dependencies
+from servicing_policy import check_files, test_rejection
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('package', type=Path)
 parser.add_argument('--rcodesign', default='rcodesign')
 args = parser.parse_args()
+test_rejection()
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_uninstall.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_dependencies.py'))], check=True)
 subprocess.run([sys.executable, str(Path(__file__).with_name('verify.py')), '--rcodesign', args.rcodesign], check=True)
 manifest = json.loads((args.package.parent / 'manifest.json').read_text())
+autopkg = manifest.get('autopkg', False)
 assert (args.package.parent / 'SHA256SUMS').read_text() == (
     hashlib.sha256(args.package.read_bytes()).hexdigest() + '  ' + args.package.name + '\n')
 cases = {
@@ -27,6 +30,11 @@ cases = {
     '15.9': None, '16.0': None, '26.6.99': None, '26.7': 'Tahoe',
     '26.7.1': 'Tahoe', '26.8': 'Tahoe', '26.99.99': 'Tahoe', '27.0': None,
 }
+# Product revision changes must retain the same payload choice. Runtime build
+# identity/ABI contracts are exercised by the adapters' source tests separately.
+cases.update({f'{base}.{patch}': family for base, family in
+              (('15.8', 'Sequoia'), ('26.7', 'Tahoe'), ('26.8', 'Tahoe'))
+              for patch in (137, 823)})
 with tempfile.TemporaryDirectory(prefix='xe-pkg-test-') as tmp:
     root = Path(tmp) / 'expanded'
     subprocess.run(['pkgutil', '--expand-full', str(args.package.resolve()), str(root)], check=True)
@@ -34,7 +42,23 @@ with tempfile.TemporaryDirectory(prefix='xe-pkg-test-') as tmp:
     assert all(distribution.find(tag) is None for tag in ['readme', 'welcome', 'license', 'conclusion'])
     ranges = [(x.attrib['min'], x.attrib['before']) for x in distribution.findall('./volume-check/allowed-os-versions/os-version')]
     assert ranges == [(s['minimum'], s['before']) for s in manifest['policy']['systems']]
+    if autopkg:
+        assert args.package.name == 'AutoPkg-Assets.pkg'
+        from test_autopkg import check_autopkg
+        check_autopkg(root, manifest, cases)
+        action = subprocess.check_output(['installer', '-query', 'RestartAction', '-pkg', str(args.package.resolve()), '-target', '/'], text=True)
+        assert 'RequireRestart' in action, action
+        print('PASS: universal AutoPkg resources, OS selection, script execution and native restart')
+        sys.exit(0)
     choices = {x.attrib['title']: x.attrib['selected'] for x in distribution.findall('choice')}
+    payload_choices = choices
+    order = [x.attrib['choice'] for x in distribution.findall('./choices-outline/line')]
+    expected_order = ['Common'] + [s['payload'].replace(' ', '') for s in manifest['policy']['systems']]
+    assert order == expected_order
+    # productbuild adds a second pkg-ref per identifier for bundle metadata.
+    refs = [x for x in distribution.findall('pkg-ref') if (x.text or '').strip().startswith('#')]
+    assert len(refs) == len(order)
+    assert all(x.attrib.get('onConclusion') == 'RequireRestart' for x in refs)
     # Exercise the actual generated expressions with numeric compareVersions semantics.
     js = '''const input = JSON.parse(process.argv[1]);
 const system = {version: {}, compareVersions(a, b) {
@@ -49,9 +73,9 @@ for (const [version, expected] of Object.entries(input.cases)) {
   if(JSON.stringify(actual)!==JSON.stringify(expected ? [expected] : [])) throw new Error(version);
 }
 '''
-    subprocess.run(['node', '-e', js, json.dumps({'choices': choices, 'cases': cases})], check=True)
+    subprocess.run(['node', '-e', js, json.dumps({'choices': payload_choices, 'cases': cases})], check=True)
     payloads = {}
-    for name in choices:
+    for name in payload_choices:
         component = root / (name.replace(' ', '') + '.pkg')
         assert (component / 'Bom').is_file()
         info = ET.parse(component / 'PackageInfo').getroot()
@@ -69,6 +93,14 @@ for (const [version, expected] of Object.entries(input.cases)) {
         assert {p.name for p in scripts.iterdir()} == ({'preinstall'} if name == 'Common' else {'preinstall', 'postinstall'})
         for script in scripts.iterdir():
             subprocess.run(['bash', '-n', str(script)], check=True)
+            assert '/sbin/reboot' not in script.read_text()
+        source = Path(__file__).parent
+        preinstall = (scripts / 'preinstall').read_text()
+        assert preinstall.endswith((source / 'preinstall.sh').read_text())
+        assert 'AutoPkg' not in preinstall
+        if name != 'Common':
+            assert (scripts / 'postinstall').read_text().endswith(
+                (source / 'auxkc.sh').read_text() + '\n' + (source / 'postinstall.sh').read_text())
     total = 0
     provider = 'Library/Extensions/AppleIntelTGLCompat.kext/Contents/MacOS/AppleIntelTGLCompat'
     assert choices['Common'] == 'true'
@@ -77,9 +109,10 @@ for (const [version, expected] of Object.entries(input.cases)) {
     for build, expected in manifest['systems'].items():
         assert not (payloads['Common'].keys() & payloads[build].keys())
         actual = payloads['Common'] | payloads[build]
+        check_files(actual, build)
         assert actual.keys() == expected.keys()
         plists = [p for rel, p in actual.items() if rel.startswith('Library/Extensions/') and rel.endswith('.kext/Contents/Info.plist')]
-        assert check_dependencies(plists, build) > 0
+        assert check_dependencies(plists, build, manifest['policy']['device_ids']) > 0
         for rel, p in actual.items():
             data = p.read_bytes()
             assert hashlib.sha256(data).hexdigest() == expected[rel]['sha256'], rel
@@ -87,4 +120,4 @@ for (const [version, expected] of Object.entries(input.cases)) {
             assert p.stat().st_mode & 0o777 == expected[rel]['mode'], rel
         total += len(actual)
     subprocess.run(['bash', '-n', str(Path(__file__).resolve().parents[1] / 'uninstall.sh')], check=True)
-print(f'PASS: {len(cases)} version boundaries, 7 standard payloads/BOMs, {total} reconstructed files, script syntax')
+print(f'PASS: {len(cases)} version boundaries, {len(payload_choices)} standard payloads/BOMs, {total} reconstructed files, script syntax; autopkg={autopkg}')

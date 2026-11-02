@@ -11,7 +11,8 @@ Keep maintainer release procedures, unpublished implementation plans,
 release-preparation status, internal validation progress, host details and test
 captures outside this repository, including while the repository is private.
 
-README describes the current state, not release-by-release changes. Recommend
+README describes the current state, not release-by-release changes. Keep it concise;
+installation uses released packages, not build scripts. Recommend
 latest component releases instead of accumulating per-version dependency tables.
 Use GPU family names rather than internal display-generation labels in README
 prose. CHANGELOG describes the affected behavior and OS range; applications used
@@ -19,7 +20,7 @@ for validation are not the scope of a general fix. Credit reference repositories
 when their work informed a change.
 
 Build: python3 tools/build.py
-Test: python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+Test: python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
 
 Dependency checks must pass before packaging and against the extracted pkg for
 every supported OS. Signature/hash checks do not establish dependency compatibility.
@@ -30,14 +31,17 @@ Preserve signed payloads exactly unless deliberately updating and requalifying
 an asset. Never sign original Apple compiler backends again. Keep signed bundles
 whole. No keys, credentials, Apple original input caches or generated packages
 in Git. The checked-in final payloads are an explicit binary exception.
-Installer scripts use standard payloads and AuxKC; do not add custom backup,
+The normal installer uses standard payloads and AuxKC. AutoPkg may select and
+copy private script resources during first boot; its --nopayload component leaves
+no package receipt and uses the same AuxKC function. Do not add custom backup,
 manifest, hash-store or uninstall infrastructure to the installed system.
 Release versioning is independent from WEX. Use source commits for provenance,
 not a floating dependency on another repository's main branch. Build TGLCompat
 from one WEX commit for every OS; keep the single build in Common. If ABI
 differences require multiple outputs, build all variants from that same commit.
 
-Release assets are the pkg and its checksum only. AMFIPass stays under extras/;
+Release assets are the standard pkg, AutoPkg-Assets.pkg and their SHA256SUMS.
+AMFIPass stays under extras/;
 the root uninstall.sh is a committed, standalone uninstaller for distributed
 graphics components. Keep removal targets tied to public package contents;
 retain obsolete paths only when needed to remove a previously published release.

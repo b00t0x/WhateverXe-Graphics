@@ -2,26 +2,13 @@
 
 [日本語](README_ja.md)
 
-Signed graphics payloads and a standard macOS installer for
-[WhateverXe](https://github.com/b00t0x/WhateverXe). One pkg selects the payload
-for the running macOS and installs it under `/Library`, then rebuilds AuxKC.
-System files and snapshots are not patched. OpenCore/EFI configuration remains
-separate.
-
-For supported GPUs, features, configuration and known issues, see
-[WhateverXe](https://github.com/b00t0x/WhateverXe). WEX and this package have
-independent release versions. AppleIntelTGLCompat is included in the package;
-its source and shared headers remain in the WEX repository. One TGLCompat build
-is shared by all supported macOS versions through the Common payload.
-
-See the [changelog](CHANGELOG.md) for changes in each package version.
+Signed graphics drivers and a macOS installer for [WhateverXe](https://github.com/b00t0x/WhateverXe). The package installs under `/Library` and rebuilds AuxKC without patching System files or snapshots.
+Use the latest WEX and Graphics releases together. See [WEX](https://github.com/b00t0x/WhateverXe) for supported GPUs, configuration and known issues, and [CHANGELOG](CHANGELOG.md) for package changes.
 
 ## Requirements
 
-- Intel macOS, with the WEX/OpenCore configuration described in the WEX README.
-- The latest WhateverXe release, with Lilu.
-- [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip), loaded through OpenCore. The ordinary upstream AMFIPass is not a substitute for this signing chain.
-- SIP configuration `csr-active-config=03080000` (value `0x803`). Full SIP is not supported by this package.
+- OpenCore with Lilu, the latest WEX and [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip). Upstream AMFIPass is not a substitute.
+- SIP setting `csr-active-config=03080000` (`0x803`). Full SIP is unsupported.
 
 | macOS | Required version |
 | --- | --- |
@@ -32,71 +19,53 @@ See the [changelog](CHANGELOG.md) for changes in each package version.
 | Sequoia | 15.8.x |
 | Tahoe | 26.7 or newer |
 
-Installer version ranges are not a guarantee of compatibility with future OS
-updates. The current payloads target builds 20G1443, 21H1320, 22H730, 23J631,
-24H32 and 25G241. Check the WEX documentation and release notes before updating
-macOS. `amfi=0x80` and `ipc_control_port_options=0` are not required.
-
-## Relationship to WEX
-
-WEX supplies the OS/GPU adaptations and display control. This package supplies
-the graphics drivers, their compiler components and AppleIntelTGLCompat, which
-provides shared driver services. The release numbers do not have to match.
-
-Use the latest releases of both components. GPU and display requirements are
-described in the [WEX configuration guide](https://github.com/b00t0x/WhateverXe#configuration).
-
-## Using other OCLP root patches
-
-If you also use OCLP for other root patches, use the
-[custom OCLP build](https://github.com/b00t0x/OpenCore-Legacy-Patcher).
-The upstream OCLP and Xe payloads require different AMFIPass trust anchors;
-one AMFIPass cannot validate both sets. The custom OCLP build uses the matching
-Mod signing chain.
+For other OCLP root patches, use the [custom OCLP build](https://github.com/b00t0x/OpenCore-Legacy-Patcher) with the matching Mod signing chain.
 
 ## Install
 
-1. Configure WEX, Lilu and the linked **Mod** AMFIPass in OpenCore. If an older
-   Xe System patch is installed, restore it using its original recovery method.
-2. Boot the macOS you want to install into.
-3. Download the pkg from [Releases](https://github.com/b00t0x/WhateverXe-Graphics/releases), open it in Installer, and restart after installation succeeds.
+1. Configure OpenCore as described in [WEX](https://github.com/b00t0x/WhateverXe#installation). Restore any older Xe System patch first.
+2. Boot the target macOS and open `WhateverXe-Graphics-*.pkg` from [Releases](https://github.com/b00t0x/WhateverXe-Graphics/releases).
+3. Restart after installation succeeds. Resolve any reported installation error before restarting.
 
-The pkg uses normal Installer payloads and receipts. It updates AuxKC, and on
-Tahoe disables `CoreMedia / AllowOnePassMetalScaling`. It does not modify EFI,
-boot arguments or SIP. The pkg container is unsigned and not notarized; the
-modified payloads carry the Mod code signature. If installation reports an
-error, resolve it and reinstall before restarting.
+The installer does not change EFI or SIP. The pkg is unsigned and not notarized; its modified graphics payloads carry the Mod code signature.
+
+## Automatic installation before Setup Assistant
+
+AutoPkg enables graphics acceleration during a **fresh macOS installation**. It has been tested on Sequoia and Tahoe.
+
+1. Prepare a supported macOS USB installer and download [`AutoPkg-Assets.pkg`](https://github.com/b00t0x/WhateverXe-Graphics/releases/latest/download/AutoPkg-Assets.pkg) from Releases.
+2. Copy it into `Library/Packages/` on that USB, keeping the filename. Create the `Packages` folder if it does not exist. To open the hidden `Library` folder, use the following command with your USB's volume name:
+
+   ```sh
+   open "/Volumes/Install macOS Tahoe/Library"
+   ```
+
+3. Add upstream [AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip) to OpenCore alongside Lilu, WEX and Mod AMFIPass. Set `csr-active-config=030A0000` (`0xA03`); also add `-autopkgbeta` for Tahoe.
+4. Install macOS normally. An extra restart applies Graphics before Setup Assistant; the initial USB installer UI is not accelerated.
+
+Do not open AutoPkg manually. Use the standard pkg for existing systems or updates, and do not combine WEX and OCLP AutoPkg assets on one USB. The OCLP application, KDK and MetallibSupportPkg are unnecessary.
+`0xA03` allows unapproved kexts to load; removing its extra `0x200` bit later does not necessarily preserve approval.
 
 ## Uninstall
 
-Download the current [`uninstall.sh`](uninstall.sh) from this repository, then run:
+Download the latest [`uninstall.sh`](uninstall.sh), run it, then restart:
 
 ```sh
 sudo bash uninstall.sh
 ```
 
-Restart after successful removal. The script removes the graphics components
-distributed by this project, removes the scaling override, rebuilds AuxKC and forgets
-the graphics package receipts. Use the current script regardless of which pkg
-version was installed. It leaves other CoreMedia settings intact. It does not remove WEX,
-Lilu or AMFIPass from EFI, or restore an older graphics stack.
-
-AMFIPass and this cleanup script are maintained in the repository independently
-of the graphics pkg. Releases contain the pkg and its checksum.
+This removes Graphics installed by either method and rebuilds AuxKC. It leaves EFI components in place and does not restore an older graphics stack. Installation errors are recorded in `/var/log/install.log`.
 
 ## Build
 
-On macOS with Xcode Command Line Tools and Python 3.10 or newer:
+Requires macOS, Xcode command-line tools and Python 3.10+. Verification also needs Node.js and `rcodesign` 0.29.0.
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.3.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
 ```
 
-The test also needs Node.js and `rcodesign` 0.29.0; CI supplies both. The builder
-uses the checked-in signed `payloads/Common` and OS directories. It does not
-fetch Apple originals, patch binaries or use signing keys. Output goes to
-`dist/`. No Python, Node.js or rcodesign is needed on the target Mac.
+For AutoPkg, add `--autopkg` to the build command and test `dist/autopkg/AutoPkg-Assets.pkg`.
+The builder uses the checked-in signed payloads; it does not fetch Apple originals or require signing keys.
 
-[Source and signing information](docs/SOURCES.md). The license for the packaging
-tools does not relicense the third-party payloads; see [notices](THIRD_PARTY.md).
+[Source and signing information](docs/SOURCES.md) · [Third-party notices](THIRD_PARTY.md)

@@ -43,6 +43,17 @@ jobs:
         run: python3 tools/build.py --tag "$RELEASE_TAG"
       - name: Verify signatures, payloads and version selection
         run: python3 tools/test.py dist/WhateverXe-Graphics-*.pkg
+      - name: Build and verify automatic-installation pkg
+        run: |
+          python3 tools/build.py --autopkg
+          python3 tools/test.py dist/autopkg/AutoPkg-Assets.pkg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AutoPkg-Assets
+          path: |
+            dist/autopkg/AutoPkg-Assets.pkg
+            dist/autopkg/SHA256SUMS
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: Packages
@@ -67,6 +78,10 @@ jobs:
         with:
           name: Packages
           path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: AutoPkg-Assets
+          path: dist/autopkg
       - name: Upload release assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -75,6 +90,8 @@ jobs:
         run: |
           python3 tools/release_notes.py "$RELEASE_TAG" > release-notes.md
           cd dist
+          cp autopkg/AutoPkg-Assets.pkg .
+          cat autopkg/SHA256SUMS >> SHA256SUMS
           sha256sum -c SHA256SUMS
           if gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft > release-state; then
             test "$(cat release-state)" = true

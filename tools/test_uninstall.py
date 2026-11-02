@@ -52,7 +52,7 @@ elif name == 'kmutil':
     if os.environ['XE_TEST_FAIL'] == '1': sys.exit(27)
     Path(args[args.index('-A') + 1]).write_text('rebuilt')
 elif name == 'pkgutil' and args[0] == '--pkg-info':
-    sys.exit(0 if args[1] in ['org.b00t0x.WhateverXe.Common', 'org.b00t0x.WhateverXe.Tahoe'] else 1)
+    sys.exit(0 if args[1] in ['org.b00t0x.WhateverXe.Common', 'org.b00t0x.WhateverXe.Tahoe', 'org.b00t0x.WhateverXe.AutoGraphics'] else 1)
 ''')
         mock.chmod(0o755)
         body = source.replace(guard, ': # Root guard checked above; test uses a temporary tree.')
@@ -79,6 +79,7 @@ elif name == 'pkgutil' and args[0] == '--pkg-info':
         expected = [] if fail else [
             "pkgutil ['--forget', 'org.b00t0x.WhateverXe.Common']",
             "pkgutil ['--forget', 'org.b00t0x.WhateverXe.Tahoe']",
+            "pkgutil ['--forget', 'org.b00t0x.WhateverXe.AutoGraphics']",
         ]
         assert forgotten == expected
         assert not list(kc.parent.glob('.WhateverXe.*'))
