@@ -78,6 +78,10 @@ jobs:
         with:
           name: Packages
           path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: AutoPkg-Assets
+          path: dist/autopkg
       - name: Upload release assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -86,6 +90,8 @@ jobs:
         run: |
           python3 tools/release_notes.py "$RELEASE_TAG" > release-notes.md
           cd dist
+          cp autopkg/AutoPkg-Assets.pkg .
+          cat autopkg/SHA256SUMS >> SHA256SUMS
           sha256sum -c SHA256SUMS
           if gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft > release-state; then
             test "$(cat release-state)" = true

@@ -6,7 +6,7 @@ Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) relea
 
 ### Added
 
-- Add experimental automatic Graphics installation before Setup Assistant through upstream AutoPkgInstaller, using one package for all six supported macOS versions.
+- Add experimental automatic Graphics installation before Setup Assistant through upstream AutoPkgInstaller.
 
 ### Fixed
 
