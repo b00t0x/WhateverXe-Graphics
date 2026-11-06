@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.1
+
+Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release with this update.
+
+### Fixed
+
+- Update the common graphics compatibility component to recognize compatible macOS kernel updates without requiring an exact build string.
+
 ## 0.4.0
 
 Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release with this update.
