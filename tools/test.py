@@ -15,6 +15,8 @@ from servicing_policy import check_files, test_rejection
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('package', type=Path)
 parser.add_argument('--rcodesign', default='rcodesign')
+parser.add_argument('--native-history', action='store_true',
+                    help='execute historical x86_64 dispatch/URB regressions; requires clang and native x86_64 or Rosetta')
 args = parser.parse_args()
 test_rejection()
 subprocess.run([sys.executable, str(Path(__file__).with_name('test_uninstall.py'))], check=True)
@@ -47,6 +49,9 @@ with tempfile.TemporaryDirectory(prefix='xe-pkg-test-') as tmp:
         assert args.package.name == 'AutoPkg-Assets.pkg'
         from test_autopkg import check_autopkg
         check_autopkg(root, manifest, cases)
+        if args.native_history:
+            from test_released_dispatch import check_payloads
+            check_payloads(root / 'AutoGraphics.pkg/Scripts/Assets')
         action = subprocess.check_output(['installer', '-query', 'RestartAction', '-pkg', str(args.package.resolve()), '-target', '/'], text=True)
         assert 'RequireRestart' in action, action
         print('PASS: universal AutoPkg resources, OS selection, script execution and native restart')
@@ -121,5 +126,8 @@ for (const [version, expected] of Object.entries(input.cases)) {
             assert len(data) == expected[rel]['size']
             assert p.stat().st_mode & 0o777 == expected[rel]['mode'], rel
         total += len(actual)
+    if args.native_history:
+        from test_released_dispatch import check_payloads
+        check_payloads(root, package_layout=True)
     subprocess.run(['bash', '-n', str(Path(__file__).resolve().parents[1] / 'uninstall.sh')], check=True)
 print(f'PASS: {len(cases)} version boundaries, {len(payload_choices)} standard payloads/BOMs, {total} reconstructed files, script syntax; autopkg={autopkg}')

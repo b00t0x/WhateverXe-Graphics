@@ -66,6 +66,7 @@ python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
 ```
 
 AutoPkgはビルド時に`--autopkg`を追加し、`dist/autopkg/AutoPkg-Assets.pkg`を検査します。
+検査コマンドに`--native-history`を追加すると、展開したpayloadで過去版のPCI dispatchとGL URB補正を再生します。ネイティブまたはRosetta経由のx86_64実行環境が必要です。
 Git内の署名済み資材を使用するため、Apple原本の取得や署名鍵は不要です。
 
 [ソース・署名情報](docs/SOURCES.md) · [第三者の権利表記](THIRD_PARTY.md)
