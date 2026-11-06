@@ -9,6 +9,7 @@ from unittest.mock import patch
 from pathlib import Path
 import build
 from kext_dependencies import check_dependencies, check_payload_sets
+from released_contracts import check_released_clients
 
 
 class DependencyTests(unittest.TestCase):
@@ -75,6 +76,43 @@ class DeviceMatchTests(unittest.TestCase):
             self.check('0x46a68086 0x46268086 0x12348086')
         with self.assertRaisesRegex(ValueError, 'unsupported device match'):
             self.check('0x46008086&0xff00ffff')
+
+
+class ReleasedContractTests(unittest.TestCase):
+    def check_mutation(self, remove_device=False, raise_floor=False):
+        # Change current policy and clients together. A self-consistency test
+        # accepts that pair; frozen released contracts must detect the loss.
+        devices = json.loads((build.HERE / 'policy.json').read_text())['device_ids']
+        if remove_device:
+            devices = [d for d in devices if d.lower() != '9a49']
+        floor = '0.6.0' if raise_floor else '0.5.0'
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            infos = [{'CFBundleIdentifier': 'org.b00t0x.AppleIntelTGLCompat',
+                      'CFBundleVersion': '0.8.0', 'OSBundleCompatibleVersion': floor}]
+            for name in ['AppleIntelTGLGraphics', 'AppleIntelTGLGraphicsFramebuffer']:
+                infos.append({'CFBundleIdentifier': 'com.apple.driver.' + name,
+                    'IOKitPersonalities': {'GPU': {'IOPCIPrimaryMatch': ' '.join('0x' + d + '8086' for d in devices)}},
+                    'OSBundleLibraries': {'org.b00t0x.AppleIntelTGLCompat': floor}})
+            paths = []
+            for i, info in enumerate(infos):
+                path = root / f'{i}.plist'
+                path.write_bytes(plistlib.dumps(info)); paths.append(path)
+            self.assertGreater(check_dependencies(paths, 'Big Sur', devices), 0)
+            if remove_device or raise_floor:
+                with self.assertRaisesRegex(ValueError, 'lost released physical matches|released provider requirement'):
+                    check_released_clients(paths, 'Big Sur')
+            else:
+                check_released_clients(paths, 'Big Sur')
+
+    def test_preserved_contracts(self):
+        self.check_mutation()
+
+    def test_coordinated_device_removal_is_detected(self):
+        self.check_mutation(remove_device=True)
+
+    def test_coordinated_abi_floor_raise_is_detected(self):
+        self.check_mutation(raise_floor=True)
 
 
 class BuildPreflightTests(unittest.TestCase):

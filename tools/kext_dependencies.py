@@ -52,8 +52,10 @@ def check_dependencies(plists, label, device_ids=None):
 
 
 def check_payload_sets(payloads, systems, device_ids=None):
+    from released_contracts import check_released_clients
     common = list((payloads / 'Common/Library/Extensions').rglob('*.kext/Contents/Info.plist'))
     for system in systems:
         clients = list((payloads / system['payload'] / 'Library/Extensions').rglob('*.kext/Contents/Info.plist'))
         if not check_dependencies(common + clients, system['name'], device_ids):
             raise ValueError(f"{system['name']}: no bundled kext dependencies checked")
+        check_released_clients(common + clients, system['payload'])
