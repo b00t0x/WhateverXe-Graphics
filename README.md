@@ -62,10 +62,11 @@ Requires macOS, Xcode command-line tools and Python 3.10+. Verification also nee
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.4.0.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.1.pkg
 ```
 
 For AutoPkg, add `--autopkg` to the build command and test `dist/autopkg/AutoPkg-Assets.pkg`.
+Add `--native-history` to the test command to replay released PCI dispatch and GL URB regressions on the extracted payloads; this requires x86_64 execution, either native or through Rosetta.
 The builder uses the checked-in signed payloads; it does not fetch Apple originals or require signing keys.
 
 [Source and signing information](docs/SOURCES.md) · [Third-party notices](THIRD_PARTY.md)

@@ -9,8 +9,8 @@ for this repository.
 
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
-use one RELEASE build of AppleIntelTGLCompat 0.7.0 from WEX commit
-[`2aa06ad`](https://github.com/b00t0x/WhateverXe/tree/2aa06ad013e08f7b79779d446cdd12084b4e3dfd/AppleIntelTGLCompat).
+use one RELEASE build of AppleIntelTGLCompat 0.8.0 from WEX commit
+[`20b8ae5`](https://github.com/b00t0x/WhateverXe/tree/20b8ae5c705e12a54d418df03d3665efc874dac6/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
