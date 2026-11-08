@@ -8,7 +8,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from kext_dependencies import check_dependencies
+from kext_dependencies import check_dependencies, check_startup_dependencies
 from released_contracts import check_released_clients
 from servicing_policy import check_files, test_rejection
 
@@ -118,6 +118,7 @@ for (const [version, expected] of Object.entries(input.cases)) {
         check_files(actual, build)
         assert actual.keys() == expected.keys()
         plists = [p for rel, p in actual.items() if rel.startswith('Library/Extensions/') and rel.endswith('.kext/Contents/Info.plist')]
+        check_startup_dependencies(plists, build)
         assert check_dependencies(plists, build, manifest['policy']['device_ids']) > 0
         check_released_clients(plists, build)
         for rel, p in actual.items():

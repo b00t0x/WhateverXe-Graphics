@@ -2,20 +2,23 @@
   "provider_source_repository": "https://github.com/b00t0x/WhateverXe",
   "providers": {
     "Common": {
-      "source_commit": "20b8ae5c705e12a54d418df03d3665efc874dac6",
+      "source_commit": "ceb7bae3401979ae189919e6809d0c9117167311",
       "source_file": "AppleIntelTGLCompat/AppleIntelTGLCompat.cpp",
-      "source_file_sha256": "2a5f7622cbd35e222d1d0b1e3f78f421bd0a9f691fec51a7b18d3725ab61c445",
+      "source_file_sha256": "0f69f076dbec952b0f997b4f9dd0f110de9397519a8241801cc8614d9834a354",
       "version": "0.8.0",
       "configuration": "RELEASE",
       "build_command": "python3 tools/build.py --release",
-      "sha256": "5f83bc96c73aed10c60b03a6593f6eb3abc04efc672e9564be907d876ef4fba7",
+      "sha256": "58d489be961b509d523249b83ed71d8d816b93f8e535056a96faa0907b53b0ee",
       "policy_source_file": "AppleIntelTGLCompat/GraphicsPolicy.plist",
       "policy_source_sha256": "dd9555491052208445abbd9daa96dd0a9dd4e5e71b1e6a14355224199cfb17eb",
       "compatible_version": "0.5.0",
       "device_table_source_file": "WhateverXe/kern_xelp_devices.hpp",
       "device_table_source_sha256": "7df149488e4a51066ca9953817c7e3529bc4a630e81442da83c116297d5dfad9",
       "os_selector_source_file": "WhateverXe/kern_xelp_os.hpp",
-      "os_selector_source_sha256": "0a1e96c40f8f4dc3627f64c4699e73a79b041f59c845d2c17649375cbd65371b"
+      "os_selector_source_sha256": "0a1e96c40f8f4dc3627f64c4699e73a79b041f59c845d2c17649375cbd65371b",
+      "activation_source_file": "WhateverXe/kern_graphics_activation.hpp",
+      "activation_source_sha256": "4f363c6ca0dbae4875295ba9c7e9661000d4c82d2766c978d78d45e4ae92da7d",
+      "activation_abi": 1
     }
   },
   "amfipass_sha256": "71f41de42e355d2a83e6f093ef34a5b24d0a9c9a9085830b2317f1b874f56250",
@@ -130,5 +133,14 @@
     },
     "cache_classification": "dyld shared cache range; symbol-resolved imported predicate, full byte guard, pinned destination",
     "descriptor_dependency": "@loader_path/descriptor.dylib; cold load without descriptor preload verified"
+  },
+  "startup_dependencies": {
+    "provider": "org.b00t0x.AppleIntelTGLCompat",
+    "clients": [
+      "com.apple.driver.AppleIntelTGLGraphics",
+      "com.apple.driver.AppleIntelTGLGraphicsFramebuffer"
+    ],
+    "activation": "Runtime WEX activation ABI 1; no static dependency on EFI-only WEX",
+    "accelerator_dependency_version": "0.5.0"
   }
 }
