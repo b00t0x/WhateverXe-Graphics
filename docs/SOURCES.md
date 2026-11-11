@@ -87,6 +87,15 @@ the exact predecessor executable and allocation and teardown instructions before
 changing code. The Mod signature seals the updated executable with the existing
 bundle resources and the original signed companion binaries.
 
+The VA bundles for Big Sur through Tahoe include the video conversion shader
+repair for [WhateverXe #60](https://github.com/b00t0x/WhateverXe/issues/60).
+The TGLVA companion checks the donor shader table and native loader contract,
+then supplies the Tiger Lake translation of the Gen11 conversion program at
+index 3. The native loader processes the other programs with their original
+inputs. The companion preserves the advertised video capabilities.
+`servicing_adapters` in `payload-provenance.json` records the shader and signed
+companion hashes for these payloads.
+
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:
 the adapter checks its complete file hash. The verifier enforces that identity.
 No distribution of original installation media is needed to assemble this pkg.
