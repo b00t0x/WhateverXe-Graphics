@@ -63,8 +63,9 @@ The Sequoia/Tahoe `impostor.dylib` and `TGLVA` companions select the OS family
 without a product-build allowlist. Metal checks the method types and descriptor
 private-pointer contract; VA retains its donor vtable and SPS input checks.
 `servicing_adapters` in `payload-provenance.json` records the companion source
-hashes and signed outputs. `descriptor.dylib`, `libigdmd.dylib` and the donor
-driver code/data are preserved; the enclosing bundles are sealed with the Mod chain.
+hashes and signed outputs. The servicing adaptation preserves `descriptor.dylib`,
+`libigdmd.dylib` and the donor driver code/data. The enclosing bundles are sealed
+with the Mod chain.
 Package build/test checks cover the servicing adapters in both normal payloads
 and AutoPkg resources. Source-build labels remain provenance only.
 The companion also replaces the imported bridge's numeric shared-cache threshold
@@ -77,6 +78,14 @@ It checks the required APIs, System paths and shared LLVM image identity rather
 than pinning compiler UUIDs. Missing APIs or incompatible inputs produce an
 explicit error; there is no fallback to the previous bitcode converter.
 Monterey and Ventura retain the direct compiler path.
+
+The Metal executable in each of the six OS payloads includes the POSH ownership
+repair for [WhateverXe #47](https://github.com/b00t0x/WhateverXe/issues/47).
+Command-buffer deallocation checks whether the POSH pointer belongs to the queue
+and frees it only when the command buffer owns the allocation. The patch checks
+the exact predecessor executable and allocation and teardown instructions before
+changing code. The Mod signature seals the updated executable with the existing
+bundle resources and the original signed companion binaries.
 
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:
 the adapter checks its complete file hash. The verifier enforces that identity.
