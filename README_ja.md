@@ -62,7 +62,7 @@ macOS、Xcode Command Line Tools、Python 3.10以上が必要です。検査に�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.4.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.2.pkg
 ```
 
 AutoPkgはビルド時に`--autopkg`を追加し、`dist/autopkg/AutoPkg-Assets.pkg`を検査します。

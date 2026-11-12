@@ -136,6 +136,7 @@ class BuildPreflightTests(unittest.TestCase):
         for system in self.systems:
             self.write(system['payload'], 'Graphics', {
                 'CFBundleIdentifier': 'com.apple.driver.AppleIntelTGLGraphics',
+                'OSBundleLibraries': {'org.b00t0x.AppleIntelTGLCompat': '0.5.0'},
                 'IOKitPersonalities': personalities})
 
     def write(self, component, name, info):
@@ -174,6 +175,24 @@ class BuildPreflightTests(unittest.TestCase):
 
     def test_missing_common_provider_stops_build(self):
         self.provider.unlink()
+        self.assert_build_rejected()
+
+    def test_each_driver_requires_startup_gate(self):
+        for path in (self.root/'payloads').rglob('*.plist'):
+            info = plistlib.loads(path.read_bytes())
+            if not info['CFBundleIdentifier'].startswith('com.apple.driver.AppleIntelTGL'):
+                continue
+            with self.subTest(client=str(path.relative_to(self.root))):
+                original = path.read_bytes()
+                info.pop('OSBundleLibraries')
+                path.write_bytes(plistlib.dumps(info))
+                self.assert_build_rejected()
+                path.write_bytes(original)
+
+    def test_efi_only_dependency_stops_build(self):
+        info = plistlib.loads(self.provider.read_bytes())
+        info['OSBundleLibraries'] = {'org.b00t0x.WhateverXe': '0.8.0'}
+        self.provider.write_bytes(plistlib.dumps(info))
         self.assert_build_rejected()
 
 

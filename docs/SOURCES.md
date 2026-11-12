@@ -10,7 +10,7 @@ for this repository.
 Source and its shared headers remain in
 [WhateverXe](https://github.com/b00t0x/WhateverXe). All supported macOS versions
 use one RELEASE build of AppleIntelTGLCompat 0.8.0 from WEX commit
-[`20b8ae5`](https://github.com/b00t0x/WhateverXe/tree/20b8ae5c705e12a54d418df03d3665efc874dac6/AppleIntelTGLCompat).
+[`ceb7bae`](https://github.com/b00t0x/WhateverXe/tree/ceb7bae3401979ae189919e6809d0c9117167311/AppleIntelTGLCompat).
 Build that checkout with `python3 tools/build.py --release`, then sign the
 resulting kext with the Mod chain before importing the complete bundle into
 `payloads/Common/Library/Extensions/`. The package contains no per-OS provider
@@ -29,6 +29,9 @@ revision, build configuration, source file hash and final signed executable hash
 The build strips debug maps before signing. These source references do not promise
 byte-identical rebuilding with a different compiler or signing invocation.
 The provider source and its shared headers belong to the same WEX revision.
+Both native kernel drivers depend on Compat. Compat starts only when an active
+WEX publishes the compatible runtime activation ABI; it does not import EFI-only
+WEX symbols into AuxKC. The shared activation header is included in provenance.
 Its compatibility floor is 0.5.0, matching the bundled framebuffer dependency.
 The provider release version is independent of this ABI compatibility floor.
 
@@ -60,8 +63,9 @@ The Sequoia/Tahoe `impostor.dylib` and `TGLVA` companions select the OS family
 without a product-build allowlist. Metal checks the method types and descriptor
 private-pointer contract; VA retains its donor vtable and SPS input checks.
 `servicing_adapters` in `payload-provenance.json` records the companion source
-hashes and signed outputs. `descriptor.dylib`, `libigdmd.dylib` and the donor
-driver code/data are preserved; the enclosing bundles are sealed with the Mod chain.
+hashes and signed outputs. The servicing adaptation preserves `descriptor.dylib`,
+`libigdmd.dylib` and the donor driver code/data. The enclosing bundles are sealed
+with the Mod chain.
 Package build/test checks cover the servicing adapters in both normal payloads
 and AutoPkg resources. Source-build labels remain provenance only.
 The companion also replaces the imported bridge's numeric shared-cache threshold
@@ -74,6 +78,23 @@ It checks the required APIs, System paths and shared LLVM image identity rather
 than pinning compiler UUIDs. Missing APIs or incompatible inputs produce an
 explicit error; there is no fallback to the previous bitcode converter.
 Monterey and Ventura retain the direct compiler path.
+
+The Metal executable in each of the six OS payloads includes the POSH ownership
+repair for [WhateverXe #47](https://github.com/b00t0x/WhateverXe/issues/47).
+Command-buffer deallocation checks whether the POSH pointer belongs to the queue
+and frees it only when the command buffer owns the allocation. The patch checks
+the exact predecessor executable and allocation and teardown instructions before
+changing code. The Mod signature seals the updated executable with the existing
+bundle resources and the original signed companion binaries.
+
+The VA bundles for Big Sur through Tahoe include the video conversion shader
+repair for [WhateverXe #60](https://github.com/b00t0x/WhateverXe/issues/60).
+The TGLVA companion checks the donor shader table and native loader contract,
+then supplies the Tiger Lake translation of the Gen11 conversion program at
+index 3. The native loader processes the other programs with their original
+inputs. The companion preserves the advertised video capabilities.
+`servicing_adapters` in `payload-provenance.json` records the shader and signed
+companion hashes for these payloads.
 
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:
 the adapter checks its complete file hash. The verifier enforces that identity.

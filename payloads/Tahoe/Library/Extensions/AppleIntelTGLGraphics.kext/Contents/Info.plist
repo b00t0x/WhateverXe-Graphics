@@ -646,6 +646,8 @@
 		<string>10.0.0</string>
 		<key>com.apple.kpi.unsupported</key>
 		<string>8.0.0</string>
+		<key>org.b00t0x.AppleIntelTGLCompat</key>
+		<string>0.5.0</string>
 	</dict>
 	<key>OSBundleRequired</key>
 	<string>Auxiliary</string>

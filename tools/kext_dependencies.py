@@ -2,6 +2,23 @@
 import plistlib
 import re
 
+WEX = 'org.b00t0x.WhateverXe'
+COMPAT = 'org.b00t0x.AppleIntelTGLCompat'
+
+
+def check_startup_dependencies(plists, label):
+    providers = {info['CFBundleIdentifier']: info for path in plists
+                 for info in [plistlib.loads(path.read_bytes())]}
+    if WEX in providers:
+        raise ValueError(f'{label}: WEX belongs in OpenCore, not the Graphics package')
+    if COMPAT not in providers:
+        raise ValueError(f'{label}: missing Compat startup gate')
+    if WEX in providers[COMPAT].get('OSBundleLibraries', {}):
+        raise ValueError(f'{label}: Compat must use runtime WEX activation, not an EFI-only AuxKC dependency')
+    for driver in ['AppleIntelTGLGraphics', 'AppleIntelTGLGraphicsFramebuffer']:
+        if COMPAT not in providers.get('com.apple.driver.'+driver, {}).get('OSBundleLibraries', {}):
+            raise ValueError(f'{label}: {driver} must require Compat')
+
 
 def version(value):
     # These payloads use numeric release versions; reject unsupported spellings.
@@ -56,6 +73,7 @@ def check_payload_sets(payloads, systems, device_ids=None):
     common = list((payloads / 'Common/Library/Extensions').rglob('*.kext/Contents/Info.plist'))
     for system in systems:
         clients = list((payloads / system['payload'] / 'Library/Extensions').rglob('*.kext/Contents/Info.plist'))
+        check_startup_dependencies(common + clients, system['name'])
         if not check_dependencies(common + clients, system['name'], device_ids):
             raise ValueError(f"{system['name']}: no bundled kext dependencies checked")
         check_released_clients(common + clients, system['payload'])

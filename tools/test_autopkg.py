@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
-from kext_dependencies import check_dependencies
+from kext_dependencies import check_dependencies, check_startup_dependencies
 from released_contracts import check_released_clients
 from servicing_policy import check_files as check_servicing_files
 
@@ -57,6 +57,7 @@ def check_autopkg(expanded, manifest, boundaries):
         check_servicing_files(actual, name)
         check_files(actual, manifest['systems'][name])
         plists = [p for r, p in actual.items() if r.startswith('Library/Extensions/') and r.endswith('.kext/Contents/Info.plist')]
+        check_startup_dependencies(plists, name)
         assert check_dependencies(plists, name, policy['device_ids']) > 0
         check_released_clients(plists, name)
 
