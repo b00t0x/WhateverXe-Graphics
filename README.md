@@ -29,8 +29,6 @@ For other OCLP root patches, use the [custom OCLP build](https://github.com/b00t
 
 The installer does not change EFI or SIP. The pkg is unsigned and not notarized; its modified graphics payloads carry the Mod code signature.
 
-Acceleration requires both WEX and Graphics. If WEX is absent or disabled, the firmware display remains available.
-
 ## Automatic installation before Setup Assistant
 
 AutoPkg enables graphics acceleration during a **fresh macOS installation**. It has been tested on Sequoia and Tahoe.
