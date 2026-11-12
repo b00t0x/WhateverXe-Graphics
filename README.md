@@ -29,7 +29,7 @@ For other OCLP root patches, use the [custom OCLP build](https://github.com/b00t
 
 The installer does not change EFI or SIP. The pkg is unsigned and not notarized; its modified graphics payloads carry the Mod code signature.
 
-Acceleration requires both WEX and Graphics, but either may be installed first. With WEX missing, disabled or incompatible, Graphics leaves firmware GOP graphics active.
+Acceleration requires both WEX and Graphics. If WEX is absent or disabled, the firmware display remains available.
 
 ## Automatic installation before Setup Assistant
 
@@ -64,7 +64,7 @@ Requires macOS, Xcode command-line tools and Python 3.10+. Verification also nee
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.4.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.2.pkg
 ```
 
 For AutoPkg, add `--autopkg` to the build command and test `dist/autopkg/AutoPkg-Assets.pkg`.

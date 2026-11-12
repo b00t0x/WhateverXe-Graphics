@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.2
+
+Update [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) and WhateverXe Graphics together.
+
+### Fixed
+
+- Preserve firmware display output when WhateverXe is missing or disabled.
+- Fix a memory leak in Metal applications.
+- Fix a video color-conversion issue that could freeze the GPU on Big Sur through Tahoe.
+
 ## 0.4.1
 
 Use the latest [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) release with this update.

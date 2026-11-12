@@ -29,7 +29,7 @@ OCLPの他のroot patchを併用する場合は、同じMod署名に対応した
 
 インストーラーはEFI・SIPを変更しません。pkg自体は未署名・未公証ですが、改変したグラフィックス資材にはMod署名が付いています。
 
-アクセラレーションにはWEXとGraphicsの両方が必要ですが、導入順は問いません。WEXが未導入・無効・互換性不一致の場合は、ファームウェアのGOP描画を維持します。
+アクセラレーションにはWEXとGraphicsの両方が必要です。WEXが未導入または無効でも、ファームウェア描画で起動できます。
 
 ## セットアップ前の自動インストール
 
@@ -64,7 +64,7 @@ macOS、Xcode Command Line Tools、Python 3.10以上が必要です。検査に�
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.4.1.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.2.pkg
 ```
 
 AutoPkgはビルド時に`--autopkg`を追加し、`dist/autopkg/AutoPkg-Assets.pkg`を検査します。
