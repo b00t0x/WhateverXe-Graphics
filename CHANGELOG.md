@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Prevent crashes in VideoToolbox image conversion on Big Sur through Tahoe by using the CPU fallback for incomplete VPHAL processing ([WhateverXe #96](https://github.com/b00t0x/WhateverXe/issues/96)). Hardware video decoding remains available.
+
 ## 0.4.2
 
 Update [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) and WhateverXe Graphics together.
