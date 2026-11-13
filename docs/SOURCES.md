@@ -96,11 +96,17 @@ inputs. The companion preserves the advertised video capabilities.
 `servicing_adapters` in `payload-provenance.json` records the shader and signed
 companion hashes for these payloads.
 
-The VA context factory also rejects its incomplete VPHAL post-processing context
+The VA context factory rejects its incomplete VPHAL post-processing context
 before allocation. The donor has no concrete G12 VEBOX/SFC renderer for this
-path. VideoToolbox can use its image-conversion fallback while native video
-decode and the separate RVRA1 scaler retain their dispatch. The factory edit
-follows [retropineaple/WhateverXe a5f4265](https://github.com/retropineaple/WhateverXe/commit/a5f4265).
+path, so VideoToolbox can use its image-conversion fallback. The original
+factory refusal follows
+[retropineaple/WhateverXe a5f4265](https://github.com/retropineaple/WhateverXe/commit/a5f4265).
+The Big Sur payload distinguishes standalone image processing from codec scaler
+contexts: both use feature `0x800`, but their native producer hint at config
+offset `0x14` is zero for standalone processing and nonzero for codecs. It
+preserves the codec scaler's native creation and dimension checks while rejecting
+standalone processing and features `0x20`/`0x40`. The other OS payloads retain
+the original factory refusal.
 The signed VA executable hashes are recorded in `userspace_admission.files`.
 
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:

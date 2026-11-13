@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Restore hardware H.264 encoding on Big Sur while retaining the VideoToolbox image-conversion fallback introduced in 0.4.3.
 - Prevent crashes in VideoToolbox image conversion on Big Sur through Tahoe by using the CPU fallback for incomplete VPHAL processing ([WhateverXe #96](https://github.com/b00t0x/WhateverXe/issues/96)). Hardware video decoding remains available.
 
 ## 0.4.2

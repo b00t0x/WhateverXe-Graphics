@@ -98,7 +98,7 @@
     ],
     "files": {
       "Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver": "b0791039b77df44784b63ba36d37c266055092acbcc3b0c29ad1f9a5e8fb6008",
-      "Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "b2b84f669960fa756a4d7fbf2659150440240e6f6d05d521da38747ba60c2162",
+      "Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "48366f22e1556149394c1315a9880ebebb52a78b2e2d32bec16d26fc1e01704f",
       "Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "aee187160d267ad5dd4ca6da12c6e90c20a180f72ba37b41dfa70d4a0d923d3e",
       "Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "611ff73b994bbc995b3c4ed04416a4b955f5e2370aa1cc936f6cb2a7235c0cdd",
       "Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "a603eae149321bfabf1aff09ed8289e0e65c983072018f116feac3f798db9297",
