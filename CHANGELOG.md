@@ -1,17 +1,18 @@
 # Changelog
 
-## Unreleased
-
-### Fixed
-
-- Restore hardware H.264 encoding on Big Sur through Tahoe while retaining the VideoToolbox image-conversion fallback introduced in 0.4.3.
-- Prevent crashes in VideoToolbox image conversion on Big Sur through Tahoe by using the CPU fallback for incomplete VPHAL processing ([WhateverXe #96](https://github.com/b00t0x/WhateverXe/issues/96)). Hardware video decoding remains available.
-
-## 0.4.2
+## 0.4.4
 
 Update [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) and WhateverXe Graphics together.
 
 ### Fixed
+
+- Fix a regression introduced in 0.4.3 that prevented hardware H.264 encoding on Big Sur through Tahoe.
+
+### Fix from 0.4.3
+
+- Prevent crashes during VideoToolbox image conversion on Big Sur through Tahoe by using CPU processing ([WhateverXe #96](https://github.com/b00t0x/WhateverXe/issues/96)).
+
+### Fixes from 0.4.2
 
 - Preserve firmware display output when WhateverXe is missing or disabled.
 - Fix a memory leak in Metal applications ([WhateverXe #47](https://github.com/b00t0x/WhateverXe/issues/47)).

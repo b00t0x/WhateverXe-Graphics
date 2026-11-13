@@ -62,7 +62,7 @@ Requires macOS, Xcode command-line tools and Python 3.10+. Verification also nee
 
 ```sh
 python3 tools/build.py
-python3 tools/test.py dist/WhateverXe-Graphics-0.4.2.pkg
+python3 tools/test.py dist/WhateverXe-Graphics-0.4.4.pkg
 ```
 
 For AutoPkg, add `--autopkg` to the build command and test `dist/autopkg/AutoPkg-Assets.pkg`.
