@@ -7,7 +7,7 @@ WEXとGraphicsは両方とも最新版を使用してください。対応GPU・
 
 ## 必要な構成
 
-- Lilu・最新版WEX・[AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip)を設定したOpenCore。本家AMFIPassでは代用できません。
+- Lilu 1.7.2以降・最新版WEX・[AMFIAnchor](https://github.com/b00t0x/AMFIAnchor/releases/latest)・[`AMFIAnchorInjector.kext`](https://github.com/b00t0x/AMFIAnchor/tree/main/Injectors)を設定したOpenCore。[OpenCoreの設定手順](https://github.com/b00t0x/AMFIAnchor/blob/main/README.md#install-with-opencore)を参照してください。
 - SIP設定`csr-active-config=03080000`（`0x803`）。SIP全面有効には対応していません。
 
 | macOS | 必要バージョン |
@@ -19,7 +19,7 @@ WEXとGraphicsは両方とも最新版を使用してください。対応GPU・
 | Sequoia | 15.8.x |
 | Tahoe | 26.7以上 |
 
-OCLPの他のroot patchを併用する場合は、同じMod署名に対応した[独自ビルド版OCLP](https://github.com/b00t0x/OpenCore-Legacy-Patcher)を使用してください。
+他のroot patchに[OCLP](https://github.com/dortania/OpenCore-Legacy-Patcher)を使う場合は、AMFIAnchorとInjectorの後にOCLPのAMFIPassを読み込んでください。
 
 ## インストール
 
@@ -27,7 +27,7 @@ OCLPの他のroot patchを併用する場合は、同じMod署名に対応した
 2. 対象macOSを起動し、[Releases](https://github.com/b00t0x/WhateverXe-Graphics/releases)の`WhateverXe-Graphics-*.pkg`を開きます。
 3. 導入成功後に再起動します。エラーが出た場合は解決してから再起動してください。
 
-インストーラーはEFI・SIPを変更しません。pkg自体は未署名・未公証ですが、改変したグラフィックス資材にはMod署名が付いています。
+インストーラーはEFI・SIPを変更しません。pkg自体は未署名・未公証です。改変したグラフィックス資材の署名には、`AMFIAnchorInjector.kext`が信頼するCAを使用しています。
 
 ## セットアップ前の自動インストール
 
@@ -40,7 +40,7 @@ AutoPkgは**新規macOSインストール中**にグラフィックス加速を�
    open "/Volumes/Install macOS Tahoe/Library"
    ```
 
-3. Lilu・WEX・Mod AMFIPassに加え、本家[AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip)をOpenCoreに追加します。`csr-active-config=030A0000`（`0xA03`）を設定し、Tahoeでは`-autopkgbeta`も追加します。
+3. [必要な構成](#必要な構成)のOpenCore設定に、[AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip)を追加します。`csr-active-config=030A0000`（`0xA03`）を設定し、Tahoeでは`-autopkgbeta`も追加します。
 4. 通常どおりmacOSをインストールします。追加再起動を経てセットアップアシスタントから加速が有効になります。最初のUSBインストーラー画面は加速されません。
 
 AutoPkgを手動で開かないでください。既存環境・更新には通常pkgを使用し、同じUSBでWEXとOCLPのAutoPkgを併用しないでください。OCLPアプリ・KDK・MetallibSupportPkgは不要です。

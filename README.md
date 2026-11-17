@@ -7,7 +7,7 @@ Use the latest WEX and Graphics releases together. See [WEX](https://github.com/
 
 ## Requirements
 
-- OpenCore with Lilu, the latest WEX and [AMFIPass 1.4.1 Mod](extras/AMFIPass-v1.4.1-Mod-RELEASE.zip). Upstream AMFIPass is not a substitute.
+- OpenCore with Lilu 1.7.2 or later, the latest WEX, [AMFIAnchor](https://github.com/b00t0x/AMFIAnchor/releases/latest) and [`AMFIAnchorInjector.kext`](https://github.com/b00t0x/AMFIAnchor/tree/main/Injectors). See the [OpenCore instructions](https://github.com/b00t0x/AMFIAnchor/blob/main/README.md#install-with-opencore).
 - SIP setting `csr-active-config=03080000` (`0x803`). Full SIP is unsupported.
 
 | macOS | Required version |
@@ -19,7 +19,7 @@ Use the latest WEX and Graphics releases together. See [WEX](https://github.com/
 | Sequoia | 15.8.x |
 | Tahoe | 26.7 or newer |
 
-For other OCLP root patches, use the [custom OCLP build](https://github.com/b00t0x/OpenCore-Legacy-Patcher) with the matching Mod signing chain.
+If you use [OCLP](https://github.com/dortania/OpenCore-Legacy-Patcher) for other root patches, load OCLP's AMFIPass after AMFIAnchor and its injector.
 
 ## Install
 
@@ -27,7 +27,7 @@ For other OCLP root patches, use the [custom OCLP build](https://github.com/b00t
 2. Boot the target macOS and open `WhateverXe-Graphics-*.pkg` from [Releases](https://github.com/b00t0x/WhateverXe-Graphics/releases).
 3. Restart after installation succeeds. Resolve any reported installation error before restarting.
 
-The installer does not change EFI or SIP. The pkg is unsigned and not notarized; its modified graphics payloads carry the Mod code signature.
+The installer does not change EFI or SIP. The pkg is unsigned and not notarized. Its modified graphics payloads are signed with the CA trusted by `AMFIAnchorInjector.kext`.
 
 ## Automatic installation before Setup Assistant
 
@@ -40,7 +40,7 @@ AutoPkg enables graphics acceleration during a **fresh macOS installation**. It 
    open "/Volumes/Install macOS Tahoe/Library"
    ```
 
-3. Add upstream [AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip) to OpenCore alongside Lilu, WEX and Mod AMFIPass. Set `csr-active-config=030A0000` (`0xA03`); also add `-autopkgbeta` for Tahoe.
+3. Add [AutoPkgInstaller 1.0.4](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/payloads/Kexts/Acidanthera/AutoPkgInstaller-v1.0.4-RELEASE.zip) to the OpenCore configuration from [Requirements](#requirements). Set `csr-active-config=030A0000` (`0xA03`), and add `-autopkgbeta` on Tahoe.
 4. Install macOS normally. An extra restart applies Graphics before Setup Assistant; the initial USB installer UI is not accelerated.
 
 Do not open AutoPkg manually. Use the standard pkg for existing systems or updates, and do not combine WEX and OCLP AutoPkg assets on one USB. The OCLP application, KDK and MetallibSupportPkg are unnecessary.
