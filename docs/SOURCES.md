@@ -108,11 +108,11 @@ preserve the codec scaler's native creation and dimension checks. The VA
 companion uses the direct client's AppleGVACore API to admit standalone
 `420v` to BGRA and `x420` to RGB10 transfers within the same dimension limits.
 It completes these requests through the existing Metal converter or a Metal
-pass for client-supplied matrices, colour tables and transfer curves. When
-VideoToolbox lacks the controls required for synchronous Metal-only transfer,
-the Metal pass also handles standard matrices supplied by the caller.
-AppleGVA retains its original VA
-rejection and VideoToolbox retains converter selection. The donor continues to
+pass for client-supplied matrices, colour tables and transfer curves. The
+Metal pass reads x420 directly from its native luma and chroma textures and
+also handles supplied standard matrices when VideoToolbox lacks the controls
+required for synchronous Metal-only transfer. AppleGVA retains its original
+VA rejection and VideoToolbox retains converter selection. The donor continues to
 reject incomplete features `0x20` and `0x40`.
 The signed VA executable hashes are recorded in `userspace_admission.files`.
 The transfer companion and its loader are recorded in `servicing_adapters`.
