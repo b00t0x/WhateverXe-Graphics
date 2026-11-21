@@ -42,7 +42,7 @@ def main():
         # adapter's input contract. Never re-sign this file.
         if path.name == 'libigc-tgl.dylib':
             assert sha == APPLE_BACKEND, path
-        if path.name in {'AppleIntelTGLCompat', 'adapter.dylib', 'TGLVA'}:
+        if path.name in {'AppleIntelTGLCompat', 'adapter.dylib', 'TGLVA', 'P'}:
             assert b'/Users/' not in data and b'/home/' not in data, path
         run(args.rcodesign, 'verify', path)
         info = run(args.rcodesign, 'print-signature-info', path).lower()

@@ -14,6 +14,8 @@ ADAPTERS = (
     'Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA',
     'Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib',
 )
+VA_COMPANION = ADAPTERS[2]
+VA_TRANSFER = posixpath.join(posixpath.dirname(VA_COMPANION), 'P')
 
 
 def dylib_dependencies(data):
@@ -49,6 +51,12 @@ def check_bytes(data, label):
 
 
 def check_files(files, family):
+    va_dependencies = dylib_dependencies(files[VA_COMPANION].read_bytes())
+    if '@loader_path/P' in va_dependencies:
+        assert va_dependencies.count('@loader_path/P') == 1 and VA_TRANSFER in files, family + ': invalid VA transfer dependency'
+        check_bytes(files[VA_TRANSFER].read_bytes(), family + '/' + VA_TRANSFER)
+    else:
+        assert VA_TRANSFER not in files, family + ': orphaned VA transfer companion'
     if family not in ('Sequoia', 'Tahoe'):
         return
     for name in ADAPTERS:
@@ -65,7 +73,7 @@ def check_files(files, family):
 def check_payloads(root):
     common = {p.relative_to(root / 'Common').as_posix(): p
               for p in (root / 'Common').rglob('*') if p.is_file()}
-    for family in ('Sequoia', 'Tahoe'):
+    for family in ('Big Sur', 'Monterey', 'Ventura', 'Sonoma', 'Sequoia', 'Tahoe'):
         selected = {p.relative_to(root / family).as_posix(): p
                     for p in (root / family).rglob('*') if p.is_file()}
         check_files(common | selected, family)

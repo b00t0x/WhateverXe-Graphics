@@ -104,10 +104,15 @@ factory refusal follows
 The Big Sur through Tahoe payloads distinguish standalone image processing from
 codec scaler contexts: both use feature `0x800`, but their native producer hint at config
 offset `0x14` is zero for standalone processing and nonzero for codecs. They
-preserve the codec scaler's native creation and dimension checks while rejecting
-standalone processing and features `0x20`/`0x40`. The distinction uses the native
-configuration record rather than an OS build or application check.
+preserve the codec scaler's native creation and dimension checks. The VA
+companion uses the direct client's AppleGVACore API to admit standalone
+`420v` to BGRA and `x420` to RGB10 transfers within the same dimension limits.
+It completes these requests through the existing Metal converter or a Metal
+pass for client-supplied matrices, colour tables and transfer curves. AppleGVA retains its original VA
+rejection and VideoToolbox retains converter selection. The donor continues to
+reject incomplete features `0x20` and `0x40`.
 The signed VA executable hashes are recorded in `userspace_admission.files`.
+The transfer companion and its loader are recorded in `servicing_adapters`.
 
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:
 the adapter checks its complete file hash. The verifier enforces that identity.
