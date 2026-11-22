@@ -114,6 +114,14 @@ also handles supplied standard matrices when VideoToolbox lacks the controls
 required for synchronous Metal-only transfer. AppleGVA retains its original
 VA rejection and VideoToolbox retains converter selection. The donor continues to
 reject incomplete features `0x20` and `0x40`.
+The standalone pass preserves the source chroma location and calculates its
+bilinear plane and trilinear colour-table interpolation weights explicitly.
+Core format-list entries outside the pixel executor retain an owned context
+that returns a failed completion without initializing a native GPU renderer.
+Its completion result is carried through the native Core synchronous and
+asynchronous callers. The detached compositor checks the conversion result
+before accessing or compositing the RGB texture. Runtime adaptation uses
+symbols and instruction contracts, without a product-build or UUID allowlist.
 The signed VA executable hashes are recorded in `userspace_admission.files`.
 The transfer companion and its loader are recorded in `servicing_adapters`.
 

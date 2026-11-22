@@ -98,12 +98,12 @@
     ],
     "files": {
       "Common/Library/GPUBundles/AppleIntelTGLGraphicsGLDriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsGLDriver": "b0791039b77df44784b63ba36d37c266055092acbcc3b0c29ad1f9a5e8fb6008",
-      "Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "13924d282d3e3d6b2b7612cb2dbfe6fe7d55ce8549d0ad421db26251fca228f2",
-      "Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "82c45670569578e2299eb66853cd6e0d24aed0b79c492fac9fcc57448ec217c6",
-      "Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "920ebe0685b2afb17701fd6bd30f324c26c8178ce445c8dca5147c451f4ae35e",
-      "Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "0e2e4341cca2e153b20322c0516f05f2647b16861e92726111bf7062757ac675",
-      "Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "95364f14292cf80ca84453a1ee7966f4ef3572d0288cc061036148e1f7195f3a",
-      "Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "81284733430c828b2101c611adbd0ca3c97c9edb5324a4727df54de293045ce2",
+      "Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "0286600c06756878cbb8cdc7465f511b850e046068eca2034acace328ff0823d",
+      "Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "1ef0641fcc71fe9c9a21c1a7065bfc5711ef0e863979a6b7ee5a14e743e479ba",
+      "Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "d6b823792571306a2ea67a3f482100ca4413c119e44d1d087c433b81fd6f34a3",
+      "Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "344e4787e8f21fa9d49cd657d3fd2b5d0420b2555fb5befbb9ccff297b99cba6",
+      "Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "aedd490f945109d94854018aac88eb23cf4c442237c2d648fb3d09ac344a786a",
+      "Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/AppleIntelTGLGraphicsVADriver": "2fc53368c2950862999edd9d01cf9e903e7c293bc0a3b34f369e9660f35eaa74",
       "Big Sur/Library/GPUBundles/XeOpenCL/libCLVMIGCPlugin.dylib": "6a4b9aaa34742ac8033b4ecce305825de01647e928464a3501c0b54455371347",
       "Monterey/Library/GPUBundles/XeOpenCL/libCLVMIGCPlugin.dylib": "2f39439620f8ef81fd5dda7277e669f72b8597bc3ad41004fbea6a569ae92d7d",
       "Ventura/Library/GPUBundles/XeOpenCL/libCLVMIGCPlugin.dylib": "912322c44c269db8a93db7a194e97215550b210f3a389f43a83765db66d72a48",
@@ -137,12 +137,12 @@
       "payloads/Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "86d38577c5e3b437a50482032f45359f006c79ac685cf99efe8e10abce5f2e8d",
       "payloads/Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "52294077797ab11083e27621d96adde8eebbf471a451f2066f8e72bc46c02761",
       "payloads/Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/TGLVA": "4aa0f95cf37ff34f2caf116f0d8fce9b8101039128947e572663c655a220a081",
-      "payloads/Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "5aa343afe5153a05c6ce0afa2e1fd2fdeb321675b2bd929a47da12f10533870e",
-      "payloads/Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "5aa343afe5153a05c6ce0afa2e1fd2fdeb321675b2bd929a47da12f10533870e",
-      "payloads/Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "3f817c4592c84f6732074e2b8a37bbf21afd6b911226e595f15fe2593080bd84",
-      "payloads/Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "3f817c4592c84f6732074e2b8a37bbf21afd6b911226e595f15fe2593080bd84",
-      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "a08b48487e5dc2275f88c37c2fca61c2b217cf0c36eaca52716081029483d508",
-      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "a08b48487e5dc2275f88c37c2fca61c2b217cf0c36eaca52716081029483d508"
+      "payloads/Big Sur/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "cf357cc64f41fda33a8d53a9c4a4e3c351ad711c125ba53ffd5d1fb85dedacae",
+      "payloads/Monterey/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "be0d85499e8461bbc8358e5a2dedae14a61f0586eb64f4cb8d473f070fc15fc6",
+      "payloads/Ventura/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "be0d85499e8461bbc8358e5a2dedae14a61f0586eb64f4cb8d473f070fc15fc6",
+      "payloads/Sonoma/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "83a4426d34f27e0ca7de74e0df691c94402aad2d4d54e3b205636e43747d2a40",
+      "payloads/Sequoia/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "83a4426d34f27e0ca7de74e0df691c94402aad2d4d54e3b205636e43747d2a40",
+      "payloads/Tahoe/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/P": "83a4426d34f27e0ca7de74e0df691c94402aad2d4d54e3b205636e43747d2a40"
     },
     "cache_classification": "dyld shared cache range; symbol-resolved imported predicate, full byte guard, pinned destination",
     "descriptor_dependency": "@loader_path/descriptor.dylib; cold load without descriptor preload verified",
@@ -152,15 +152,18 @@
       "tgl_sha256": "bce30437d083acdc96bbd581f58ae08d1c8b090c40de3598c80b46bd683440dc"
     },
     "standalone_va_transfer": {
-      "generator_source_revision": "31f557fdc233f0f8e95fb64bcfd33de5d428b787",
+      "generator_source_revision": "93a1332e1ffee2a7763d63bc48e493a231f1108b",
       "sources_sha256": {
-        "va-vphal-transfer.c": "20e3c2b203e2477c6c33ee6c3928e551523e76d96055334f52f3c4f81dcceb7c",
-        "va-vphal-transfer.S": "5a1b74f2f46ad2c850ba41532440dc45a7261a039f106852a7789f6519baf4e5",
-        "va-vphal-affine.h": "4645cac0f816e9b75c43d5db0a4622c1035479b733c1df4232d95f762d5ddb4b",
-        "va-vphal-affine.m": "2b4fcbe7e5e049bcbc01d06241694e40098eb1085873b29eb3a0838a51bda628",
-        "va_vphal_transfer.py": "18efb5125ce633dcefa0afb94f6db14a532b0769e64ee0e36d5bc2162515af9d"
+        "va-vphal-transfer.c": "113853e70e3caf402d84228d73ae54f02e35ac7270dfe8d3358c242454a62ba9",
+        "va-vphal-transfer.S": "cc944fac18e2be13691f37b6534b97050f9070308a7341aab8eb82c32dfb6d20",
+        "va-vphal-affine.h": "4001f9f42bbe2d9c79b9cbe3bcb8c519171f345195430b31a411ad350c5e939d",
+        "va-vphal-affine.m": "bd566ce95181f2fbc1bd636d3236d411d3987a4e7453b66fb5627feb7f019f22",
+        "va_vphal_transfer.py": "5d50775a3c921355f8f6968dbda237343a495ea9e5f1c5391d222ade72d3e135",
+        "va-vphal-client.c": "aba1b2d9ef0c12ae0f3f515bbf23ed717fa37021af3df4a04eedc814f50cc278",
+        "va-vphal-client.h": "e424ed8e6aeefab048e94a204d5b2055dc0164e5d1d3f8a58226a2370e7ae5b4",
+        "va-readable-span.h": "4ebd925df4f476233c981f7b5acc12022eafe04b892b006b0151ec7779b95cb6"
       },
-      "contract": "Preserve codec scaler and AppleGVA fallback. Render detached x420 surfaces with their native plane formats and use the same Metal path when VideoToolbox lacks the controls required for synchronous Metal-only transfer."
+      "contract": "Preserve codec scaler and AppleGVA fallback. Apply explicit 4:2:0 chroma siting and arithmetic bilinear/trilinear filtering to native planes and colour tables. Carry blocking VA errors through Core sync/async calls; the detached compositor must bypass unwritten RGB textures after failure. Core-listed requests outside the executable set keep a failure-only context and receipt without native GPU initialization."
     }
   },
   "startup_dependencies": {
