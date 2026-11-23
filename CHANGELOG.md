@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.5
+
+Update [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) and WhateverXe Graphics together.
+
+### Fixed
+
+- Fix a failure that could interrupt video display when macOS needed to convert an 8-bit or 10-bit video frame to RGB on Big Sur through Tahoe.
+- Correct color inaccuracies when scaling and converting video frames, and prevent failed conversions from being displayed as valid frames.
+
 ## 0.4.4
 
 Update [WhateverXe](https://github.com/b00t0x/WhateverXe/releases) and WhateverXe Graphics together.
