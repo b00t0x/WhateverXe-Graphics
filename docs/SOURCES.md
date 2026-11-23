@@ -104,10 +104,26 @@ factory refusal follows
 The Big Sur through Tahoe payloads distinguish standalone image processing from
 codec scaler contexts: both use feature `0x800`, but their native producer hint at config
 offset `0x14` is zero for standalone processing and nonzero for codecs. They
-preserve the codec scaler's native creation and dimension checks while rejecting
-standalone processing and features `0x20`/`0x40`. The distinction uses the native
-configuration record rather than an OS build or application check.
+preserve the codec scaler's native creation and dimension checks. The VA
+companion uses the direct client's AppleGVACore API to admit standalone
+`420v` to BGRA and `x420` to RGB10 transfers within the same dimension limits.
+It completes these requests through the existing Metal converter or a Metal
+pass for client-supplied matrices, colour tables and transfer curves. The
+Metal pass reads x420 directly from its native luma and chroma textures and
+also handles supplied standard matrices when VideoToolbox lacks the controls
+required for synchronous Metal-only transfer. AppleGVA retains its original
+VA rejection and VideoToolbox retains converter selection. The donor continues to
+reject incomplete features `0x20` and `0x40`.
+The standalone pass preserves the source chroma location and calculates its
+bilinear plane and trilinear colour-table interpolation weights explicitly.
+Core format-list entries outside the pixel executor retain an owned context
+that returns a failed completion without initializing a native GPU renderer.
+Its completion result is carried through the native Core synchronous and
+asynchronous callers. The detached compositor checks the conversion result
+before accessing or compositing the RGB texture. Runtime adaptation uses
+symbols and instruction contracts, without a product-build or UUID allowlist.
 The signed VA executable hashes are recorded in `userspace_admission.files`.
+The transfer companion and its loader are recorded in `servicing_adapters`.
 
 The original Apple-signed `libigc-tgl.dylib` must remain byte-for-byte unchanged:
 the adapter checks its complete file hash. The verifier enforces that identity.

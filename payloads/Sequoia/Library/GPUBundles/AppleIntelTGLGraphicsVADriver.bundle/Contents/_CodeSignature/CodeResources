@@ -11,11 +11,20 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>MacOS/P</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			6ka/vYRNxWjenPcaqYIy8YPi+xI=
+			</data>
+			<key>requirement</key>
+			<string>certificate leaf = H"6de7fc5377deac4f5fe21194684f57f553c3592c"</string>
+		</dict>
 		<key>MacOS/TGLVA</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			XzY9V1fQKQumkxuvfJMlWtj6hDA=
+			UEH8MRgHo0r/XfN8NKnmHeX7dlk=
 			</data>
 			<key>requirement</key>
 			<string>certificate leaf = H"6de7fc5377deac4f5fe21194684f57f553c3592c"</string>
